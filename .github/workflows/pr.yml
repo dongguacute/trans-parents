@@ -82,7 +82,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_PAGES_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_PAGES_ACCOUNT }}
-          projectName: preview-transsoul
+          projectName: preview-trans-parents
           directory: public
 
       - name: 等待部署完成並獲取預覽 URL
