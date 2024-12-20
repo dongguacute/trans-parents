@@ -1,0 +1,116 @@
+name: PR 審核 / 預覽
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 生成 GitHub App 臨時令牌
+        id: auth
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_APP_SECRET }}
+          owner: ${{ github.repository_owner }}
+      - name: 檢出主倉庫代碼
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 0
+
+      - name: 檢出 PR 修改的部分
+        run: |
+          git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-${{ github.event.pull_request.number }}
+          git checkout pr-${{ github.event.pull_request.number }}
+      # 检查PR是否只修改了source文件夹
+      - name: 檢查修改部分
+        id: check-changes
+        run: |
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD)
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+          if [[ "$CHANGED_FILES" == *"source"* || "$CHANGED_FILES" == "" ]]; then
+            echo "Only 'source' folder or no changes."
+            echo "ONLY_DOCS=true" >> $GITHUB_ENV
+          else
+            echo "Changes outside 'source' folder detected."
+            echo "ONLY_DOCS=false" >> $GITHUB_ENV
+          fi
+      # 如果更改了docs文件夹以外的文件，则关闭PR并添加评论
+      - name: 關閉 PR 并添加評論
+        if: ${{ env.ONLY_DOCS == 'false' }}
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ steps.auth.outputs.token }}
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const comment = '首先，感謝你的貢獻，但是審查發現你修改了了非 source/ 目錄下的文件，這可能導致未知問題，因此我們關閉了這個提交請求\n如確有需要，請聯係技術審核 https://github.coom/lidongxun967';
+            github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment,
+            });
+            github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+              state: 'closed',
+            });
+      - name: 安裝 Python and pip
+        if: ${{ env.ONLY_DOCS == 'true' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: 安裝支持庫
+        if: ${{ env.ONLY_DOCS == 'true' }}
+        run: npm install --frozen-lockfile
+
+      - name: 構建頁面
+        if: ${{ env.ONLY_DOCS == 'true' }}
+        run: npm run build
+
+      - name: 上傳到 Cloudflare Pages
+        if: ${{ env.ONLY_DOCS == 'true' }}
+        uses: cloudflare/pages-action@v1
+        id: deploy
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_PAGES_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_PAGES_ACCOUNT }}
+          projectName: preview-transsoul
+          directory: public
+
+      - name: 等待部署完成並獲取預覽 URL
+        if: ${{ env.ONLY_DOCS == 'true' }}
+        run: |
+          # 使用 Cloudflare API 获取部署状态
+          DEPLOYMENT_STATUS=$(curl -s -X GET "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_PAGES_ACCOUNT }}/pages/projects/preview-transsoul/deployments" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_PAGES_TOKEN }}" \
+            -H "Content-Type: application/json")
+          
+          # 获取最后一次部署的预览 URL
+          PREVIEW_URL=$(echo $DEPLOYMENT_STATUS | jq -r '.result[0].url')
+
+          # 设置预览 URL 环境变量
+          echo "PREVIEW_URL=$PREVIEW_URL" >> $GITHUB_ENV
+
+      - name: 評論 PR 預覽鏈接
+        if: ${{ env.ONLY_DOCS == 'true' }}
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ steps.auth.outputs.token }}
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const previewUrl = process.env.PREVIEW_URL;
+            const comment = `感謝你的貢獻，已經安排相關人員審核！\n🚀 預覽部署完成！訪問鏈接: ${previewUrl}\nTransSoul Team 不為此預覽內容負責！`;
+            github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment,
+            });
