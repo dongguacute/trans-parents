@@ -12,6 +12,7 @@
 info:
   # Site title
   title: Trans Parents
+  subtitle: '为了每一个笑容'
   # Author name
   author: TransSoul
   # Site URL
@@ -25,7 +26,7 @@ defaults:
   # Favicon
   favicon: /images/2.png
   # Site logo
-  logo: 
+  logo: https://raw.githubusercontent.com/TransSoul/.github/refs/heads/main/logo.jpg
   # Site avatar
   avatar: 'https://raw.githubusercontent.com/TransSoul/.github/refs/heads/main/logo.jpg'
 # IMAGE CONFIGURATION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< end
@@ -82,7 +83,7 @@ global:
   # Whether to enable Preloader.
   preloader: true
   # Whether to enable open graph
-  open_graph: true
+  open_graph: false
   # Google Analytics
   google_analytics:
     enable: false # Whether to enable Google Analytics
@@ -443,7 +444,7 @@ page_templates:
 # Docs: https://redefine-docs.ohevan.com/cdn
 cdn:
   # Whether to enable CDN
-  enable: false
+  enable: true
   # CDN Provider
   provider: npmmirror # npmmirror, zstatic, sustech, staticfile, bootcdn, cdnjs, jsdelivr, unpkg, custom
   # Custom CDN URL
