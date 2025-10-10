@@ -4,7 +4,7 @@
 
 <div id="navigation" class="fixed top-0 left-0 right-0 z-50 flex items-center p-5 pointer-events-none">
    <!-- Left side: Smiling face circle button -->
-   <button id="nav-toggle" class="pointer-events-auto bg-white/10 border border-white/20 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer transition-colors hover:bg-white/20 text-black backdrop-blur-md" style="z-index: 60;">
+   <button id="nav-toggle" class="pointer-events-auto rounded-full w-12 h-12 flex items-center justify-center cursor-pointer transition-colors backdrop-blur-md" style="z-index: 60; background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">
      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
        <circle cx="9" cy="9" r="1" fill="currentColor"/>
@@ -13,17 +13,6 @@
      </svg>
    </button>
 
-   <!-- Center: Search box -->
-   <div class="absolute left-1/2 transform -translate-x-1/2 pointer-events-auto">
-     <div class="search-container" id="nav-search">
-       <input type="text" id="search-input" placeholder="搜索..." class="search-input">
-       <button type="button" class="search-button">
-         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-           <path d="M21 21L16.5 16.5M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-         </svg>
-       </button>
-     </div>
-   </div>
 
    <!-- Full screen navigation overlay -->
   <div id="nav-overlay" class="fixed inset-0 bg-white/10 backdrop-blur-md opacity-0 z-50 transition-all duration-300 ease-in-out" style="visibility: hidden; pointer-events: none;">
@@ -38,8 +27,54 @@
 
   <!-- Right side: Floating options -->
   <div class="absolute right-0 flex gap-2.5 pointer-events-auto p-5" style="z-index: 30;">
-    <button class="bg-white/10 border border-white/20 rounded-xl py-2.5 px-3.5 text-black cursor-pointer transition-colors hover:bg-white/20 text-sm backdrop-blur-md" id="disclaimer-btn">免责声明</button>
-    <button class="bg-white/10 border border-white/20 rounded-xl py-2.5 px-3.5 text-black cursor-pointer transition-colors hover:bg-white/20 text-sm backdrop-blur-md" id="about-btn">关于本站</button>
+    <button class="rounded-xl py-2.5 px-3.5 cursor-pointer transition-colors text-sm backdrop-blur-md" id="disclaimer-btn" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">免责声明</button>
+    <button class="rounded-xl py-2.5 px-3.5 cursor-pointer transition-colors text-sm backdrop-blur-md" id="about-btn" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">关于本站</button>
+    
+    <!-- Theme toggle button -->
+    <div class="relative" id="theme-selector">
+      <button id="theme-toggle" class="group relative rounded-xl p-3 cursor-pointer transition-all duration-300 hover:scale-105 backdrop-blur-md shadow-lg hover:shadow-xl" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">
+        <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="transition-transform duration-300 group-hover:rotate-12">
+          <!-- Sun icon -->
+          <circle cx="12" cy="12" r="5" fill="currentColor" class="sun-circle"/>
+          <g class="sun-rays">
+            <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </g>
+          <!-- Moon icon (hidden by default) -->
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" class="moon-path hidden"/>
+        </svg>
+      </button>
+
+      <!-- Theme dropdown menu -->
+      <div id="theme-dropdown" class="absolute right-0 mt-3 w-56 backdrop-blur-xl rounded-2xl shadow-2xl py-3 hidden z-[70] animate-fade-in" style="background-color: var(--color-card); border: 1px solid var(--color-border);">
+        <div class="px-4 py-2 text-xs font-semibold uppercase tracking-wide" style="color: var(--color-text-secondary);">主題設置</div>
+        <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
+        <button class="flex items-center w-full text-left px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2" style="color: var(--color-text);" data-theme="system" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+          <svg class="w-4 h-4 mr-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          </svg>
+          跟隨系統
+        </button>
+        <button class="flex items-center w-full text-left px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2" style="color: var(--color-text);" data-theme="light" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+          <svg class="w-4 h-4 mr-3 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
+          </svg>
+          淺色模式
+        </button>
+        <button class="flex items-center w-full text-left px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2" style="color: var(--color-text);" data-theme="dark" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+          <svg class="w-4 h-4 mr-3 text-indigo-500" fill="currentColor" viewBox="0 0 24 24">
+            <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd"/>
+          </svg>
+          深色模式
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -54,52 +89,73 @@
   opacity: 1;
   transform: translateX(0);
 }
+  /* Theme toggle button animations */
+  #theme-toggle {
+    position: relative;
+    overflow: hidden;
+  }
 
-.search-container {
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 25px;
-  padding: 8px 16px;
-  backdrop-filter: blur(10px);
-  max-width: 400px;
-  width: 300px;
-  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s ease-in-out;
-}
+  #theme-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
 
-.search-container:hover {
-  width: 500px;
-}
+  #theme-toggle:hover::before {
+    left: 100%;
+  }
 
-.search-input {
-  flex: 1;
-  border: none;
-  background: transparent;
-  color: white;
-  font-size: 16px;
-  outline: none;
-  padding: 8px;
-}
+  /* Theme icon transitions */
+  .sun-rays {
+    transition: all 0.3s ease;
+  }
 
-.search-input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
-}
+  .dark .sun-rays {
+    opacity: 0;
+    transform: rotate(180deg);
+  }
 
-.search-button {
-  border: none;
-  background: transparent;
-  color: white;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: background 0.2s;
-}
+  .moon-path {
+    transition: all 0.3s ease;
+  }
 
-.search-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
+  .dark .moon-path {
+    opacity: 1;
+  }
 
+  .dark .sun-circle {
+    opacity: 0;
+  }
+
+  /* Dropdown animations */
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Enhanced dropdown styling */
+  #theme-dropdown {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Theme option hover effects are now handled by inline styles */
 </style>
 
 <script is:inline>
@@ -108,8 +164,6 @@
      const navToggle = document.getElementById('nav-toggle');
      const navOverlay = document.getElementById('nav-overlay');
      const navClose = document.getElementById('nav-close');
-     const navSearch = document.getElementById('nav-search');
-
      // Remove existing event listeners by replacing elements to prevent duplicates
      if (navToggle) {
        const newNavToggle = navToggle.cloneNode(true);
@@ -131,10 +185,6 @@
          item.classList.remove('text-white');
          item.classList.add('text-black');
        });
-       // Hide search box on docs page
-       if (navSearch) {
-         navSearch.style.display = 'none';
-       }
        // Change overlay background for better visibility
        navOverlay.style.background = 'rgba(0, 0, 0, 0.5)';
      } else {
@@ -144,10 +194,6 @@
          item.classList.remove('text-black');
          item.classList.add('text-white');
        });
-       // Show search box on non-docs pages
-       if (navSearch) {
-         navSearch.style.display = 'block';
-       }
        // Reset overlay background
        navOverlay.style.background = 'rgba(255, 255, 255, 0.1)';
      }
@@ -237,4 +283,115 @@
      // Already loaded, initialize now
      initNavigation();
    }
+   
+   // Theme selector functionality
+   document.addEventListener('DOMContentLoaded', function() {
+     const themeToggle = document.getElementById('theme-toggle');
+     const themeDropdown = document.getElementById('theme-dropdown');
+     
+     // Toggle dropdown visibility
+     themeToggle.addEventListener('click', function(e) {
+       e.stopPropagation();
+       themeDropdown.classList.toggle('hidden');
+     });
+     
+     // Close dropdown when clicking elsewhere
+     document.addEventListener('click', function(e) {
+       if (!themeToggle.contains(e.target) && !themeDropdown.contains(e.target)) {
+         themeDropdown.classList.add('hidden');
+       }
+     });
+     
+     // Theme selection
+     const themeButtons = document.querySelectorAll('[data-theme]');
+     themeButtons.forEach(button => {
+       button.addEventListener('click', function() {
+         const theme = this.getAttribute('data-theme');
+         setTheme(theme);
+         themeDropdown.classList.add('hidden');
+       });
+     });
+     
+     // Set initial theme based on saved preference or system preference
+     function setTheme(theme) {
+       switch(theme) {
+         case 'light':
+           document.documentElement.classList.remove('dark');
+           document.documentElement.classList.add('light');
+           localStorage.setItem('theme', 'light');
+           updateThemeIcon('light');
+           break;
+         case 'dark':
+           document.documentElement.classList.remove('light');
+           document.documentElement.classList.add('dark');
+           localStorage.setItem('theme', 'dark');
+           updateThemeIcon('dark');
+           break;
+         case 'system':
+         default:
+           if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+             document.documentElement.classList.remove('light');
+             document.documentElement.classList.add('dark');
+             localStorage.setItem('theme', 'system');
+             updateThemeIcon('dark');
+           } else {
+             document.documentElement.classList.remove('dark');
+             document.documentElement.classList.add('light');
+             localStorage.setItem('theme', 'system');
+             updateThemeIcon('light');
+           }
+           break;
+       }
+     }
+
+     // Update theme icon based on current theme
+     function updateThemeIcon(theme) {
+       const sunRays = document.querySelector('.sun-rays');
+       const moonPath = document.querySelector('.moon-path');
+       const sunCircle = document.querySelector('.sun-circle');
+
+       if (theme === 'dark') {
+         sunRays.style.opacity = '0';
+         sunRays.style.transform = 'rotate(180deg)';
+         moonPath.classList.remove('hidden');
+         sunCircle.style.opacity = '0';
+         setTimeout(() => {
+           moonPath.style.opacity = '1';
+         }, 150);
+       } else {
+         moonPath.style.opacity = '0';
+         sunRays.style.opacity = '1';
+         sunRays.style.transform = 'rotate(0deg)';
+         sunCircle.style.opacity = '1';
+         setTimeout(() => {
+           moonPath.classList.add('hidden');
+         }, 150);
+       }
+     }
+     
+     // Initialize theme on page load
+     const savedTheme = localStorage.getItem('theme');
+     if (savedTheme) {
+       setTheme(savedTheme);
+     } else {
+       setTheme('system'); // Default to system
+     }
+     
+     // Listen for system theme changes
+     if (window.matchMedia) {
+       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+         if (localStorage.getItem('theme') === 'system') {
+           if (e.matches) {
+             document.documentElement.classList.remove('light');
+             document.documentElement.classList.add('dark');
+             updateThemeIcon('dark');
+           } else {
+             document.documentElement.classList.remove('dark');
+             document.documentElement.classList.add('light');
+             updateThemeIcon('light');
+           }
+         }
+       });
+     }
+   });
 </script>

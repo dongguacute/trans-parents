@@ -11,3 +11,37 @@
 body {
   font-family: 'Roboto', sans-serif;
 }
+
+/* Theme support */
+.light {
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f8f9fa;
+  --color-text: #000000;
+  --color-text-secondary: #6c757d;
+  --color-accent: #000000;
+  --color-border: #dee2e6;
+  --color-hover: #f8f9fa;
+  --color-card: #ffffff;
+}
+
+.dark {
+  --color-bg: #1a1a1a;
+  --color-bg-secondary: #2d3748;
+  --color-text: #ffffff;
+  --color-text-secondary: #a0aec0;
+  --color-accent: #ffffff;
+  --color-border: #4a5568;
+  --color-hover: #2d3748;
+  --color-card: #2d3748;
+}
+
+/* Apply theme colors */
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
