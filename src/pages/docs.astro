@@ -3,10 +3,69 @@ import Navigation from '../components/Navigation.astro';
 import Layout from '../layouts/Layout.astro';
 
 // Documentation page
+const posts = await Astro.glob('../posts/*.md');
+const postsWithWordCount = await Promise.all(posts.map(async (post) => {
+  const raw = await post.rawContent();
+  const wordCount = raw ? raw.replace(/[^\u4e00-\u9fa5]/g, '').length : 0;
+  return { ...post, wordCount };
+}));
 ---
 
 <Layout>
 	<Navigation />
+
+	<div class="docs-content">
+		<div class="posts-list">
+			{postsWithWordCount.map((post) => {
+				const slug = post.file ? post.file.split('/').pop()?.replace('.md', '') : '';
+				return (
+					<article class="post-item">
+						<div class="post-header">
+							<div class="post-title-wrapper">
+								<span class="title-bar"></span>
+								<h2><a href={`/posts/${slug}`}>{post.frontmatter.title}</a></h2>
+							</div>
+							<div class="post-arrow">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							</div>
+						</div>
+						<div class="post-meta">
+							<span class="meta-item">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M8 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M16 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M21 8V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H19C19.5304 6 20.0391 6.21071 20.4142 6.58579C20.7893 6.96086 21 7.46957 21 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+								<time>{new Date(post.frontmatter.date).toLocaleDateString('zh-TW')}</time>
+							</span>
+							<span class="meta-item">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+								<span>未分類</span>
+							</span>
+							<span class="meta-item tag-item">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+								<span>標籤 / 示例</span>
+							</span>
+						</div>
+						<p class="post-description">{post.frontmatter.description}</p>
+						<div class="post-stats">
+							<span>{post.wordCount} 字</span>
+						</div>
+					</article>
+				);
+			})}
+		</div>
+	</div>
 </Layout>
 
 <style>
@@ -19,13 +78,12 @@ import Layout from '../layouts/Layout.astro';
   }
 
   .docs-content {
-    padding: 2rem;
-    max-width: 800px;
-    margin: 0 auto;
+    padding: 1rem;
+    padding-top: 5rem;
+    width: 100%;
     color: var(--color-text);
-    background-color: var(--color-bg);
-    min-height: 100vh;
   }
+
 
   .docs-content h1 {
     color: var(--color-text);
@@ -34,4 +92,84 @@ import Layout from '../layouts/Layout.astro';
   .docs-content p {
     color: var(--color-text-secondary);
   }
+
+  .posts-list {
+    display: grid;
+    gap: 2rem;
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+  }
+
+  .post-item {
+    background: #fff; /* 白色背景 */
+    border-radius: 12px; /* 更大的圓角 */
+    padding: 1.8rem; /* 稍微減少內邊距 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* 柔和的陰影 */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .post-item:hover {
+    transform: translateY(-5px); /* 更明顯的懸停效果 */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .post-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .title-bar {
+    width: 6px;
+    height: 1.8em; /* 與標題高度匹配 */
+    background-color: #E91E63; /* 粉色條 */
+    border-radius: 3px;
+  }
+
+  .post-item h2 {
+    margin: 0;
+    font-size: 1.8rem; /* 增大標題字體 */
+    color: #333; /* 深色字體 */
+    line-height: 1.2;
+  }
+
+  .post-item h2 a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .post-arrow {
+    color: #E91E63; /* 粉色箭頭 */
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #666; /* 較淺的元數據字體顏色 */
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .meta-item svg {
+    color: #E91E63; /* 粉色圖標 */
+  }
+
+  .tag-item {
+    background-color: #FCE4EC; /* 淺粉色背景 */
 </style>

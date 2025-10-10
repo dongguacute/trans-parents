@@ -305,12 +305,39 @@
      }
    }
 
+   // Initialize search functionality for docs page
+   function initSearch() {
+     const searchInput = document.getElementById('search-input');
+     if (searchInput && window.location.pathname === '/docs') {
+       searchInput.addEventListener('input', (e) => {
+         const target = e.target;
+         const query = target.value.toLowerCase();
+         const posts = document.querySelectorAll('.post-item');
+         posts.forEach(post => {
+           const titleEl = post.querySelector('h2');
+           const descEl = post.querySelector('.post-description');
+           const title = titleEl?.textContent?.toLowerCase() || '';
+           const desc = descEl?.textContent?.toLowerCase() || '';
+           if (title.includes(query) || desc.includes(query)) {
+             post.style.display = '';
+           } else {
+             post.style.display = 'none';
+           }
+         });
+       });
+     }
+   }
+
    // Initialize on DOM load
-   document.addEventListener('DOMContentLoaded', initNavigation);
-   
+   document.addEventListener('DOMContentLoaded', () => {
+     initNavigation();
+     initSearch();
+   });
+
    // Reinitialize after Astro navigation (SPA transitions)
    document.addEventListener('astro:after-swap', () => {
      initNavigation();
+     initSearch();
      // Re-apply theme after page transition
      const savedTheme = localStorage.getItem('theme');
      if (savedTheme) {
