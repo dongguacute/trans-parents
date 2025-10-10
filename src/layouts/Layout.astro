@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import Footer from '../components/Footer.astro';
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from "astro:transitions";
 ---
 
 <!doctype html>
@@ -19,8 +19,8 @@ import { ViewTransitions } from 'astro:transitions';
 	</head>
 	<body>
 	<slot />
+		<ClientRouter />
 		<Footer />
-		<ViewTransitions />
 		<style>
 			/* 高級 ViewTransitions 優化 */
 			::view-transition-old(root),
