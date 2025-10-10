@@ -19,15 +19,24 @@ export default defineConfig({
     ]
   },
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    build: {
+      // 优化构建性能
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true, // 生产环境移除console
+        }
+      }
+    }
   },
-  // Next.js 風格的優化配置 - 已禁用預載入以改善效能
- // prefetch: {
- //   defaultStrategy: 'hover'
- // },
+  // 启用智能预加载
+  prefetch: {
+    defaultStrategy: 'tap', // 点击时预加载，比hover更节省资源
+    prefetchAll: false
+  },
   // 優化圖片和資源載入
   image: {
-    // 啟用圖片優化
     service: {
       entrypoint: 'astro/assets/services/sharp'
     }
@@ -35,6 +44,7 @@ export default defineConfig({
   // 壓縮和優化
   compressHTML: true,
   build: {
-    inlineStylesheets: 'auto'
+    inlineStylesheets: 'auto',
+    assets: '_astro' // 统一资源目录
   }
 });

@@ -22,36 +22,16 @@ import { ClientRouter } from "astro:transitions";
 		
 		<Footer />
 		<ClientRouter />
-		<script>
-			// 初始化主題，確保 CSS 變量正確應用
+		<script is:inline>
+			// 優化的主題初始化 - 更快速
 			(function() {
-				// 檢查用戶首選主題
-				const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 				const savedTheme = localStorage.getItem('theme');
-
-				// 應用主題
-				const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-				document.documentElement.className = theme;
-
-				// 確保 body 也有相應類別
-				document.body.classList.add(theme);
-			})();
-
-			// 性能監控和優化
-			// 監控長任務
-			const observer = new PerformanceObserver((list) => {
-				for (const entry of list.getEntries()) {
-					if (entry.duration > 50) {
-						console.warn(`長任務檢測: ${entry.duration.toFixed(2)}ms`, entry);
-					}
+				if (savedTheme) {
+					document.documentElement.className = savedTheme;
+				} else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+					document.documentElement.className = 'dark';
 				}
-			});
-
-			try {
-				observer.observe({ entryTypes: ['longtask'] });
-			} catch (e) {
-				// 瀏覽器不支持，靜默失敗
-			}
+			})();
 		</script>
 	</body>
 </html>

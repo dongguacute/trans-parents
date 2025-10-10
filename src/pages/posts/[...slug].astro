@@ -54,11 +54,8 @@ const Content = post.default;
 
 <style>
   :global(body) {
-    background-image:
-      linear-gradient(var(--color-border, #dee2e6) 1px, transparent 1px),
-      linear-gradient(90deg, var(--color-border, #dee2e6) 1px, transparent 1px);
-    background-size: 20px;
-    background-position: 0 0, 0 0;
+    /* 使用更高性能的背景方案 - 简化或移除复杂渐变 */
+    background-color: var(--color-bg);
   }
 
   .post-content {
@@ -330,38 +327,30 @@ const Content = post.default;
 </style>
 
 <script is:inline>
- // 確保組件的 JavaScript 功能正常運行
- document.addEventListener('DOMContentLoaded', () => {
-   // 為 ExpandableContent 組件確保函數可用
-   if (typeof window.toggleExpandable === 'undefined') {
-     // 重新定義 toggleExpandable 函數
-     window.toggleExpandable = function(contentId) {
-       const button = document.querySelector(`[aria-controls="${contentId}"]`);
-       const content = document.getElementById(contentId);
-       if (!button || !content) {
-         return;
-       }
+ // 優化：使用更高效的事件委託和條件檢查
+ if (typeof window.toggleExpandable === 'undefined') {
+   window.toggleExpandable = function(contentId) {
+     const content = document.getElementById(contentId);
+     const button = document.querySelector('[aria-controls="' + contentId + '"]');
+     if (!button || !content) return;
 
-       const isExpanded = button.getAttribute('aria-expanded') === 'true';
-       button.setAttribute('aria-expanded', (!isExpanded).toString());
-       content.style.display = isExpanded ? 'none' : 'block';
+     const isExpanded = button.getAttribute('aria-expanded') === 'true';
+     button.setAttribute('aria-expanded', String(!isExpanded));
+     content.style.display = isExpanded ? 'none' : 'block';
 
-       const icon = button.querySelector('.toggle-icon');
-       if (icon) {
-         icon.textContent = isExpanded ? '▶' : '▼';
-       }
-     };
-   }
+     const icon = button.querySelector('.toggle-icon');
+     if (icon) icon.textContent = isExpanded ? '▶' : '▼';
+   };
+ }
 
-   // 為所有 ExpandableContent 組件設置初始狀態
-   const expandableContents = document.querySelectorAll('[id^="expandable-"]');
-   expandableContents.forEach(content => {
-     const button = document.querySelector(`[aria-controls="${content.id}"]`);
-     if (button && button.getAttribute('aria-expanded') === 'true') {
-       content.style.display = 'block';
-     } else {
-       content.style.display = 'none';
+ // 使用更高效的批量處理
+ const expandableContents = document.querySelectorAll('[id^="expandable-"]');
+ if (expandableContents.length > 0) {
+   expandableContents.forEach(function(content) {
+     const button = document.querySelector('[aria-controls="' + content.id + '"]');
+     if (content instanceof HTMLElement) {
+       content.style.display = button && button.getAttribute('aria-expanded') === 'true' ? 'block' : 'none';
      }
    });
- });
+ }
 </script>

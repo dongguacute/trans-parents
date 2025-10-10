@@ -225,14 +225,7 @@
   }
 </style>
 
-<script defer>
-  // 優化載入體驗
-  document.addEventListener('DOMContentLoaded', function() {
-    // 確保頁面在載入時不會閃爍
-    document.body.style.opacity = '1';
-  });
-</script>
-<script defer>
+<script is:inline>
    // Function to initialize navigation functionality
    function initNavigation() {
      const navToggle = document.getElementById('nav-toggle');
@@ -550,20 +543,26 @@
      }
    }
 
-   // Initialize on DOM load
-   document.addEventListener('DOMContentLoaded', () => {
+   // 统一初始化 - 只在DOM加载完成后执行一次
+   if (document.readyState === 'loading') {
+     document.addEventListener('DOMContentLoaded', initAll);
+   } else {
+     initAll();
+   }
+   
+   function initAll() {
      initNavigation();
      initSearch();
-
-   });
-
-   // Initialize on page load
-   document.addEventListener('DOMContentLoaded', () => {
-     initNavigation();
-     initSearch();
-     initPrefetching();
      initThemeSelector();
-   });
+     
+     // 初始化主题
+     const savedTheme = localStorage.getItem('theme');
+     if (savedTheme) {
+       setTheme(savedTheme);
+     } else {
+       setTheme('system');
+     }
+   }
 
    // Next.js 風格的預載入功能 - 已禁用以改善效能
    function initPrefetching() {
@@ -644,14 +643,6 @@
      }
    }
    
-   // Also initialize immediately in case DOM is already loaded
-   if (document.readyState === 'loading') {
-     // Still loading, DOMContentLoaded will fire later
-   } else {
-     // Already loaded, initialize now
-     initNavigation();
-   }
-   
    // Global theme functions
    function setTheme(theme) {
      switch(theme) {
@@ -718,34 +709,20 @@
      }
    }
 
-   // Theme selector functionality
-   document.addEventListener('DOMContentLoaded', function() {
-     // Initialize theme selector
-     initThemeSelector();
-
-     // Initialize theme on page load
-     const savedTheme = localStorage.getItem('theme');
-     if (savedTheme) {
-       setTheme(savedTheme);
-     } else {
-       setTheme('system'); // Default to system
-     }
-
-     // Listen for system theme changes
-     if (window.matchMedia) {
-       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-         if (localStorage.getItem('theme') === 'system') {
-           if (e.matches) {
-             document.documentElement.className = 'dark';
-             document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' dark';
-             updateThemeIcon('dark');
-           } else {
-             document.documentElement.className = 'light';
-             document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' light';
-             updateThemeIcon('light');
-           }
+   // Listen for system theme changes
+   if (window.matchMedia) {
+     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+       if (localStorage.getItem('theme') === 'system') {
+         if (e.matches) {
+           document.documentElement.className = 'dark';
+           document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' dark';
+           updateThemeIcon('dark');
+         } else {
+           document.documentElement.className = 'light';
+           document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' light';
+           updateThemeIcon('light');
          }
-       });
-     }
-   });
+       }
+     });
+   }
 </script>
