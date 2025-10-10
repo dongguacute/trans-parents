@@ -674,16 +674,16 @@
    function setTheme(theme) {
      switch(theme) {
        case 'light':
-         document.documentElement.classList.remove('dark');
-         document.documentElement.classList.add('light');
+         document.documentElement.className = 'light';
+         document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' light';
          localStorage.setItem('theme', 'light');
          updateThemeIcon('light');
          // Re-apply navigation colors after theme change
          setTimeout(() => initNavigation(), 10);
          break;
        case 'dark':
-         document.documentElement.classList.remove('light');
-         document.documentElement.classList.add('dark');
+         document.documentElement.className = 'dark';
+         document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' dark';
          localStorage.setItem('theme', 'dark');
          updateThemeIcon('dark');
          // Re-apply navigation colors after theme change
@@ -692,15 +692,15 @@
        case 'system':
        default:
          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-           document.documentElement.classList.remove('light');
-           document.documentElement.classList.add('dark');
+           document.documentElement.className = 'dark';
+           document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' dark';
            localStorage.setItem('theme', 'system');
            updateThemeIcon('dark');
            // Re-apply navigation colors after theme change
            setTimeout(() => initNavigation(), 10);
          } else {
-           document.documentElement.classList.remove('dark');
-           document.documentElement.classList.add('light');
+           document.documentElement.className = 'light';
+           document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' light';
            localStorage.setItem('theme', 'system');
            updateThemeIcon('light');
            // Re-apply navigation colors after theme change
@@ -754,12 +754,12 @@
        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
          if (localStorage.getItem('theme') === 'system') {
            if (e.matches) {
-             document.documentElement.classList.remove('light');
-             document.documentElement.classList.add('dark');
+             document.documentElement.className = 'dark';
+             document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' dark';
              updateThemeIcon('dark');
            } else {
-             document.documentElement.classList.remove('dark');
-             document.documentElement.classList.add('light');
+             document.documentElement.className = 'light';
+             document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' light';
              updateThemeIcon('light');
            }
          }
