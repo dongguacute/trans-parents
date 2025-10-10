@@ -15,11 +15,42 @@
 
    <!-- Center: Search box -->
    <div class="flex-1 flex justify-center pointer-events-auto" style="z-index: 30;">
-     <div class="relative">
+     <div class="relative desktop-search">
        <input type="text" id="search-input" placeholder="搜索..." class="search-input pl-10 pr-4 py-2 rounded-full backdrop-blur-md border transition-all duration-300" style="background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); color: var(--color-text); width: 250px; outline: none;" onfocus="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'; this.style.borderColor='rgba(255, 255, 255, 0.4)'" onblur="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.2)'">
-       <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" style="color: var(--color-text);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 search-icon" style="color: var(--color-text);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
        </svg>
+     </div>
+   </div>
+
+   <!-- Mobile Search Modal -->
+   <div id="mobile-search-modal" class="mobile-search-modal fixed inset-0 z-50 hidden flex items-start justify-center pt-20 pb-4 px-4" onclick="event.target === this && this.classList.remove('show')">
+     <div class="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden" style="background-color: var(--color-card); border: 1px solid var(--color-border);" onclick="event.stopPropagation()">
+       <!-- Search header -->
+       <div class="flex items-center p-4 border-b" style="border-color: var(--color-border);">
+         <div class="flex-1 relative">
+           <input type="text" id="mobile-search-input" placeholder="搜索文档..." class="w-full pl-10 pr-10 py-2 rounded-lg border-none focus:ring-0" style="background-color: transparent; color: var(--color-text); outline: none;">
+           <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" style="color: var(--color-text-secondary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+           </svg>
+         </div>
+         <button id="mobile-search-close" class="ml-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700" style="color: var(--color-text);">
+           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+             <line x1="18" y1="6" x2="6" y2="18"></line>
+             <line x1="6" y1="6" x2="18" y2="18"></line>
+           </svg>
+         </button>
+       </div>
+       <!-- Search results -->
+       <div id="mobile-search-results" class="overflow-y-auto p-4 max-h-[70vh]">
+         <div class="text-center py-10" style="color: var(--color-text-secondary);">
+           <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+           </svg>
+           <p class="mt-2 text-lg font-medium">开始搜索</p>
+           <p class="mt-1 text-sm">输入关键词来搜索文档</p>
+         </div>
+       </div>
      </div>
    </div>
 
@@ -36,6 +67,12 @@
 
   <!-- Right side: Floating options -->
   <div class="absolute right-0 flex gap-2.5 pointer-events-auto p-5" style="z-index: 30;">
+    <!-- Mobile search button -->
+    <button id="mobile-search-btn" class="mobile-search-btn rounded-xl py-2.5 px-3.5 cursor-pointer transition-colors text-sm backdrop-blur-md hidden" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="display: inline-block; vertical-align: middle;">
+        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
     <button class="rounded-xl py-2.5 px-3.5 cursor-pointer transition-colors text-sm backdrop-blur-md" id="disclaimer-btn" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">免责声明</button>
     <button class="rounded-xl py-2.5 px-3.5 cursor-pointer transition-colors text-sm backdrop-blur-md" id="about-btn" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">关于本站</button>
     
@@ -168,16 +205,67 @@
 
   /* Search box responsive styles */
   @media screen and (max-width: 768px) {
-    #search-input {
+    .desktop-search {
       width: 150px !important;
       font-size: 14px;
+    }
+    .desktop-search input {
+      width: 100% !important;
     }
   }
 
   @media screen and (max-width: 640px) {
-    #search-input {
+    .desktop-search {
       display: none;
     }
+    .mobile-search-btn {
+      display: inline-flex !important;
+    }
+  }
+
+  /* Mobile search modal styles */
+  .mobile-search-modal {
+    backdrop-filter: blur(10px);
+    background-color: rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+  }
+
+  .mobile-search-modal.show {
+    display: flex !important;
+    pointer-events: auto;
+  }
+
+  #mobile-search-input:focus {
+    border-color: var(--color-accent-secondary) !important;
+    box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.1);
+  }
+
+  .search-result-item {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: 1px solid transparent;
+  }
+
+  .search-result-item:hover {
+    background-color: var(--color-hover);
+    border-color: var(--color-border);
+  }
+
+  .search-result-title {
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .search-result-desc {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 </style>
 
@@ -308,6 +396,148 @@
    // Initialize search functionality
    function initSearch() {
      const searchInput = document.getElementById('search-input');
+     const mobileSearchBtn = document.getElementById('mobile-search-btn');
+     const mobileSearchModal = document.getElementById('mobile-search-modal');
+     const mobileSearchInput = document.getElementById('mobile-search-input');
+     const mobileSearchClose = document.getElementById('mobile-search-close');
+     const mobileSearchResults = document.getElementById('mobile-search-results');
+
+     // Store posts data for mobile search
+     let postsData = [];
+
+     // Function to collect posts data
+     function collectPostsData() {
+       postsData = [];
+       if (window.location.pathname === '/docs' || window.location.pathname.includes('/docs')) {
+         const posts = document.querySelectorAll('.post-item');
+         if (posts.length === 0) {
+           // If no .post-item elements found, try alternative selectors
+           const articles = document.querySelectorAll('article, .content-item, .doc-item');
+           articles.forEach(post => {
+             const titleEl = post.querySelector('h1, h2, h3') || post.querySelector('[class*="title"]');
+             const descEl = post.querySelector('p, .description, .excerpt');
+             const linkEl = post.querySelector('a');
+             const link = linkEl?.href || window.location.href;
+             const title = titleEl?.textContent?.trim() || '無標題';
+             const desc = descEl?.textContent?.trim() || '無描述';
+             if (title && title !== '無標題') {
+               postsData.push({ title, desc, link });
+             }
+           });
+         } else {
+           posts.forEach(post => {
+             const titleEl = post.querySelector('h2 a');
+             const descEl = post.querySelector('.post-description');
+             const link = titleEl?.href || '';
+             const title = titleEl?.textContent?.trim() || '';
+             const desc = descEl?.textContent?.trim() || '';
+             if (title) {
+               postsData.push({ title, desc, link });
+             }
+           });
+         }
+       } else {
+         // If not on docs page, no search data available
+         postsData = [];
+       }
+     }
+
+     // Collect posts data on docs page
+     collectPostsData();
+
+     // Mobile search modal functionality
+     if (mobileSearchBtn && mobileSearchModal && mobileSearchClose && mobileSearchInput && mobileSearchResults) {
+       mobileSearchBtn.addEventListener('click', (e) => {
+         e.stopPropagation(); // Prevent immediate closing if click bubbles up
+         // Collect posts data when opening search modal
+         collectPostsData();
+         mobileSearchModal.classList.add('show');
+         setTimeout(() => mobileSearchInput.focus(), 100);
+       });
+
+       mobileSearchClose.addEventListener('click', () => {
+         mobileSearchModal.classList.remove('show');
+         mobileSearchInput.value = '';
+         mobileSearchResults.innerHTML = `
+           <div class="text-center py-10" style="color: var(--color-text-secondary);">
+             <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+             </svg>
+             <p class="mt-2 text-lg font-medium">开始搜索</p>
+             <p class="mt-1 text-sm">输入关键词来搜索文档</p>
+           </div>
+         `;
+       });
+
+       // Close modal when clicking outside the modal content
+       document.addEventListener('click', (e) => {
+         if (mobileSearchModal.classList.contains('show') && !mobileSearchModal.contains(e.target) && e.target !== mobileSearchBtn) {
+           mobileSearchModal.classList.remove('show');
+           mobileSearchInput.value = '';
+           mobileSearchResults.innerHTML = `
+             <div class="text-center py-10" style="color: var(--color-text-secondary);">
+               <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+               </svg>
+               <p class="mt-2 text-lg font-medium">开始搜索</p>
+               <p class="mt-1 text-sm">输入关键词来搜索文档</p>
+             </div>
+           `;
+         }
+       });
+
+       // Close modal on Escape key
+       document.addEventListener('keydown', (e) => {
+         if (e.key === 'Escape' && mobileSearchModal.classList.contains('show')) {
+           mobileSearchModal.classList.remove('show');
+           mobileSearchInput.value = '';
+           mobileSearchResults.innerHTML = `
+             <div class="text-center py-10" style="color: var(--color-text-secondary);">
+               <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+               </svg>
+               <p class="mt-2 text-lg font-medium">开始搜索</p>
+               <p class="mt-1 text-sm">输入关键词来搜索文档</p>
+             </div>
+           `;
+         }
+       });
+
+       // Mobile search input functionality
+       mobileSearchInput.addEventListener('input', (e) => {
+         const query = e.target.value.toLowerCase().trim();
+         mobileSearchResults.innerHTML = '';
+
+         if (query && postsData.length > 0) {
+           const filteredPosts = postsData.filter(post =>
+             post.title.toLowerCase().includes(query) ||
+             post.desc.toLowerCase().includes(query)
+           );
+
+           if (filteredPosts.length > 0) {
+             filteredPosts.forEach(post => {
+               const resultItem = document.createElement('div');
+               resultItem.className = 'search-result-item';
+               resultItem.innerHTML = `
+                 <div class="search-result-title" style="color: var(--color-text);">${post.title}</div>
+                 <div class="search-result-desc">${post.desc}</div>
+               `;
+               resultItem.addEventListener('click', () => {
+                 window.location.href = post.link;
+               });
+               mobileSearchResults.appendChild(resultItem);
+             });
+           } else {
+             mobileSearchResults.innerHTML = '<div style="text-align: center; color: var(--color-text-secondary); padding: 20px;">未找到匹配的文章</div>';
+           }
+         } else if (query === '') {
+           mobileSearchResults.innerHTML = '<div style="text-align: center; color: var(--color-text-secondary); padding: 20px;">输入关键词开始搜索</div>';
+         } else if (query && postsData.length === 0) {
+           mobileSearchResults.innerHTML = '<div style="text-align: center; color: var(--color-text-secondary); padding: 20px;">搜索功能仅在文档页面可用，请前往文档页面进行搜索</div>';
+         }
+       });
+     }
+
      if (searchInput) {
        if (window.location.pathname === '/') {
          // On home page, redirect to docs with search query on Enter or blur
