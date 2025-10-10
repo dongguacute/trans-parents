@@ -13,6 +13,7 @@
     "astro": "^5.14.3",
     "rehype-raw": "^7.0.0",
     "remark-directive": "^4.0.0",
+    "remark-gfm": "^4.0.1",
     "tailwindcss": "^4.1.14",
     "unist-util-visit": "^5.0.0"
   }

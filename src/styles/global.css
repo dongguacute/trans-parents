@@ -136,3 +136,51 @@ body {
   --color-success-border: #66bb6a;
   --color-success-text: #a5d6a7;
 }
+
+/* 表格樣式 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+table th,
+table td {
+  padding: 0.75rem;
+  text-align: left;
+  border: 1px solid var(--color-border);
+}
+
+table th {
+  background-color: var(--color-table-header-bg);
+  font-weight: 600;
+}
+
+table tr:nth-child(even) {
+  background-color: var(--color-bg-secondary);
+}
+
+/* 列表樣式 */
+ul, ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+ul li, ol li {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+ul {
+  list-style-type: disc;
+}
+
+ol {
+ list-style-type: decimal;
+}
+
+li > ul,
+li > ol {
+  margin: 0.5rem 0;
+}
