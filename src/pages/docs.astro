@@ -1,14 +1,10 @@
 ---
 import Navigation from '../components/Navigation.astro';
 import Layout from '../layouts/Layout.astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getSortedPosts } from '../utils/posts';
 
-// Documentation page
-const posts = await getCollection('posts');
-// 按日期排序（最新的在前）
-const sortedPosts = posts.sort((a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) =>
-  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-);
+// 使用優化的文章獲取函數（帶緩存）
+const sortedPosts = await getSortedPosts();
 ---
 
 <Layout title="文档 - Trans Parents">
@@ -16,7 +12,7 @@ const sortedPosts = posts.sort((a: CollectionEntry<'posts'>, b: CollectionEntry<
 
 	<div class="docs-content">
 		<div class="posts-list">
-			{sortedPosts.map((post: CollectionEntry<'posts'>) => (
+			{sortedPosts.map((post) => (
 				<article class="post-item">
 					<div class="post-header">
 						<div class="post-title-wrapper">
@@ -48,6 +44,11 @@ const sortedPosts = posts.sort((a: CollectionEntry<'posts'>, b: CollectionEntry<
 		</div>
 	</div>
 </Layout>
+
+<!-- 預取所有文章頁面以提升導航速度 -->
+{sortedPosts.slice(0, 5).map((post) => (
+	 <link rel="prefetch" href={`/posts/${post.slug}`} />
+))}
 
 <style>
   :global(body) {
@@ -151,4 +152,42 @@ const sortedPosts = posts.sort((a: CollectionEntry<'posts'>, b: CollectionEntry<
     color: var(--color-accent-secondary); /* 适配主题的强调色 */
   }
 
+  .post-description {
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin-top: 0.5rem;
+  }
 </style>
+
+<script>
+  // 優化：使用 Intersection Observer 實現懶載入動畫
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.target instanceof HTMLElement) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
+
+    document.querySelectorAll('.post-item').forEach((item) => {
+      if (item instanceof HTMLElement) {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        observer.observe(item);
+      }
+    });
+  }
+
+  // 優化：預連接到字體資源
+  const preconnect = document.createElement('link');
+  preconnect.rel = 'preconnect';
+  preconnect.href = '/fonts';
+  document.head.appendChild(preconnect);
+</script>
