@@ -45,8 +45,8 @@ const sortedPosts = await getSortedPosts();
 	</div>
 </Layout>
 
-<!-- 預取所有文章頁面以提升導航速度 -->
-{sortedPosts.slice(0, 5).map((post) => (
+<!-- 預取更多文章頁面以提升導航速度 -->
+{sortedPosts.slice(0, 10).map((post) => (
 	 <link rel="prefetch" href={`/posts/${post.slug}`} />
 ))}
 

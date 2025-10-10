@@ -564,22 +564,35 @@
      }
    }
 
-   // Next.js 風格的預載入功能 - 已禁用以改善效能
+   // Next.js 風格的預載入功能 - 重新啟用以改善導航體驗
    function initPrefetching() {
-     // 預載入功能已禁用，以避免不必要的資源載入和效能問題
-     return;
+     // 為頁面導航添加預載入功能
+     const links = document.querySelectorAll('a[href^="/"]');
+     links.forEach(link => {
+       link.addEventListener('mouseenter', (e) => {
+         const href = e.target.getAttribute('href');
+         if (href && !href.startsWith('http')) {
+           prefetchPage(href);
+         }
+       });
+     });
    }
 
    function prefetchPage(href) {
-     // 預載入功能已禁用
-     return;
+     // 創建預載入鏈接
+     const link = document.createElement('link');
+     link.rel = 'prefetch';
+     link.href = href;
+     link.onload = () => console.log(`Prefetched: ${href}`);
+     link.onerror = () => console.warn(`Failed to prefetch: ${href}`);
+     document.head.appendChild(link);
    }
 
    // Reinitialize after Astro navigation (SPA transitions)
    document.addEventListener('astro:after-swap', () => {
      initNavigation();
      initSearch();
-     initPrefetching(); // 重新初始化預載入
+     setTimeout(initPrefetching, 300); // 延遲初始化預載入，確保DOM完全加載
      // Re-apply theme after page transition
      const savedTheme = localStorage.getItem('theme');
      if (savedTheme) {

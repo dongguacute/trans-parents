@@ -64,9 +64,9 @@ const relatedPosts = await getRelatedPosts(post, 3);
 </Layout>
 
 <!-- 預取相關文章以提升導航速度 -->
-<link rel="prefetch" href="/docs" />
+<link rel="prefetch" href="/docs" as="document" />
 {relatedPosts.map((relatedPost) => (
-  <link rel="prefetch" href={`/posts/${relatedPost.slug}`} />
+ <link rel="prefetch" href={`/posts/${relatedPost.slug}`} as="document" />
 ))}
 
 <style>
