@@ -21,13 +21,8 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     build: {
-      // 优化构建性能
-      minify: 'terser',
-      terserOptions: {
-        compress: {
-          drop_console: true, // 生产环境移除console
-        }
-      }
+      // 使用esbuild进行快速压缩
+      minify: 'esbuild'
     }
   },
   // 启用智能预加载
