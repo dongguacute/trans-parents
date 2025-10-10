@@ -10,11 +10,7 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   markdown: {
-    shikiConfig: {
-      theme: 'github-dark'
-    },
     remarkPlugins: [
-      remarkDirective, // 支持自定義指令語法
       remarkGfm // 支持 GitHub Flavored Markdown (表格, 等等)
     ],
     rehypePlugins: [
