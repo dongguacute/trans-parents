@@ -1,0 +1,87 @@
+---
+// LoadingProgress.astro - 頁面載入進度條組件
+---
+
+<div id="loading-progress-bar" class="loading-progress-bar" style="display: none;">
+  <div class="loading-progress-fill"></div>
+</div>
+
+<style>
+  .loading-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: transparent;
+    z-index: 99;
+  }
+  
+  .loading-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--color-accent-primary, #E91E63), var(--color-accent-secondary, #2196F3));
+    transition: width 0.3s ease, opacity 0.3s ease;
+  }
+</style>
+
+<script is:inline>
+  // 頁面載入進度條腳本
+ if (typeof window !== 'undefined') {
+    // 初始化進度條元素
+    const progressBar = document.getElementById('loading-progress-bar');
+    const progressFill = progressBar.querySelector('.loading-progress-fill');
+    
+    if (progressBar && progressFill) {
+      // 開始載入時顯示進度條
+      progressBar.style.display = 'block';
+      
+      // 模擬載入進度
+      let progress = 0;
+      const loadingInterval = setInterval(() => {
+        if (progress < 90) {
+          progress += Math.random() * 15;
+          progressFill.style.width = Math.min(progress, 90) + '%';
+        } else {
+          clearInterval(loadingInterval);
+        }
+      }, 100);
+      
+      // 頁面載入完成時處理
+      window.addEventListener('load', () => {
+        // 平滑完成進度到 100%
+        progressFill.style.width = '100%';
+        
+        // 淡出效果
+        setTimeout(() => {
+          progressFill.style.opacity = '0';
+          setTimeout(() => {
+            progressBar.style.display = 'none';
+            // 重置樣式以供下次使用
+            progressFill.style.width = '0%';
+            progressFill.style.opacity = '1';
+          }, 300);
+        }, 100);
+      });
+      
+      // 頁面導航時重置進度條
+      document.addEventListener('astro:before-preload', () => {
+        progressBar.style.display = 'block';
+        progressFill.style.width = '0%';
+        progressFill.style.opacity = '1';
+        
+        // 重新開始載入動畫
+        progress = 0;
+        clearInterval(loadingInterval);
+        const navInterval = setInterval(() => {
+          if (progress < 90) {
+            progress += Math.random() * 10;
+            progressFill.style.width = Math.min(progress, 90) + '%';
+          } else {
+            clearInterval(navInterval);
+          }
+        }, 100);
+      });
+    }
+  }
+</script>
