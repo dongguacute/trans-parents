@@ -4,7 +4,7 @@
 
 <div id="navigation" class="fixed top-0 left-0 right-0 z-50 flex items-center p-5 pointer-events-none">
    <!-- Left side: Smiling face circle button -->
-   <button id="nav-toggle" class="pointer-events-auto rounded-full w-12 h-12 flex items-center justify-center cursor-pointer transition-colors backdrop-blur-md" style="z-index: 60; background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">
+   <button id="nav-toggle" class="pointer-events-auto rounded-full w-12 h-12 flex items-center justify-center cursor-pointer backdrop-blur-md" style="z-index: 60; background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">
      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
        <circle cx="9" cy="9" r="1" fill="currentColor"/>
@@ -68,17 +68,17 @@
   <!-- Right side: Floating options -->
   <div class="absolute right-0 flex gap-2.5 pointer-events-auto p-5" style="z-index: 30;">
     <!-- Mobile search button -->
-    <button id="mobile-search-btn" class="mobile-search-btn rounded-xl cursor-pointer transition-colors text-sm backdrop-blur-md hidden flex items-center justify-center w-12 h-12" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">
+    <button id="mobile-search-btn" class="mobile-search-btn rounded-xl cursor-pointer text-sm backdrop-blur-md hidden flex items-center justify-center w-12 h-12" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
         <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
-    <a href="/posts/disclaimer" class="rounded-xl py-2.5 px-3.5 cursor-pointer transition-colors text-sm backdrop-blur-md no-underline" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">免责声明</a>
-    <a href="/posts/about" class="rounded-xl py-2.5 px-3.5 cursor-pointer transition-colors text-sm backdrop-blur-md no-underline" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">关于本站</a>
+    <a href="/posts/disclaimer" class="rounded-xl py-2.5 px-3.5 cursor-pointer text-sm backdrop-blur-md no-underline" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">免责声明</a>
+    <a href="/posts/about" class="rounded-xl py-2.5 px-3.5 cursor-pointer text-sm backdrop-blur-md no-underline" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">关于本站</a>
     
     <!-- Theme toggle button -->
     <div class="relative" id="theme-selector">
-      <button id="theme-toggle" class="group relative rounded-xl p-3 cursor-pointer transition-all duration-300 backdrop-blur-md shadow-lg hover:shadow-xl" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">
+      <button id="theme-toggle" class="group relative rounded-xl p-3 cursor-pointer backdrop-blur-md" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">
         <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="transition-transform duration-300 group-hover:rotate-12">
           <!-- Sun icon -->
           <circle cx="12" cy="12" r="5" fill="currentColor" class="sun-circle"/>
@@ -98,7 +98,7 @@
       </button>
 
       <!-- Theme dropdown menu -->
-      <div id="theme-dropdown" class="absolute right-0 mt-3 w-56 backdrop-blur-xl rounded-2xl shadow-2xl py-3 hidden animate-fade-in" style="background-color: var(--color-card); border: 1px solid var(--color-border); z-index: 9999; max-width: 14rem; left: auto; right: 0.5rem; transform: translateX(0); overflow: visible;">
+      <div id="theme-dropdown" class="absolute right-0 mt-3 w-56 backdrop-blur-xl rounded-2xl shadow-2xl py-3 hidden" style="background-color: var(--color-card); border: 1px solid var(--color-border); z-index: 9999; max-width: 14rem; left: auto; right: 0.5rem; transform: translateX(0); overflow: visible;">
         <div class="px-2 py-2 text-xs font-semibold uppercase tracking-wide" style="color: var(--color-text-secondary);">主题设置</div>
         <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
         <button class="flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text);" data-theme="system" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
@@ -135,39 +135,10 @@
   opacity: 1;
   transform: translateX(0);
 }
-  /* Theme toggle button animations */
-  #theme-toggle {
-    position: relative;
-    overflow: hidden;
-  }
-
-  #theme-toggle::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-  }
-
-  #theme-toggle:hover::before {
-    left: 100%;
-  }
-
-  /* Theme icon transitions */
-  .sun-rays {
-    transition: all 0.3s ease;
-  }
-
+  /* Theme icon states */
   .dark .sun-rays {
     opacity: 0;
     transform: rotate(180deg);
-  }
-
-  .moon-path {
-    transition: all 0.3s ease;
   }
 
   .dark .moon-path {
@@ -178,21 +149,6 @@
     opacity: 0;
   }
 
-  /* Dropdown animations */
-  .animate-fade-in {
-    animation: fadeIn 0.2s ease-out;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px) scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
 
   /* Enhanced dropdown styling */
   #theme-dropdown {
@@ -269,7 +225,7 @@
   }
 </style>
 
-<script is:inline>
+<script defer>
    // Function to initialize navigation functionality
    function initNavigation() {
      const navToggle = document.getElementById('nav-toggle');
