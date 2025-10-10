@@ -305,26 +305,57 @@
      }
    }
 
-   // Initialize search functionality for docs page
+   // Initialize search functionality
    function initSearch() {
      const searchInput = document.getElementById('search-input');
-     if (searchInput && window.location.pathname === '/docs') {
-       searchInput.addEventListener('input', (e) => {
-         const target = e.target;
-         const query = target.value.toLowerCase();
-         const posts = document.querySelectorAll('.post-item');
-         posts.forEach(post => {
-           const titleEl = post.querySelector('h2');
-           const descEl = post.querySelector('.post-description');
-           const title = titleEl?.textContent?.toLowerCase() || '';
-           const desc = descEl?.textContent?.toLowerCase() || '';
-           if (title.includes(query) || desc.includes(query)) {
-             post.style.display = '';
-           } else {
-             post.style.display = 'none';
+     if (searchInput) {
+       if (window.location.pathname === '/') {
+         // On home page, redirect to docs with search query on Enter or blur
+         searchInput.addEventListener('keydown', (e) => {
+           if (e.key === 'Enter') {
+             const query = e.target.value.trim();
+             if (query) {
+               // Use SPA navigation with Astro ViewTransitions
+               window.location.href = `/docs?q=${encodeURIComponent(query)}`;
+             }
            }
          });
-       });
+         searchInput.addEventListener('blur', (e) => {
+           const query = e.target.value.trim();
+           if (query) {
+             // Use SPA navigation with Astro ViewTransitions
+             window.location.href = `/docs?q=${encodeURIComponent(query)}`;
+           }
+         });
+       } else if (window.location.pathname === '/docs') {
+         // On docs page, perform local search
+         searchInput.addEventListener('input', (e) => {
+           const target = e.target;
+           const query = target.value.toLowerCase();
+           const posts = document.querySelectorAll('.post-item');
+           posts.forEach(post => {
+             const titleEl = post.querySelector('h2');
+             const descEl = post.querySelector('.post-description');
+             const title = titleEl?.textContent?.toLowerCase() || '';
+             const desc = descEl?.textContent?.toLowerCase() || '';
+             if (title.includes(query) || desc.includes(query)) {
+               post.style.display = '';
+             } else {
+               post.style.display = 'none';
+             }
+           });
+         });
+
+         // Check for search query in URL and apply it
+         const urlParams = new URLSearchParams(window.location.search);
+         const searchQuery = urlParams.get('q');
+         if (searchQuery) {
+           searchInput.value = searchQuery;
+           // Trigger the search
+           const event = new Event('input', { bubbles: true });
+           searchInput.dispatchEvent(event);
+         }
+       }
      }
    }
 
