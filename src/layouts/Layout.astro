@@ -23,11 +23,11 @@ import { ViewTransitions } from 'astro:transitions';
 				// 檢查用戶首選主題
 				const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 				const savedTheme = localStorage.getItem('theme');
-				
+
 				// 應用主題
 				const theme = savedTheme || (prefersDark ? 'dark' : 'light');
 				document.documentElement.className = theme;
-				
+
 				// 確保 body 也有相應類別
 				document.body.classList.add(theme);
 			})();
