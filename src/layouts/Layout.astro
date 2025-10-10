@@ -17,6 +17,14 @@ import { ViewTransitions } from 'astro:transitions';
 	<slot />
 		<Footer />
 		<ViewTransitions />
+		<style>
+			/* 優化 ViewTransitions 性能 */
+			::view-transition-old(root),
+			::view-transition-new(root) {
+				animation-duration: 0.2s;
+				animation-timing-function: ease-in-out;
+			}
+		</style>
 		<script>
 			// 初始化主題，確保 CSS 變量正確應用
 			(function() {

@@ -501,7 +501,6 @@
            if (e.key === 'Enter') {
              const query = e.target.value.trim();
              if (query) {
-               // Use SPA navigation with Astro ViewTransitions
                window.location.href = `/docs?q=${encodeURIComponent(query)}`;
              }
            }
@@ -509,7 +508,6 @@
          searchInput.addEventListener('blur', (e) => {
            const query = e.target.value.trim();
            if (query) {
-             // Use SPA navigation with Astro ViewTransitions
              window.location.href = `/docs?q=${encodeURIComponent(query)}`;
            }
          });
@@ -550,6 +548,13 @@
      initNavigation();
      initSearch();
 
+   });
+
+   // Initialize on page load
+   document.addEventListener('DOMContentLoaded', () => {
+     initNavigation();
+     initSearch();
+     initThemeSelector();
    });
 
    // Reinitialize after Astro navigation (SPA transitions)

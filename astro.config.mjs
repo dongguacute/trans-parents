@@ -24,5 +24,9 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()]
+  },
+  // 優化資源預載
+  prefetch: {
+    defaultStrategy: 'hover'
   }
 });
