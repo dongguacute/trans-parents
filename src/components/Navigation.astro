@@ -60,7 +60,7 @@
     <nav class="flex flex-col justify-center items-center h-full gap-8">
       <a href="/" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">首页</a>
       <a href="/docs" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">文档</a>
-      <a href="/contact" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">关于本站</a>
+      <a href="/posts/about" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">关于本站</a>
       <!-- Add more links as needed -->
     </nav>
   </div>
@@ -73,8 +73,8 @@
         <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
-    <button class="rounded-xl py-2.5 px-3.5 cursor-pointer transition-colors text-sm backdrop-blur-md" id="disclaimer-btn" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">免责声明</button>
-    <button class="rounded-xl py-2.5 px-3.5 cursor-pointer transition-colors text-sm backdrop-blur-md" id="about-btn" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">关于本站</button>
+    <a href="/posts/disclaimer" class="rounded-xl py-2.5 px-3.5 cursor-pointer transition-colors text-sm backdrop-blur-md no-underline" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">免责声明</a>
+    <a href="/posts/about" class="rounded-xl py-2.5 px-3.5 cursor-pointer transition-colors text-sm backdrop-blur-md no-underline" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">关于本站</a>
     
     <!-- Theme toggle button -->
     <div class="relative" id="theme-selector">
@@ -593,6 +593,7 @@
    document.addEventListener('DOMContentLoaded', () => {
      initNavigation();
      initSearch();
+
    });
 
    // Reinitialize after Astro navigation (SPA transitions)
