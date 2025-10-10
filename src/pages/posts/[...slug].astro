@@ -331,56 +331,37 @@ const Content = post.default;
 
 <script is:inline>
  // 確保組件的 JavaScript 功能正常運行
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded, initializing components...');
-    
-    // 為 ExpandableContent 組件確保函數可用
-    if (typeof window.toggleExpandable === 'undefined') {
-      console.log('toggleExpandable function not found, defining it...');
-      // 重新定義 toggleExpandable 函數
-      window.toggleExpandable = function(contentId) {
-        console.log('toggleExpandable called with id:', contentId);
-        const button = document.querySelector(`[aria-controls="${contentId}"]`);
-        const content = document.getElementById(contentId);
-        if (!button || !content) {
-          console.error('Button or content not found for id:', contentId);
-          return;
-        }
+ document.addEventListener('DOMContentLoaded', () => {
+   // 為 ExpandableContent 組件確保函數可用
+   if (typeof window.toggleExpandable === 'undefined') {
+     // 重新定義 toggleExpandable 函數
+     window.toggleExpandable = function(contentId) {
+       const button = document.querySelector(`[aria-controls="${contentId}"]`);
+       const content = document.getElementById(contentId);
+       if (!button || !content) {
+         return;
+       }
 
-        const isExpanded = button.getAttribute('aria-expanded') === 'true';
-        console.log('Current expanded state:', isExpanded);
-        button.setAttribute('aria-expanded', (!isExpanded).toString());
-        content.style.display = isExpanded ? 'none' : 'block';
+       const isExpanded = button.getAttribute('aria-expanded') === 'true';
+       button.setAttribute('aria-expanded', (!isExpanded).toString());
+       content.style.display = isExpanded ? 'none' : 'block';
 
-        const icon = button.querySelector('.toggle-icon');
-        if (icon) {
-          icon.textContent = isExpanded ? '▶' : '▼';
-        }
-        console.log('Toggle completed, new state:', !isExpanded);
-      };
-    } else {
-      console.log('toggleExpandable function already exists');
-    }
-    
-    // 為所有 ExpandableContent 組件設置初始狀態
-    const expandableContents = document.querySelectorAll('[id^="expandable-"]');
-    console.log('Found expandable contents:', expandableContents.length);
-    expandableContents.forEach(content => {
-      console.log('Processing expandable content:', content.id);
-      const button = document.querySelector(`[aria-controls="${content.id}"]`);
-      if (button && button.getAttribute('aria-expanded') === 'true') {
-        content.style.display = 'block';
-        console.log('Set content to display: block (was open)');
-      } else {
-        content.style.display = 'none';
-        console.log('Set content to display: none (was closed or no button)');
-      }
-    });
-    
-    // 檢查頁面上是否存在 Alert 或 ExpandableContent 組件
-    const alerts = document.querySelectorAll('.alert');
-    const expandables = document.querySelectorAll('.expandable-content');
-    console.log('Found Alert components:', alerts.length);
-    console.log('Found ExpandableContent components:', expandables.length);
-  });
+       const icon = button.querySelector('.toggle-icon');
+       if (icon) {
+         icon.textContent = isExpanded ? '▶' : '▼';
+       }
+     };
+   }
+
+   // 為所有 ExpandableContent 組件設置初始狀態
+   const expandableContents = document.querySelectorAll('[id^="expandable-"]');
+   expandableContents.forEach(content => {
+     const button = document.querySelector(`[aria-controls="${content.id}"]`);
+     if (button && button.getAttribute('aria-expanded') === 'true') {
+       content.style.display = 'block';
+     } else {
+       content.style.display = 'none';
+     }
+   });
+ });
 </script>

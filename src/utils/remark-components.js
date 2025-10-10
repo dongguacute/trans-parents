@@ -2,14 +2,10 @@ import { visit } from 'unist-util-visit';
 
 export function rehypeComponents() {
   return (tree) => {
-    console.log('rehypeComponents: Processing tree with', tree.children?.length, 'children');
-    
     visit(tree, 'element', (node) => {
-      console.log('rehypeComponents: Found element with tagName:', node.tagName);
       
       // 处理 Alert 组件 - 将组件标签转换为带 class 的 div 标签
       if (node.tagName === 'alert') {
-        console.log('rehypeComponents: Converting Alert component');
         node.tagName = 'div';
         node.properties = node.properties || {};
         node.properties.className = (node.properties.className || '') + ' alert';
@@ -42,7 +38,6 @@ export function rehypeComponents() {
 
       // 处理 ExpandableContent 组件 - 将组件标签转换为带 class 的 div 标签
       if (node.tagName === 'expandablecontent') {
-        console.log('rehypeComponents: Converting ExpandableContent component');
         node.tagName = 'div';
         node.properties = node.properties || {};
         node.properties.className = (node.properties.className || '') + ' expandable-content';
