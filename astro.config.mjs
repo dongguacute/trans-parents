@@ -21,10 +21,10 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()]
   },
-  // Next.js 風格的優化配置
-  prefetch: {
-    defaultStrategy: 'hover'
-  },
+  // Next.js 風格的優化配置 - 已禁用預載入以改善效能
+ // prefetch: {
+ //   defaultStrategy: 'hover'
+ // },
   // 優化圖片和資源載入
   image: {
     // 啟用圖片優化
