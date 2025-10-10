@@ -13,6 +13,15 @@
      </svg>
    </button>
 
+   <!-- Center: Search box -->
+   <div class="flex-1 flex justify-center pointer-events-auto" style="z-index: 30;">
+     <div class="relative">
+       <input type="text" id="search-input" placeholder="搜索..." class="search-input pl-10 pr-4 py-2 rounded-full backdrop-blur-md border transition-all duration-300" style="background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); color: var(--color-text); width: 250px; outline: none;" onfocus="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'; this.style.borderColor='rgba(255, 255, 255, 0.4)'" onblur="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.2)'">
+       <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" style="color: var(--color-text);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+       </svg>
+     </div>
+   </div>
 
    <!-- Full screen navigation overlay -->
   <div id="nav-overlay" class="fixed inset-0 bg-white/10 backdrop-blur-md opacity-0 transition-all duration-300 ease-in-out" style="visibility: hidden; pointer-events: none; z-index: 50;">
@@ -156,6 +165,20 @@
   }
 
   /* Theme option hover effects are now handled by inline styles */
+
+  /* Search box responsive styles */
+  @media screen and (max-width: 768px) {
+    #search-input {
+      width: 150px !important;
+      font-size: 14px;
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+    #search-input {
+      display: none;
+    }
+  }
 </style>
 
 <script is:inline>
