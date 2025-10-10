@@ -4,11 +4,6 @@ import Layout from '../layouts/Layout.astro';
 
 // Documentation page
 const posts = await Astro.glob('../posts/*.md');
-const postsWithWordCount = await Promise.all(posts.map(async (post) => {
-  const raw = await post.rawContent();
-  const wordCount = raw ? raw.replace(/[^\u4e00-\u9fa5]/g, '').length : 0;
-  return { ...post, wordCount };
-}));
 ---
 
 <Layout title="文档 - Trans Parents">
@@ -16,7 +11,7 @@ const postsWithWordCount = await Promise.all(posts.map(async (post) => {
 
 	<div class="docs-content">
 		<div class="posts-list">
-			{postsWithWordCount.map((post) => {
+			{posts.map((post) => {
 				const slug = post.file ? post.file.split('/').pop()?.replace('.md', '') : '';
 				return (
 					<article class="post-item">
@@ -43,9 +38,6 @@ const postsWithWordCount = await Promise.all(posts.map(async (post) => {
 							</span>
 						</div>
 						<p class="post-description">{post.frontmatter.description}</p>
-						<div class="post-stats">
-							<span>{post.wordCount} 字</span>
-						</div>
 					</article>
 				);
 			})}
