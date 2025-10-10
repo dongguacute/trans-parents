@@ -1,0 +1,192 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('/fonts/Roboto-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Theme support */
+.light {
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f8f9fa;
+  --color-text: #000000;
+  --color-text-secondary: #6c757d;
+  --color-accent: #000000;
+  --color-accent-secondary: #E91E63;
+  --color-border: #dee2e6;
+  --color-hover: #f8f9fa;
+  --color-card: #ffffff;
+  --color-shadow: rgba(0, 0, 0, 0.05);
+}
+
+.dark {
+  --color-bg: #1a1a1a;
+  --color-bg-secondary: #2d3748;
+  --color-text: #ffffff;
+  --color-text-secondary: #a0aec0;
+  --color-accent: #ffffff;
+  --color-accent-secondary: #E91E63;
+  --color-border: #4a5568;
+  --color-hover: #374151;
+  --color-card: #2d3748;
+  --color-shadow: rgba(0, 0, 0, 0.2);
+}
+
+/* Apply theme colors */
+:root {
+  color-scheme: light dark;
+  /* Default light theme variables */
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f8f9fa;
+  --color-text: #000000;
+  --color-text-secondary: #6c757d;
+  --color-accent: #000000;
+  --color-accent-secondary: #E91E63;
+  --color-border: #dee2e6;
+  --color-hover: #f8f9fa;
+  --color-card: #ffffff;
+  --color-shadow: rgba(0, 0, 0, 0.05);
+  --color-background-light: #f8f9fa;
+  --color-background-hover: #e9ecef;
+  --color-category-bg: #e3f2fd;
+  --color-category-text: #0d47a1;
+  --color-tag-bg: #f3e5f5;
+  --color-tag-text: #4a148c;
+  --color-code-bg: #f8f9fa;
+  --color-code-text: #d73a49;
+  --color-code-inline-bg: #f1f3f4;
+  --color-code-inline-text: #d73a49;
+  --color-table-header-bg: #f8f9fa;
+  --color-info-bg: #e3f2fd;
+  --color-info-border: #2196f3;
+  --color-info-text: #0d47a1;
+  --color-warning-bg: #fff3e0;
+  --color-warning-border: #ff9800;
+  --color-warning-text: #e65100;
+  --color-error-bg: #ffebee;
+  --color-error-border: #f44336;
+  --color-error-text: #b71c1c;
+  --color-success-bg: #e8f5e8;
+  --color-success-border: #4caf50;
+  --color-success-text: #1b5e20;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Additional theme variables for components */
+.light {
+  --color-background-light: #f8f9fa;
+  --color-background-hover: #e9ecef;
+  --color-category-bg: #e3f2fd;
+  --color-category-text: #0d47a1;
+  --color-tag-bg: #f3e5f5;
+  --color-tag-text: #4a148c;
+  --color-code-bg: #f8f9fa;
+  --color-code-text: #d73a49;
+  --color-code-inline-bg: #f1f3f4;
+  --color-code-inline-text: #d73a49;
+  --color-table-header-bg: #f8f9fa;
+  --color-info-bg: #e3f2fd;
+  --color-info-border: #2196f3;
+  --color-info-text: #0d47a1;
+  --color-warning-bg: #fff3e0;
+  --color-warning-border: #ff9800;
+  --color-warning-text: #e65100;
+  --color-error-bg: #ffebee;
+  --color-error-border: #f44336;
+  --color-error-text: #b71c1c;
+  --color-success-bg: #e8f5e8;
+  --color-success-border: #4caf50;
+  --color-success-text: #1b5e20;
+}
+
+.dark {
+  --color-background-light: #374151;
+  --color-background-hover: #4b5563;
+  --color-category-bg: #1e3a5f;
+  --color-category-text: #90caf9;
+  --color-tag-bg: #4a148c;
+  --color-tag-text: #e1bee7;
+  --color-code-bg: #2d3748;
+  --color-code-text: #f97583;
+  --color-code-inline-bg: #374151;
+  --color-code-inline-text: #f97583;
+  --color-table-header-bg: #374151;
+  --color-info-bg: #1e3a5f;
+  --color-info-border: #64b5f6;
+  --color-info-text: #90caf9;
+  --color-warning-bg: #4a2c17;
+  --color-warning-border: #ffb74d;
+  --color-warning-text: #ffcc80;
+  --color-error-bg: #4a1c1c;
+  --color-error-border: #ef5350;
+  --color-error-text: #ef9a9a;
+  --color-success-bg: #1b3a1b;
+  --color-success-border: #66bb6a;
+  --color-success-text: #a5d6a7;
+}
+
+/* 表格樣式 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+table th,
+table td {
+  padding: 0.75rem;
+  text-align: left;
+  border: 1px solid var(--color-border);
+}
+
+table th {
+  background-color: var(--color-table-header-bg);
+  font-weight: 600;
+}
+
+table tr:nth-child(even) {
+  background-color: var(--color-bg-secondary);
+}
+
+/* 列表樣式 */
+ul, ol {
+ margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+ul li, ol li {
+  margin: 0.5rem 0;
+ line-height: 1.6;
+}
+
+ul {
+  list-style-type: disc;
+}
+
+ol {
+ list-style-type: decimal;
+}
+
+li > ul,
+li > ol {
+  margin: 0.5rem 0;
+}
+
+/* 刪除線樣式 */
+del, s, strike {
+  text-decoration: line-through;
+  color: var(--color-text-secondary);
+}

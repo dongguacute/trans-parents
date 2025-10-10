@@ -1,0 +1,386 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+
+interface Post {
+  frontmatter: {
+    title: string;
+    date: string;
+    description?: string;
+    category?: string;
+    tags?: string[];
+  };
+  default: any;
+}
+
+export async function getStaticPaths() {
+  const posts: Record<string, Post> = import.meta.glob('../../posts/*.md', { eager: true });
+  return Object.entries(posts).map(([path, post]) => {
+    const slug = path.split('/').pop()?.replace('.md', '');
+    return {
+      params: { slug },
+      props: { post },
+    };
+  });
+}
+
+let { post }: { post: Post } = Astro.props;
+const Content = post.default;
+---
+
+<Layout title={`${post.frontmatter.title} - Trans Parents`}>
+  <Navigation />
+
+  <article class="post-content">
+    <header class="post-header">
+      <h1>{post.frontmatter.title}</h1>
+      <div class="post-meta">
+        <time>{new Date(post.frontmatter.date).toLocaleDateString('zh-TW')}</time>
+        {post.frontmatter.category && <span class="category">{post.frontmatter.category}</span>}
+        {post.frontmatter.tags && (
+          <div class="tags">
+            {post.frontmatter.tags.map((tag: string) => <span class="tag">{tag}</span>)}
+          </div>
+        )}
+      </div>
+      {post.frontmatter.description && <p class="description">{post.frontmatter.description}</p>}
+    </header>
+
+    <div class="post-body" id="post-content">
+      <Content />
+    </div>
+ </article>
+</Layout>
+
+<style>
+  :global(body) {
+    background-image:
+      linear-gradient(var(--color-border, #dee2e6) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-border, #dee2e6) 1px, transparent 1px);
+    background-size: 20px;
+    background-position: 0 0, 0 0;
+  }
+
+  .post-content {
+    padding: 1rem;
+    padding-top: 5rem;
+    max-width: 100%;
+    margin: 0 auto;
+    color: var(--color-text);
+    width: 90%;
+  }
+
+  .post-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .post-header h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+  }
+
+  .category {
+    background: var(--color-accent-secondary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    background: var(--color-card);
+    color: var(--color-text-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    border: 1px solid var(--color-border);
+  }
+
+ .description {
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .post-body {
+    line-height: 1.7;
+  }
+
+  .post-body :global(h2) {
+    font-size: 1.8rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+  }
+
+  .post-body :global(h3) {
+    font-size: 1.4rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-text);
+  }
+
+  .post-body :global(p) {
+    margin-bottom: 1rem;
+    color: var(--color-text);
+  }
+
+  .post-body :global(ul), .post-body :global(ol) {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .post-body :global(li) {
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+  }
+
+  .post-body :global(blockquote) {
+    border-left: 4px solid var(--color-accent-secondary);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: var(--color-text-secondary);
+    font-style: italic;
+  }
+
+  .post-body :global(code) {
+    background: var(--color-card);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 0.9em;
+  }
+
+  .post-body :global(pre) {
+    background: var(--color-card);
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    border: 1px solid var(--color-border);
+  }
+
+  .post-body :global(pre code) {
+    background: none;
+    padding: 0;
+  }
+  
+  /* 確保 Alert 組件樣式正確應用 */
+  .post-body :global(.alert) {
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-left: 4px solid;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .post-body :global(.alert-info) {
+    background: var(--color-info-bg, #e3f2fd);
+    border-left-color: var(--color-info-border, #2196f3);
+    color: var(--color-info-text, #0d47a1);
+  }
+
+  .post-body :global(.alert-warning) {
+    background: var(--color-warning-bg, #fff3e0);
+    border-left-color: var(--color-warning-border, #ff9800);
+    color: var(--color-warning-text, #e65100);
+  }
+
+  .post-body :global(.alert-error) {
+    background: var(--color-error-bg, #ffebee);
+    border-left-color: var(--color-error-border, #f44336);
+    color: var(--color-error-text, #b71c1c);
+  }
+
+  .post-body :global(.alert-success) {
+    background: var(--color-success-bg, #e8f5e8);
+    border-left-color: var(--color-success-border, #4caf50);
+    color: var(--color-success-text, #1b5e20);
+  }
+
+  .post-body :global(.alert-title) {
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+
+  .post-body :global(.alert-content) {
+    line-height: 1.6;
+  }
+
+  .post-body :global(.alert-content p) {
+    margin: 0;
+  }
+
+  .post-body :global(.alert-content p + p) {
+    margin-top: 0.5rem;
+  }
+  
+  /* 確保 ExpandableContent 組件樣式正確應用 */
+  .post-body :global(.expandable-content) {
+    border: 1px solid var(--color-border, #dee2e6);
+    border-radius: 8px;
+    margin: 1rem 0;
+    overflow: hidden;
+  }
+
+  .post-body :global(.expandable-toggle) {
+    width: 100%;
+    background: var(--color-card, #ffffff);
+    border: none;
+    padding: 1rem;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .post-body :global(.expandable-toggle:hover) {
+    background: var(--color-hover, #f8f9fa);
+  }
+
+  .post-body :global(.toggle-icon) {
+    font-size: 0.8rem;
+    color: var(--color-accent-secondary, #E91E63);
+    transition: transform 0.2s ease;
+  }
+
+  .post-body :global(.toggle-title) {
+    font-weight: 500;
+    color: var(--color-text, #000000);
+  }
+
+  .post-body :global(.expandable-body) {
+    padding: 1rem;
+    background: var(--color-bg, #ffffff);
+    border-top: 1px solid var(--color-border, #dee2e6);
+    line-height: 1.6;
+  }
+
+  .post-body :global(.expandable-body p) {
+    margin: 0 0 1rem 0;
+  }
+
+  .post-body :global(.expandable-body p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .post-body :global(.expandable-body ul), .post-body :global(.expandable-body ol) {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+
+  .post-body :global(.expandable-body li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .post-body :global(.expandable-body code) {
+    background: var(--color-code-inline-bg, #f1f3f4);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 0.9em;
+  }
+
+  .post-body :global(.expandable-body pre) {
+    background: var(--color-card, #ffffff);
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    border: 1px solid var(--color-border, #dee2e6);
+  }
+
+  .post-body :global(.expandable-body pre code) {
+    background: none;
+    padding: 0;
+  }
+
+  .post-body :global(.expandable-body blockquote) {
+    border-left: 4px solid var(--color-accent-secondary, #E91E63);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: var(--color-text-secondary, #6c757d);
+    font-style: italic;
+  }
+</style>
+
+<script is:inline>
+ // 確保組件的 JavaScript 功能正常運行
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing components...');
+    
+    // 為 ExpandableContent 組件確保函數可用
+    if (typeof window.toggleExpandable === 'undefined') {
+      console.log('toggleExpandable function not found, defining it...');
+      // 重新定義 toggleExpandable 函數
+      window.toggleExpandable = function(contentId) {
+        console.log('toggleExpandable called with id:', contentId);
+        const button = document.querySelector(`[aria-controls="${contentId}"]`);
+        const content = document.getElementById(contentId);
+        if (!button || !content) {
+          console.error('Button or content not found for id:', contentId);
+          return;
+        }
+
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        console.log('Current expanded state:', isExpanded);
+        button.setAttribute('aria-expanded', (!isExpanded).toString());
+        content.style.display = isExpanded ? 'none' : 'block';
+
+        const icon = button.querySelector('.toggle-icon');
+        if (icon) {
+          icon.textContent = isExpanded ? '▶' : '▼';
+        }
+        console.log('Toggle completed, new state:', !isExpanded);
+      };
+    } else {
+      console.log('toggleExpandable function already exists');
+    }
+    
+    // 為所有 ExpandableContent 組件設置初始狀態
+    const expandableContents = document.querySelectorAll('[id^="expandable-"]');
+    console.log('Found expandable contents:', expandableContents.length);
+    expandableContents.forEach(content => {
+      console.log('Processing expandable content:', content.id);
+      const button = document.querySelector(`[aria-controls="${content.id}"]`);
+      if (button && button.getAttribute('aria-expanded') === 'true') {
+        content.style.display = 'block';
+        console.log('Set content to display: block (was open)');
+      } else {
+        content.style.display = 'none';
+        console.log('Set content to display: none (was closed or no button)');
+      }
+    });
+    
+    // 檢查頁面上是否存在 Alert 或 ExpandableContent 組件
+    const alerts = document.querySelectorAll('.alert');
+    const expandables = document.querySelectorAll('.expandable-content');
+    console.log('Found Alert components:', alerts.length);
+    console.log('Found ExpandableContent components:', expandables.length);
+  });
+</script>

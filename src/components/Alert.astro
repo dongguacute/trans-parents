@@ -1,0 +1,68 @@
+---
+export interface Props {
+  type: 'info' | 'warning' | 'error' | 'success';
+  title?: string;
+}
+
+const { type, title } = Astro.props;
+---
+
+<div class={`alert alert-${type}`}>
+  {title && <div class="alert-title">{title}</div>}
+  <div class="alert-content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .alert {
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-left: 4px solid;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .alert-info {
+    background: var(--color-info-bg, #e3f2fd);
+    border-left-color: var(--color-info-border, #2196f3);
+    color: var(--color-info-text, #0d47a1);
+  }
+
+  .alert-warning {
+    background: var(--color-warning-bg, #fff3e0);
+    border-left-color: var(--color-warning-border, #ff9800);
+    color: var(--color-warning-text, #e65100);
+  }
+
+  .alert-error {
+    background: var(--color-error-bg, #ffebee);
+    border-left-color: var(--color-error-border, #f44336);
+    color: var(--color-error-text, #b71c1c);
+  }
+
+  .alert-success {
+    background: var(--color-success-bg, #e8f5e8);
+    border-left-color: var(--color-success-border, #4caf50);
+    color: var(--color-success-text, #1b5e20);
+  }
+
+  .alert-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+
+  .alert-content {
+    line-height: 1.6;
+  }
+
+  .alert-content :global(p) {
+    margin: 0;
+  }
+
+  .alert-content :global(p + p) {
+    margin-top: 0.5rem;
+  }
+</style>

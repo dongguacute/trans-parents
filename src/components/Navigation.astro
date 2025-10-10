@@ -1,0 +1,770 @@
+---
+// Navigation component
+---
+
+<div id="navigation" class="fixed top-0 left-0 right-0 z-50 flex items-center p-5 pointer-events-none">
+   <!-- Left side: Smiling face circle button -->
+   <button id="nav-toggle" class="pointer-events-auto rounded-full w-12 h-12 flex items-center justify-center cursor-pointer transition-colors backdrop-blur-md" style="z-index: 60; background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">
+     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+       <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+       <circle cx="9" cy="9" r="1" fill="currentColor"/>
+       <circle cx="15" cy="9" r="1" fill="currentColor"/>
+       <path d="M8 14 Q12 18 16 14" stroke="currentColor" stroke-width="2" fill="none"/>
+     </svg>
+   </button>
+
+   <!-- Center: Search box -->
+   <div class="flex-1 flex justify-center pointer-events-auto" style="z-index: 30;">
+     <div class="relative desktop-search">
+       <input type="text" id="search-input" placeholder="搜索..." class="search-input pl-10 pr-4 py-2 rounded-full backdrop-blur-md border transition-all duration-300" style="background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); color: var(--color-text); width: 250px; outline: none;" onfocus="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'; this.style.borderColor='rgba(255, 255, 255, 0.4)'" onblur="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.2)'">
+       <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 search-icon" style="color: var(--color-text);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+       </svg>
+     </div>
+   </div>
+
+   <!-- Mobile Search Modal -->
+   <div id="mobile-search-modal" class="mobile-search-modal fixed inset-0 z-50 hidden flex items-start justify-center pt-20 pb-4 px-4" onclick="event.target === this && this.classList.remove('show')">
+     <div class="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden" style="background-color: var(--color-card); border: 1px solid var(--color-border);" onclick="event.stopPropagation()">
+       <!-- Search header -->
+       <div class="flex items-center p-4 border-b" style="border-color: var(--color-border);">
+         <div class="flex-1 relative">
+           <input type="text" id="mobile-search-input" placeholder="搜索文档..." class="w-full pl-10 pr-10 py-2 rounded-lg border-none focus:ring-0" style="background-color: transparent; color: var(--color-text); outline: none;">
+           <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" style="color: var(--color-text-secondary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+           </svg>
+         </div>
+         <button id="mobile-search-close" class="ml-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700" style="color: var(--color-text);">
+           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+             <line x1="18" y1="6" x2="6" y2="18"></line>
+             <line x1="6" y1="6" x2="18" y2="18"></line>
+           </svg>
+         </button>
+       </div>
+       <!-- Search results -->
+       <div id="mobile-search-results" class="overflow-y-auto p-4 max-h-[70vh]">
+         <div class="text-center py-10" style="color: var(--color-text-secondary);">
+           <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+           </svg>
+           <p class="mt-2 text-lg font-medium">开始搜索</p>
+           <p class="mt-1 text-sm">输入关键词来搜索文档</p>
+         </div>
+       </div>
+     </div>
+   </div>
+
+   <!-- Full screen navigation overlay -->
+  <div id="nav-overlay" class="fixed inset-0 bg-white/10 backdrop-blur-md opacity-0 transition-all duration-300 ease-in-out" style="visibility: hidden; pointer-events: none; z-index: 50;">
+    <button id="nav-close" class="absolute top-5 right-5 bg-none border-none text-3xl cursor-pointer text-white z-[60] pointer-events-auto">&times;</button>
+    <nav class="flex flex-col justify-center items-center h-full gap-8">
+      <a href="/" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">首页</a>
+      <a href="/docs" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">文档</a>
+      <a href="/posts/about" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">关于本站</a>
+      <!-- Add more links as needed -->
+    </nav>
+  </div>
+
+  <!-- Right side: Floating options -->
+  <div class="absolute right-0 flex gap-2.5 pointer-events-auto p-5" style="z-index: 30;">
+    <!-- Mobile search button -->
+    <button id="mobile-search-btn" class="mobile-search-btn rounded-xl cursor-pointer transition-colors text-sm backdrop-blur-md hidden flex items-center justify-center w-12 h-12" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <a href="/posts/disclaimer" class="rounded-xl py-2.5 px-3.5 cursor-pointer transition-colors text-sm backdrop-blur-md no-underline" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">免责声明</a>
+    <a href="/posts/about" class="rounded-xl py-2.5 px-3.5 cursor-pointer transition-colors text-sm backdrop-blur-md no-underline" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">关于本站</a>
+    
+    <!-- Theme toggle button -->
+    <div class="relative" id="theme-selector">
+      <button id="theme-toggle" class="group relative rounded-xl p-3 cursor-pointer transition-all duration-300 backdrop-blur-md shadow-lg hover:shadow-xl" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">
+        <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="transition-transform duration-300 group-hover:rotate-12">
+          <!-- Sun icon -->
+          <circle cx="12" cy="12" r="5" fill="currentColor" class="sun-circle"/>
+          <g class="sun-rays">
+            <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </g>
+          <!-- Moon icon (hidden by default) -->
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" class="moon-path hidden"/>
+        </svg>
+      </button>
+
+      <!-- Theme dropdown menu -->
+      <div id="theme-dropdown" class="absolute right-0 mt-3 w-56 backdrop-blur-xl rounded-2xl shadow-2xl py-3 hidden animate-fade-in" style="background-color: var(--color-card); border: 1px solid var(--color-border); z-index: 9999; max-width: 14rem; left: auto; right: 0.5rem; transform: translateX(0); overflow: visible;">
+        <div class="px-2 py-2 text-xs font-semibold uppercase tracking-wide" style="color: var(--color-text-secondary);">主题设置</div>
+        <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
+        <button class="flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text);" data-theme="system" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+          <svg class="w-4 h-4 mr-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          </svg>
+          跟随系统
+        </button>
+        <button class="flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text);" data-theme="light" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+          <svg class="w-4 h-4 mr-3 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
+          </svg>
+          浅色模式
+        </button>
+        <button class="flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text);" data-theme="dark" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+          <svg class="w-4 h-4 mr-3 text-indigo-500" fill="currentColor" viewBox="0 0 24 24">
+            <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd"/>
+          </svg>
+          深色模式
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.nav-item {
+  opacity: 0;
+  transform: translateX(-100px);
+  transition: all 0.5s ease-out;
+}
+
+.nav-item.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+  /* Theme toggle button animations */
+  #theme-toggle {
+    position: relative;
+    overflow: hidden;
+  }
+
+  #theme-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  #theme-toggle:hover::before {
+    left: 100%;
+  }
+
+  /* Theme icon transitions */
+  .sun-rays {
+    transition: all 0.3s ease;
+  }
+
+  .dark .sun-rays {
+    opacity: 0;
+    transform: rotate(180deg);
+  }
+
+  .moon-path {
+    transition: all 0.3s ease;
+  }
+
+  .dark .moon-path {
+    opacity: 1;
+  }
+
+  .dark .sun-circle {
+    opacity: 0;
+  }
+
+  /* Dropdown animations */
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Enhanced dropdown styling */
+  #theme-dropdown {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Theme option hover effects are now handled by inline styles */
+
+  /* Search box responsive styles */
+  @media screen and (max-width: 768px) {
+    .desktop-search {
+      width: 150px !important;
+      font-size: 14px;
+    }
+    .desktop-search input {
+      width: 100% !important;
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+    .desktop-search {
+      display: none;
+    }
+    .mobile-search-btn {
+      display: inline-flex !important;
+    }
+  }
+
+  /* Mobile search modal styles */
+  .mobile-search-modal {
+    backdrop-filter: blur(10px);
+    background-color: rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+  }
+
+  .mobile-search-modal.show {
+    display: flex !important;
+    pointer-events: auto;
+  }
+
+  #mobile-search-input:focus {
+    border-color: var(--color-accent-secondary) !important;
+    box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.1);
+  }
+
+  .search-result-item {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: 1px solid transparent;
+  }
+
+  .search-result-item:hover {
+    background-color: var(--color-hover);
+    border-color: var(--color-border);
+  }
+
+  .search-result-title {
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .search-result-desc {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
+
+<script is:inline>
+   // Function to initialize navigation functionality
+   function initNavigation() {
+     const navToggle = document.getElementById('nav-toggle');
+     const navOverlay = document.getElementById('nav-overlay');
+     const navClose = document.getElementById('nav-close');
+     // Remove existing event listeners by replacing elements to prevent duplicates
+     if (navToggle) {
+       const newNavToggle = navToggle.cloneNode(true);
+       navToggle.parentNode.replaceChild(newNavToggle, navToggle);
+     }
+     if (navClose) {
+       const newNavClose = navClose.cloneNode(true);
+       navClose.parentNode.replaceChild(newNavClose, navClose);
+     }
+
+     // Re-get references to the new elements
+     const updatedNavToggle = document.getElementById('nav-toggle');
+     const updatedNavClose = document.getElementById('nav-close');
+
+     // Change nav item color based on theme and page
+     const isDarkMode = document.documentElement.classList.contains('dark');
+     const isDocsPage = window.location.pathname === '/docs';
+
+     if (isDarkMode) {
+       // In dark mode, always use white text
+       const navItems = navOverlay.querySelectorAll('.nav-item');
+       navItems.forEach(item => {
+         item.classList.remove('text-black');
+         item.classList.add('text-white');
+       });
+     } else {
+       // In light mode
+       if (isDocsPage) {
+         // Black text on docs page for better contrast
+         const navItems = navOverlay.querySelectorAll('.nav-item');
+         navItems.forEach(item => {
+           item.classList.remove('text-white');
+           item.classList.add('text-black');
+         });
+       } else {
+         // White text on other pages
+         const navItems = navOverlay.querySelectorAll('.nav-item');
+         navItems.forEach(item => {
+           item.classList.remove('text-black');
+           item.classList.add('text-white');
+         });
+       }
+     }
+     // Keep consistent overlay background
+     navOverlay.style.background = 'rgba(0, 0, 0, 0.5)';
+
+     if (updatedNavToggle && navOverlay) {
+       console.log('Elements found:', updatedNavToggle, navOverlay);
+
+       const openMenu = () => {
+         console.log('Opening menu');
+         navOverlay.style.visibility = 'visible';
+         navOverlay.style.pointerEvents = 'auto';
+         navOverlay.style.opacity = '1';
+         const navItems = navOverlay.querySelectorAll('.nav-item');
+         navItems.forEach((item, index) => {
+           setTimeout(() => {
+             item.classList.add('visible');
+           }, index * 100);
+         });
+       };
+
+       const closeMenu = () => {
+         console.log('Closing menu');
+         navOverlay.style.opacity = '0';
+         const navItems = navOverlay.querySelectorAll('.nav-item');
+         navItems.forEach((item) => {
+           item.classList.remove('visible');
+         });
+         // Handle visibility and pointer-events after transition
+         setTimeout(() => {
+           navOverlay.style.visibility = 'hidden';
+           navOverlay.style.pointerEvents = 'none';
+         }, 300);
+       };
+
+       updatedNavToggle.addEventListener('click', () => {
+         console.log('Toggle clicked');
+         openMenu();
+       });
+
+       if (updatedNavClose) {
+         updatedNavClose.addEventListener('click', (e) => {
+           console.log('Close button click event fired!'); // Added log
+           e.preventDefault(); // Prevent default button action
+           e.stopPropagation(); // Stop event from bubbling up to overlay
+           closeMenu();
+         });
+       }
+
+       // Handle clicks on overlay to close menu (only when clicking directly on overlay)
+       navOverlay.removeEventListener('click', handleOverlayClick); // Remove any existing listener
+       navOverlay.addEventListener('click', handleOverlayClick);
+
+       // Handle clicks on navigation links
+       const navLinks = navOverlay.querySelectorAll('.nav-item');
+       navLinks.forEach(link => {
+         link.removeEventListener('click', handleNavLinkClick); // Remove any existing listener
+         link.addEventListener('click', handleNavLinkClick);
+       });
+
+       // Function to handle overlay clicks
+       function handleOverlayClick(e) {
+         if (e.target === navOverlay) {
+           console.log('Overlay clicked');
+           closeMenu();
+         }
+       }
+
+       // Function to handle nav link clicks
+       function handleNavLinkClick(e) {
+         closeMenu();
+       }
+     } else {
+       console.log('Elements not found:', updatedNavToggle, navOverlay, updatedNavClose);
+     }
+   }
+
+   // Initialize search functionality
+   function initSearch() {
+     const searchInput = document.getElementById('search-input');
+     const mobileSearchBtn = document.getElementById('mobile-search-btn');
+     const mobileSearchModal = document.getElementById('mobile-search-modal');
+     const mobileSearchInput = document.getElementById('mobile-search-input');
+     const mobileSearchClose = document.getElementById('mobile-search-close');
+     const mobileSearchResults = document.getElementById('mobile-search-results');
+
+     // Store posts data for mobile search
+     let postsData = [];
+
+     // Function to collect posts data
+     function collectPostsData() {
+       postsData = [];
+       if (window.location.pathname === '/docs' || window.location.pathname.includes('/docs')) {
+         const posts = document.querySelectorAll('.post-item');
+         if (posts.length === 0) {
+           // If no .post-item elements found, try alternative selectors
+           const articles = document.querySelectorAll('article, .content-item, .doc-item');
+           articles.forEach(post => {
+             const titleEl = post.querySelector('h1, h2, h3') || post.querySelector('[class*="title"]');
+             const descEl = post.querySelector('p, .description, .excerpt');
+             const linkEl = post.querySelector('a');
+             const link = linkEl?.href || window.location.href;
+             const title = titleEl?.textContent?.trim() || '無標題';
+             const desc = descEl?.textContent?.trim() || '無描述';
+             if (title && title !== '無標題') {
+               postsData.push({ title, desc, link });
+             }
+           });
+         } else {
+           posts.forEach(post => {
+             const titleEl = post.querySelector('h2 a');
+             const descEl = post.querySelector('.post-description');
+             const link = titleEl?.href || '';
+             const title = titleEl?.textContent?.trim() || '';
+             const desc = descEl?.textContent?.trim() || '';
+             if (title) {
+               postsData.push({ title, desc, link });
+             }
+           });
+         }
+       } else {
+         // If not on docs page, no search data available
+         postsData = [];
+       }
+     }
+
+     // Collect posts data on docs page
+     collectPostsData();
+
+     // Mobile search modal functionality
+     if (mobileSearchBtn && mobileSearchModal && mobileSearchClose && mobileSearchInput && mobileSearchResults) {
+       mobileSearchBtn.addEventListener('click', (e) => {
+         e.stopPropagation(); // Prevent immediate closing if click bubbles up
+         // Collect posts data when opening search modal
+         collectPostsData();
+         mobileSearchModal.classList.add('show');
+         setTimeout(() => mobileSearchInput.focus(), 100);
+       });
+
+       mobileSearchClose.addEventListener('click', () => {
+         mobileSearchModal.classList.remove('show');
+         mobileSearchInput.value = '';
+         mobileSearchResults.innerHTML = `
+           <div class="text-center py-10" style="color: var(--color-text-secondary);">
+             <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+             </svg>
+             <p class="mt-2 text-lg font-medium">开始搜索</p>
+             <p class="mt-1 text-sm">输入关键词来搜索文档</p>
+           </div>
+         `;
+       });
+
+       // Close modal when clicking outside the modal content
+       document.addEventListener('click', (e) => {
+         if (mobileSearchModal.classList.contains('show') && !mobileSearchModal.contains(e.target) && e.target !== mobileSearchBtn) {
+           mobileSearchModal.classList.remove('show');
+           mobileSearchInput.value = '';
+           mobileSearchResults.innerHTML = `
+             <div class="text-center py-10" style="color: var(--color-text-secondary);">
+               <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+               </svg>
+               <p class="mt-2 text-lg font-medium">开始搜索</p>
+               <p class="mt-1 text-sm">输入关键词来搜索文档</p>
+             </div>
+           `;
+         }
+       });
+
+       // Close modal on Escape key
+       document.addEventListener('keydown', (e) => {
+         if (e.key === 'Escape' && mobileSearchModal.classList.contains('show')) {
+           mobileSearchModal.classList.remove('show');
+           mobileSearchInput.value = '';
+           mobileSearchResults.innerHTML = `
+             <div class="text-center py-10" style="color: var(--color-text-secondary);">
+               <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+               </svg>
+               <p class="mt-2 text-lg font-medium">开始搜索</p>
+               <p class="mt-1 text-sm">输入关键词来搜索文档</p>
+             </div>
+           `;
+         }
+       });
+
+       // Mobile search input functionality
+       mobileSearchInput.addEventListener('input', (e) => {
+         const query = e.target.value.toLowerCase().trim();
+         mobileSearchResults.innerHTML = '';
+
+         if (query && postsData.length > 0) {
+           const filteredPosts = postsData.filter(post =>
+             post.title.toLowerCase().includes(query) ||
+             post.desc.toLowerCase().includes(query)
+           );
+
+           if (filteredPosts.length > 0) {
+             filteredPosts.forEach(post => {
+               const resultItem = document.createElement('div');
+               resultItem.className = 'search-result-item';
+               resultItem.innerHTML = `
+                 <div class="search-result-title" style="color: var(--color-text);">${post.title}</div>
+                 <div class="search-result-desc">${post.desc}</div>
+               `;
+               resultItem.addEventListener('click', () => {
+                 window.location.href = post.link;
+               });
+               mobileSearchResults.appendChild(resultItem);
+             });
+           } else {
+             mobileSearchResults.innerHTML = '<div style="text-align: center; color: var(--color-text-secondary); padding: 20px;">未找到匹配的文章</div>';
+           }
+         } else if (query === '') {
+           mobileSearchResults.innerHTML = '<div style="text-align: center; color: var(--color-text-secondary); padding: 20px;">输入关键词开始搜索</div>';
+         } else if (query && postsData.length === 0) {
+           mobileSearchResults.innerHTML = '<div style="text-align: center; color: var(--color-text-secondary); padding: 20px;">搜索功能仅在文档页面可用，请前往文档页面进行搜索</div>';
+         }
+       });
+     }
+
+     if (searchInput) {
+       if (window.location.pathname === '/') {
+         // On home page, redirect to docs with search query on Enter or blur
+         searchInput.addEventListener('keydown', (e) => {
+           if (e.key === 'Enter') {
+             const query = e.target.value.trim();
+             if (query) {
+               // Use SPA navigation with Astro ViewTransitions
+               window.location.href = `/docs?q=${encodeURIComponent(query)}`;
+             }
+           }
+         });
+         searchInput.addEventListener('blur', (e) => {
+           const query = e.target.value.trim();
+           if (query) {
+             // Use SPA navigation with Astro ViewTransitions
+             window.location.href = `/docs?q=${encodeURIComponent(query)}`;
+           }
+         });
+       } else if (window.location.pathname === '/docs') {
+         // On docs page, perform local search
+         searchInput.addEventListener('input', (e) => {
+           const target = e.target;
+           const query = target.value.toLowerCase();
+           const posts = document.querySelectorAll('.post-item');
+           posts.forEach(post => {
+             const titleEl = post.querySelector('h2');
+             const descEl = post.querySelector('.post-description');
+             const title = titleEl?.textContent?.toLowerCase() || '';
+             const desc = descEl?.textContent?.toLowerCase() || '';
+             if (title.includes(query) || desc.includes(query)) {
+               post.style.display = '';
+             } else {
+               post.style.display = 'none';
+             }
+           });
+         });
+
+         // Check for search query in URL and apply it
+         const urlParams = new URLSearchParams(window.location.search);
+         const searchQuery = urlParams.get('q');
+         if (searchQuery) {
+           searchInput.value = searchQuery;
+           // Trigger the search
+           const event = new Event('input', { bubbles: true });
+           searchInput.dispatchEvent(event);
+         }
+       }
+     }
+   }
+
+   // Initialize on DOM load
+   document.addEventListener('DOMContentLoaded', () => {
+     initNavigation();
+     initSearch();
+
+   });
+
+   // Reinitialize after Astro navigation (SPA transitions)
+   document.addEventListener('astro:after-swap', () => {
+     initNavigation();
+     initSearch();
+     // Re-apply theme after page transition
+     const savedTheme = localStorage.getItem('theme');
+     if (savedTheme) {
+       setTheme(savedTheme);
+     } else {
+       setTheme('system');
+     }
+     // Re-initialize theme functionality
+     initThemeSelector();
+   });
+
+   // Initialize theme selector (extracted for reuse)
+   function initThemeSelector() {
+     const themeToggle = document.getElementById('theme-toggle');
+     const themeDropdown = document.getElementById('theme-dropdown');
+
+     if (themeToggle && themeDropdown) {
+       // Remove existing event listeners by cloning
+       const newThemeToggle = themeToggle.cloneNode(true);
+       themeToggle.parentNode.replaceChild(newThemeToggle, themeToggle);
+
+       const newThemeDropdown = themeDropdown.cloneNode(true);
+       themeDropdown.parentNode.replaceChild(newThemeDropdown, themeDropdown);
+       // Ensure z-index is set after cloning
+       newThemeDropdown.style.zIndex = '9999';
+
+       // Re-get references
+       const updatedThemeToggle = document.getElementById('theme-toggle');
+       const updatedThemeDropdown = document.getElementById('theme-dropdown');
+
+       // Re-add event listeners
+       updatedThemeToggle.addEventListener('click', function(e) {
+         e.stopPropagation();
+         updatedThemeDropdown.classList.toggle('hidden');
+       });
+
+       // Close dropdown when clicking elsewhere
+       document.addEventListener('click', function(e) {
+         if (!updatedThemeToggle.contains(e.target) && !updatedThemeDropdown.contains(e.target)) {
+           updatedThemeDropdown.classList.add('hidden');
+         }
+       });
+
+       // Theme selection
+       const themeButtons = document.querySelectorAll('[data-theme]');
+       themeButtons.forEach(button => {
+         // Remove existing listeners by cloning
+         const newButton = button.cloneNode(true);
+         button.parentNode.replaceChild(newButton, button);
+       });
+
+       // Re-add listeners to new buttons
+       const newThemeButtons = document.querySelectorAll('[data-theme]');
+       newThemeButtons.forEach(button => {
+         button.addEventListener('click', function() {
+           const theme = this.getAttribute('data-theme');
+           setTheme(theme);
+           updatedThemeDropdown.classList.add('hidden');
+         });
+       });
+     }
+   }
+   
+   // Also initialize immediately in case DOM is already loaded
+   if (document.readyState === 'loading') {
+     // Still loading, DOMContentLoaded will fire later
+   } else {
+     // Already loaded, initialize now
+     initNavigation();
+   }
+   
+   // Global theme functions
+   function setTheme(theme) {
+     switch(theme) {
+       case 'light':
+         document.documentElement.className = 'light';
+         document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' light';
+         localStorage.setItem('theme', 'light');
+         updateThemeIcon('light');
+         // Re-apply navigation colors after theme change
+         setTimeout(() => initNavigation(), 10);
+         break;
+       case 'dark':
+         document.documentElement.className = 'dark';
+         document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' dark';
+         localStorage.setItem('theme', 'dark');
+         updateThemeIcon('dark');
+         // Re-apply navigation colors after theme change
+         setTimeout(() => initNavigation(), 10);
+         break;
+       case 'system':
+       default:
+         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+           document.documentElement.className = 'dark';
+           document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' dark';
+           localStorage.setItem('theme', 'system');
+           updateThemeIcon('dark');
+           // Re-apply navigation colors after theme change
+           setTimeout(() => initNavigation(), 10);
+         } else {
+           document.documentElement.className = 'light';
+           document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' light';
+           localStorage.setItem('theme', 'system');
+           updateThemeIcon('light');
+           // Re-apply navigation colors after theme change
+           setTimeout(() => initNavigation(), 10);
+         }
+         break;
+     }
+   }
+
+   function updateThemeIcon(theme) {
+     const sunRays = document.querySelector('.sun-rays');
+     const moonPath = document.querySelector('.moon-path');
+     const sunCircle = document.querySelector('.sun-circle');
+
+     if (sunRays && moonPath && sunCircle) {
+       if (theme === 'dark') {
+         sunRays.style.opacity = '0';
+         sunRays.style.transform = 'rotate(180deg)';
+         moonPath.classList.remove('hidden');
+         sunCircle.style.opacity = '0';
+         setTimeout(() => {
+           moonPath.style.opacity = '1';
+         }, 150);
+       } else {
+         moonPath.style.opacity = '0';
+         sunRays.style.opacity = '1';
+         sunRays.style.transform = 'rotate(0deg)';
+         sunCircle.style.opacity = '1';
+         setTimeout(() => {
+           moonPath.classList.add('hidden');
+         }, 150);
+       }
+     }
+   }
+
+   // Theme selector functionality
+   document.addEventListener('DOMContentLoaded', function() {
+     // Initialize theme selector
+     initThemeSelector();
+
+     // Initialize theme on page load
+     const savedTheme = localStorage.getItem('theme');
+     if (savedTheme) {
+       setTheme(savedTheme);
+     } else {
+       setTheme('system'); // Default to system
+     }
+
+     // Listen for system theme changes
+     if (window.matchMedia) {
+       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+         if (localStorage.getItem('theme') === 'system') {
+           if (e.matches) {
+             document.documentElement.className = 'dark';
+             document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' dark';
+             updateThemeIcon('dark');
+           } else {
+             document.documentElement.className = 'light';
+             document.body.className = document.body.className.replace(/\b(dark|light)\b/g, '') + ' light';
+             updateThemeIcon('light');
+           }
+         }
+       });
+     }
+   });
+</script>

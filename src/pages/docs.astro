@@ -1,0 +1,158 @@
+---
+import Navigation from '../components/Navigation.astro';
+import Layout from '../layouts/Layout.astro';
+
+// Documentation page
+const posts = await Astro.glob('../posts/*.md');
+const postsWithWordCount = await Promise.all(posts.map(async (post) => {
+  const raw = await post.rawContent();
+  const wordCount = raw ? raw.replace(/[^\u4e00-\u9fa5]/g, '').length : 0;
+  return { ...post, wordCount };
+}));
+---
+
+<Layout title="文档 - Trans Parents">
+	<Navigation />
+
+	<div class="docs-content">
+		<div class="posts-list">
+			{postsWithWordCount.map((post) => {
+				const slug = post.file ? post.file.split('/').pop()?.replace('.md', '') : '';
+				return (
+					<article class="post-item">
+						<div class="post-header">
+							<div class="post-title-wrapper">
+								<span class="title-bar"></span>
+								<h2><a href={`/posts/${slug}`}>{post.frontmatter.title}</a></h2>
+							</div>
+							<div class="post-arrow">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							</div>
+						</div>
+						<div class="post-meta">
+							<span class="meta-item">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M8 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M16 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M21 8V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H19C19.5304 6 20.0391 6.21071 20.4142 6.58579C20.7893 6.96086 21 7.46957 21 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+								<time>{new Date(post.frontmatter.date).toLocaleDateString('zh-TW')}</time>
+							</span>
+						</div>
+						<p class="post-description">{post.frontmatter.description}</p>
+						<div class="post-stats">
+							<span>{post.wordCount} 字</span>
+						</div>
+					</article>
+				);
+			})}
+		</div>
+	</div>
+</Layout>
+
+<style>
+  :global(body) {
+    background-image:
+      linear-gradient(var(--color-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 0;
+  }
+
+  .docs-content {
+    padding: 1rem;
+    padding-top: 5rem;
+    width: 100%;
+    color: var(--color-text);
+  }
+
+
+  .docs-content h1 {
+    color: var(--color-text);
+  }
+
+  .docs-content p {
+    color: var(--color-text-secondary);
+  }
+
+  .posts-list {
+    display: grid;
+    gap: 2rem;
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+  }
+
+  .post-item {
+    background: var(--color-card); /* 适配主题的卡片背景 */
+    border-radius: 12px; /* 更大的圓角 */
+    padding: 1.8rem; /* 稍微減少內邊距 */
+    box-shadow: 0 4px 20px var(--color-shadow); /* 适配主题的阴影 */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .post-item:hover {
+    transform: translateY(-5px); /* 更明顯的懸停效果 */
+    box-shadow: 0 8px 25px var(--color-shadow);
+  }
+
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .post-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .title-bar {
+    width: 6px;
+    height: 1.8em; /* 與標題高度匹配 */
+    background-color: var(--color-accent-secondary); /* 适配主题的强调色 */
+    border-radius: 3px;
+  }
+
+  .post-item h2 {
+    margin: 0;
+    font-size: 1.8rem; /* 增大標題字體 */
+    color: var(--color-text); /* 适配主题的文字颜色 */
+    line-height: 1.2;
+  }
+
+  .post-item h2 a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .post-arrow {
+    color: var(--color-accent-secondary); /* 适配主题的强调色 */
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary); /* 适配主题的次要文字颜色 */
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .meta-item svg {
+    color: var(--color-accent-secondary); /* 适配主题的强调色 */
+  }
+
+</style>

@@ -1,0 +1,65 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Alert from '../components/Alert.astro';
+import ExpandableContent from '../components/ExpandableContent.astro';
+---
+
+<Layout title="組件測試頁面">
+  <div style="padding: 2rem; max-width: 800px; margin: 0 auto;">
+    <h1>組件測試頁面</h1>
+    
+    <h2>警告組件測試</h2>
+    <Alert type="info" title="信息提示">
+      <p>這是一個信息提示組件，測試 CSS 是否正確加載。</p>
+    </Alert>
+    
+    <Alert type="warning" title="警告提示">
+      <p>這是一個警告提示組件，測試 CSS 是否正確加載。</p>
+    </Alert>
+    
+    <Alert type="error" title="錯誤提示">
+      <p>這是一個錯誤提示組件，測試 CSS 是否正確加載。</p>
+    </Alert>
+    
+    <Alert type="success" title="成功提示">
+      <p>這是一個成功提示組件，測試 CSS 是否正確加載。</p>
+    </Alert>
+    
+    <h2>折疊塊組件測試</h2>
+    <ExpandableContent title="點擊展開測試內容">
+      <p>這是一個折疊塊組件，測試 CSS 是否正確加載。</p>
+      <p>這部分內容應該在點擊標題後展開顯示。</p>
+      
+      <h3>嵌套內容測試</h3>
+      <p>測試折疊塊內的各種元素是否正確渲染。</p>
+      
+      <ul>
+        <li>列表項目 1</li>
+        <li>列表項目 2</li>
+        <li>列表項目 3</li>
+      </ul>
+      
+      <pre><code>{`// 代碼塊測試
+function test() {
+  console.log('Hello, world!');
+}`}</code></pre>
+    </ExpandableContent>
+    
+    <ExpandableContent title="默認展開的內容" open>
+      <p>這個內容在頁面加載時就已經展開了。</p>
+    </ExpandableContent>
+    
+    <h2>組合使用測試</h2>
+    <Alert type="info">
+      請展開下面的內容來查看更多信息。
+    </Alert>
+    
+    <ExpandableContent title="組合使用示例">
+      <Alert type="success" title="成功">
+        在折疊塊中嵌套的警告組件。
+      </Alert>
+      
+      <p>這證明了組件可以嵌套使用，且樣式正確加載。</p>
+    </ExpandableContent>
+  </div>
+</Layout>

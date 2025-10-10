@@ -1,0 +1,168 @@
+---
+import hero from '../assets/hero.png';
+---
+
+<div id="container">
+	<img id="background" src={hero.src} alt="" fetchpriority="high" />
+
+	<div id="hero-title">
+		<h1>Trans Parents</h1>
+		<a href="/docs" id="start-reading-btn">开始阅读</a>
+	</div>
+
+</div>
+
+<style>
+	#background {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -1;
+		object-fit: cover;
+		user-select: none;
+		pointer-events: none;
+	}
+
+	#container {
+		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+		height: 100%;
+		position: relative;
+	}
+
+	#hero-title {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		text-align: center;
+		z-index: 10;
+	}
+
+	#hero-title h1 {
+		font-size: 4rem;
+		font-weight: 900;
+		color: white;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+		margin: 0 0 2rem 0;
+		letter-spacing: 0.1em;
+		border-right: 3px solid white;
+		overflow: hidden;
+		white-space: nowrap;
+		width: fit-content;
+		animation: typing 6s steps(13, end) infinite, blink-caret 0.75s step-end infinite;
+	}
+
+	#start-reading-btn {
+		display: inline-block;
+		padding: 1rem 2rem;
+		background: rgba(255, 255, 255, 0.1);
+		color: white;
+		text-decoration: none;
+		border: 2px solid white;
+		border-radius: 50px;
+		font-size: 1.2rem;
+		font-weight: 600;
+		transition: all 0.3s ease;
+		backdrop-filter: blur(10px);
+		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+	}
+
+	#start-reading-btn:hover {
+		background: rgba(255, 255, 255, 0.2);
+		transform: translateY(-2px);
+		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+	}
+
+	main {
+		height: 100%;
+		display: flex;
+		justify-content: center;
+	}
+
+
+
+
+	.box {
+	  padding: 16px;
+	  background: var(--color-card);
+	  border-radius: 16px;
+	  border: 1px solid var(--color-border);
+	  color: var(--color-text);
+	}
+
+	#news {
+		position: absolute;
+		bottom: 16px;
+		right: 16px;
+		max-width: 300px;
+		text-decoration: none;
+		transition: background 0.2s;
+		backdrop-filter: blur(50px);
+		background: var(--color-card);
+		color: var(--color-text);
+		border: 1px solid var(--color-border);
+	}
+
+	#news:hover {
+		background: var(--color-hover);
+	}
+
+	@media screen and (max-height: 368px) {
+		#news {
+			display: none;
+		}
+	}
+
+	@media screen and (max-width: 768px) {
+		#container {
+			display: flex;
+			flex-direction: column;
+		}
+
+		#search {
+			display: block;
+			padding-top: 10%;
+		}
+
+		#hero-title h1 {
+			font-size: 2.5rem;
+			margin-bottom: 1.5rem;
+		}
+
+		#start-reading-btn {
+			font-size: 1rem;
+			padding: 0.8rem 1.5rem;
+		}
+
+		#news {
+			right: 16px;
+			left: 16px;
+			bottom: 2.5rem;
+			max-width: 100%;
+		}
+
+	}
+
+	@keyframes typing {
+		0% {
+			width: 0;
+		}
+		50% {
+			width: 100%;
+		}
+		100% {
+			width: 100%;
+		}
+	}
+
+	@keyframes blink-caret {
+		from, to {
+			border-color: transparent;
+		}
+		50% {
+			border-color: white;
+		}
+	}
+</style>

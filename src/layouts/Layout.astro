@@ -1,0 +1,47 @@
+---
+import '../styles/global.css';
+import Footer from '../components/Footer.astro';
+import { ViewTransitions } from 'astro:transitions';
+---
+
+<!doctype html>
+<html lang="en" class="light">
+	<head>
+		<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/jpeg" href="/icon.png" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{Astro.props.title || 'Trans Parents'}</title>
+	</head>
+	<body>
+	<slot />
+		<Footer />
+		<ViewTransitions />
+		<script>
+			// 初始化主題，確保 CSS 變量正確應用
+			(function() {
+				// 檢查用戶首選主題
+				const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+				const savedTheme = localStorage.getItem('theme');
+				
+				// 應用主題
+				const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+				document.documentElement.className = theme;
+				
+				// 確保 body 也有相應類別
+				document.body.classList.add(theme);
+			})();
+		</script>
+	</body>
+</html>
+
+<style>
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+</style>
