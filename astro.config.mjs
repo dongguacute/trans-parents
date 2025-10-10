@@ -21,8 +21,20 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()]
   },
-  // 優化資源預載
+  // Next.js 風格的優化配置
   prefetch: {
     defaultStrategy: 'hover'
+  },
+  // 優化圖片和資源載入
+  image: {
+    // 啟用圖片優化
+    service: {
+      entrypoint: 'astro/assets/services/sharp'
+    }
+  },
+  // 壓縮和優化
+  compressHTML: true,
+  build: {
+    inlineStylesheets: 'auto'
   }
 });

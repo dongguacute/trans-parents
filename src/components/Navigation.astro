@@ -561,13 +561,57 @@
    document.addEventListener('DOMContentLoaded', () => {
      initNavigation();
      initSearch();
+     initPrefetching();
      initThemeSelector();
    });
+
+   // Next.js 風格的預載入功能
+   function initPrefetching() {
+     // 預載入鏈接
+     const links = document.querySelectorAll('a[href^="/"]');
+     links.forEach(link => {
+       // 在 hover 時預載入
+       link.addEventListener('mouseenter', () => {
+         const href = link.getAttribute('href');
+         if (href && !href.includes('#') && !link.hasAttribute('data-prefetched')) {
+           // 使用 requestIdleCallback 確保不會阻塞主線程
+           if ('requestIdleCallback' in window) {
+             requestIdleCallback(() => prefetchPage(href), { timeout: 2000 });
+           } else {
+             setTimeout(() => prefetchPage(href), 100);
+           }
+           link.setAttribute('data-prefetched', 'true');
+         }
+       });
+     });
+   }
+
+   function prefetchPage(href) {
+     // 檢查是否已經預載入過
+     if (document.querySelector(`link[href="${href}"][rel="prefetch"]`)) {
+       return;
+     }
+
+     // 預載入頁面資源
+     const link = document.createElement('link');
+     link.rel = 'prefetch';
+     link.href = href;
+     link.as = 'document';
+     document.head.appendChild(link);
+
+     // 限制同時預載入的數量，避免過度消耗資源
+     const existingPrefetches = document.querySelectorAll('link[rel="prefetch"]');
+     if (existingPrefetches.length > 3) {
+       // 移除最舊的預載入
+       existingPrefetches[0].remove();
+     }
+   }
 
    // Reinitialize after Astro navigation (SPA transitions)
    document.addEventListener('astro:after-swap', () => {
      initNavigation();
      initSearch();
+     initPrefetching(); // 重新初始化預載入
      // Re-apply theme after page transition
      const savedTheme = localStorage.getItem('theme');
      if (savedTheme) {
