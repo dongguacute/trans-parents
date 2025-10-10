@@ -178,24 +178,40 @@
      const updatedNavToggle = document.getElementById('nav-toggle');
      const updatedNavClose = document.getElementById('nav-close');
 
-     // Change nav item color on docs page
-     if (window.location.pathname === '/docs') {
-       const navItems = navOverlay.querySelectorAll('.nav-item');
-       navItems.forEach(item => {
-         item.classList.remove('text-white');
-         item.classList.add('text-black');
-       });
-       // Change overlay background for better visibility
-       navOverlay.style.background = 'rgba(0, 0, 0, 0.5)';
-     } else {
-       // Ensure white text on non-docs pages
+     // Change nav item color based on theme and page
+     const isDarkMode = document.documentElement.classList.contains('dark');
+     const isDocsPage = window.location.pathname === '/docs';
+
+     if (isDarkMode) {
+       // In dark mode, always use white text
        const navItems = navOverlay.querySelectorAll('.nav-item');
        navItems.forEach(item => {
          item.classList.remove('text-black');
          item.classList.add('text-white');
        });
-       // Reset overlay background
-       navOverlay.style.background = 'rgba(255, 255, 255, 0.1)';
+       // Dark overlay background
+       navOverlay.style.background = 'rgba(0, 0, 0, 0.5)';
+     } else {
+       // In light mode
+       if (isDocsPage) {
+         // Black text on docs page for better contrast
+         const navItems = navOverlay.querySelectorAll('.nav-item');
+         navItems.forEach(item => {
+           item.classList.remove('text-white');
+           item.classList.add('text-black');
+         });
+         // Dark overlay background for visibility
+         navOverlay.style.background = 'rgba(0, 0, 0, 0.5)';
+       } else {
+         // White text on other pages
+         const navItems = navOverlay.querySelectorAll('.nav-item');
+         navItems.forEach(item => {
+           item.classList.remove('text-black');
+           item.classList.add('text-white');
+         });
+         // Light overlay background
+         navOverlay.style.background = 'rgba(255, 255, 255, 0.1)';
+       }
      }
 
      if (updatedNavToggle && navOverlay) {
@@ -355,12 +371,16 @@
          document.documentElement.classList.add('light');
          localStorage.setItem('theme', 'light');
          updateThemeIcon('light');
+         // Re-apply navigation colors after theme change
+         setTimeout(() => initNavigation(), 10);
          break;
        case 'dark':
          document.documentElement.classList.remove('light');
          document.documentElement.classList.add('dark');
          localStorage.setItem('theme', 'dark');
          updateThemeIcon('dark');
+         // Re-apply navigation colors after theme change
+         setTimeout(() => initNavigation(), 10);
          break;
        case 'system':
        default:
@@ -369,11 +389,15 @@
            document.documentElement.classList.add('dark');
            localStorage.setItem('theme', 'system');
            updateThemeIcon('dark');
+           // Re-apply navigation colors after theme change
+           setTimeout(() => initNavigation(), 10);
          } else {
            document.documentElement.classList.remove('dark');
            document.documentElement.classList.add('light');
            localStorage.setItem('theme', 'system');
            updateThemeIcon('light');
+           // Re-apply navigation colors after theme change
+           setTimeout(() => initNavigation(), 10);
          }
          break;
      }
