@@ -5,7 +5,7 @@ const isDev = import.meta.env.DEV;
 
 {isDev && (
   <div id="perf-monitor" style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: #0f0; padding: 10px; border-radius: 8px; font-family: monospace; font-size: 12px; z-index: 9999;">
-    <div id="perf-stats">載入中...</div>
+    <div id="perf-stats">载入中...</div>
   </div>
 )}
 
@@ -21,10 +21,10 @@ const isDev = import.meta.env.DEV;
         const monitor = document.getElementById('perf-stats');
         if (monitor) {
           monitor.innerHTML = `
-            ⚡ 頁面載入: ${pageLoadTime}ms<br>
-            🔌 連接時間: ${connectTime}ms<br>
-            🎨 渲染時間: ${renderTime}ms<br>
-            📦 DOM 節點: ${document.getElementsByTagName('*').length}
+            ⚡ 页面载入: ${pageLoadTime}ms<br>
+            🔌 连接时间: ${connectTime}ms<br>
+            🎨 渲染时间: ${renderTime}ms<br>
+            📦 DOM 节点: ${document.getElementsByTagName('*').length}
           `;
         }
 
@@ -33,7 +33,7 @@ const isDev = import.meta.env.DEV;
           const observer = new PerformanceObserver((list) => {
             for (const entry of list.getEntries()) {
               if (entry.duration > 100) {
-                console.warn(`⚠️ 慢速資源: ${entry.name} (${Math.round(entry.duration)}ms)`);
+                console.warn(`⚠️ 慢速资源: ${entry.name} (${Math.round(entry.duration)}ms)`);
               }
             }
           });

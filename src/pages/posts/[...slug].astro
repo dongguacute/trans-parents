@@ -48,7 +48,7 @@ const relatedPosts = await getRelatedPosts(post, 3);
   <!-- 相關文章預取和顯示 -->
   {relatedPosts.length > 0 && (
     <aside class="related-posts">
-      <h3>相關文章</h3>
+      <h3>相关文章</h3>
       <div class="related-posts-grid">
         {relatedPosts.map((relatedPost) => (
           <a href={`/posts/${relatedPost.slug}`} class="related-post-card">
