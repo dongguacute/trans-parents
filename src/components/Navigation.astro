@@ -274,7 +274,68 @@
    document.addEventListener('DOMContentLoaded', initNavigation);
    
    // Reinitialize after Astro navigation (SPA transitions)
-   document.addEventListener('astro:after-swap', initNavigation);
+   document.addEventListener('astro:after-swap', () => {
+     initNavigation();
+     // Re-apply theme after page transition
+     const savedTheme = localStorage.getItem('theme');
+     if (savedTheme) {
+       setTheme(savedTheme);
+     } else {
+       setTheme('system');
+     }
+     // Re-initialize theme functionality
+     initThemeSelector();
+   });
+
+   // Initialize theme selector (extracted for reuse)
+   function initThemeSelector() {
+     const themeToggle = document.getElementById('theme-toggle');
+     const themeDropdown = document.getElementById('theme-dropdown');
+
+     if (themeToggle && themeDropdown) {
+       // Remove existing event listeners by cloning
+       const newThemeToggle = themeToggle.cloneNode(true);
+       themeToggle.parentNode.replaceChild(newThemeToggle, themeToggle);
+
+       const newThemeDropdown = themeDropdown.cloneNode(true);
+       themeDropdown.parentNode.replaceChild(newThemeDropdown, themeDropdown);
+
+       // Re-get references
+       const updatedThemeToggle = document.getElementById('theme-toggle');
+       const updatedThemeDropdown = document.getElementById('theme-dropdown');
+
+       // Re-add event listeners
+       updatedThemeToggle.addEventListener('click', function(e) {
+         e.stopPropagation();
+         updatedThemeDropdown.classList.toggle('hidden');
+       });
+
+       // Close dropdown when clicking elsewhere
+       document.addEventListener('click', function(e) {
+         if (!updatedThemeToggle.contains(e.target) && !updatedThemeDropdown.contains(e.target)) {
+           updatedThemeDropdown.classList.add('hidden');
+         }
+       });
+
+       // Theme selection
+       const themeButtons = document.querySelectorAll('[data-theme]');
+       themeButtons.forEach(button => {
+         // Remove existing listeners by cloning
+         const newButton = button.cloneNode(true);
+         button.parentNode.replaceChild(newButton, button);
+       });
+
+       // Re-add listeners to new buttons
+       const newThemeButtons = document.querySelectorAll('[data-theme]');
+       newThemeButtons.forEach(button => {
+         button.addEventListener('click', function() {
+           const theme = this.getAttribute('data-theme');
+           setTheme(theme);
+           updatedThemeDropdown.classList.add('hidden');
+         });
+       });
+     }
+   }
    
    // Also initialize immediately in case DOM is already loaded
    if (document.readyState === 'loading') {
@@ -284,72 +345,44 @@
      initNavigation();
    }
    
-   // Theme selector functionality
-   document.addEventListener('DOMContentLoaded', function() {
-     const themeToggle = document.getElementById('theme-toggle');
-     const themeDropdown = document.getElementById('theme-dropdown');
-     
-     // Toggle dropdown visibility
-     themeToggle.addEventListener('click', function(e) {
-       e.stopPropagation();
-       themeDropdown.classList.toggle('hidden');
-     });
-     
-     // Close dropdown when clicking elsewhere
-     document.addEventListener('click', function(e) {
-       if (!themeToggle.contains(e.target) && !themeDropdown.contains(e.target)) {
-         themeDropdown.classList.add('hidden');
-       }
-     });
-     
-     // Theme selection
-     const themeButtons = document.querySelectorAll('[data-theme]');
-     themeButtons.forEach(button => {
-       button.addEventListener('click', function() {
-         const theme = this.getAttribute('data-theme');
-         setTheme(theme);
-         themeDropdown.classList.add('hidden');
-       });
-     });
-     
-     // Set initial theme based on saved preference or system preference
-     function setTheme(theme) {
-       switch(theme) {
-         case 'light':
-           document.documentElement.classList.remove('dark');
-           document.documentElement.classList.add('light');
-           localStorage.setItem('theme', 'light');
-           updateThemeIcon('light');
-           break;
-         case 'dark':
+   // Global theme functions
+   function setTheme(theme) {
+     switch(theme) {
+       case 'light':
+         document.documentElement.classList.remove('dark');
+         document.documentElement.classList.add('light');
+         localStorage.setItem('theme', 'light');
+         updateThemeIcon('light');
+         break;
+       case 'dark':
+         document.documentElement.classList.remove('light');
+         document.documentElement.classList.add('dark');
+         localStorage.setItem('theme', 'dark');
+         updateThemeIcon('dark');
+         break;
+       case 'system':
+       default:
+         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
            document.documentElement.classList.remove('light');
            document.documentElement.classList.add('dark');
-           localStorage.setItem('theme', 'dark');
+           localStorage.setItem('theme', 'system');
            updateThemeIcon('dark');
-           break;
-         case 'system':
-         default:
-           if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-             document.documentElement.classList.remove('light');
-             document.documentElement.classList.add('dark');
-             localStorage.setItem('theme', 'system');
-             updateThemeIcon('dark');
-           } else {
-             document.documentElement.classList.remove('dark');
-             document.documentElement.classList.add('light');
-             localStorage.setItem('theme', 'system');
-             updateThemeIcon('light');
-           }
-           break;
-       }
+         } else {
+           document.documentElement.classList.remove('dark');
+           document.documentElement.classList.add('light');
+           localStorage.setItem('theme', 'system');
+           updateThemeIcon('light');
+         }
+         break;
      }
+   }
 
-     // Update theme icon based on current theme
-     function updateThemeIcon(theme) {
-       const sunRays = document.querySelector('.sun-rays');
-       const moonPath = document.querySelector('.moon-path');
-       const sunCircle = document.querySelector('.sun-circle');
+   function updateThemeIcon(theme) {
+     const sunRays = document.querySelector('.sun-rays');
+     const moonPath = document.querySelector('.moon-path');
+     const sunCircle = document.querySelector('.sun-circle');
 
+     if (sunRays && moonPath && sunCircle) {
        if (theme === 'dark') {
          sunRays.style.opacity = '0';
          sunRays.style.transform = 'rotate(180deg)';
@@ -368,7 +401,13 @@
          }, 150);
        }
      }
-     
+   }
+
+   // Theme selector functionality
+   document.addEventListener('DOMContentLoaded', function() {
+     // Initialize theme selector
+     initThemeSelector();
+
      // Initialize theme on page load
      const savedTheme = localStorage.getItem('theme');
      if (savedTheme) {
@@ -376,7 +415,7 @@
      } else {
        setTheme('system'); // Default to system
      }
-     
+
      // Listen for system theme changes
      if (window.matchMedia) {
        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
