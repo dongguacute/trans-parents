@@ -189,8 +189,6 @@
          item.classList.remove('text-black');
          item.classList.add('text-white');
        });
-       // Dark overlay background
-       navOverlay.style.background = 'rgba(0, 0, 0, 0.5)';
      } else {
        // In light mode
        if (isDocsPage) {
@@ -200,8 +198,6 @@
            item.classList.remove('text-white');
            item.classList.add('text-black');
          });
-         // Dark overlay background for visibility
-         navOverlay.style.background = 'rgba(0, 0, 0, 0.5)';
        } else {
          // White text on other pages
          const navItems = navOverlay.querySelectorAll('.nav-item');
@@ -209,10 +205,10 @@
            item.classList.remove('text-black');
            item.classList.add('text-white');
          });
-         // Light overlay background
-         navOverlay.style.background = 'rgba(255, 255, 255, 0.1)';
        }
      }
+     // Keep consistent overlay background
+     navOverlay.style.background = 'rgba(0, 0, 0, 0.5)';
 
      if (updatedNavToggle && navOverlay) {
        console.log('Elements found:', updatedNavToggle, navOverlay);
