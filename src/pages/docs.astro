@@ -1,9 +1,14 @@
 ---
 import Navigation from '../components/Navigation.astro';
 import Layout from '../layouts/Layout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
 
 // Documentation page
-const posts = await Astro.glob('../posts/*.md');
+const posts = await getCollection('posts');
+// 按日期排序（最新的在前）
+const sortedPosts = posts.sort((a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) =>
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
 ---
 
 <Layout title="文档 - Trans Parents">
@@ -11,36 +16,35 @@ const posts = await Astro.glob('../posts/*.md');
 
 	<div class="docs-content">
 		<div class="posts-list">
-			{posts.map((post) => {
-				const slug = post.file ? post.file.split('/').pop()?.replace('.md', '') : '';
-				return (
-					<article class="post-item">
-						<div class="post-header">
-							<div class="post-title-wrapper">
-								<span class="title-bar"></span>
-								<h2><a href={`/posts/${slug}`}>{post.frontmatter.title}</a></h2>
-							</div>
-							<div class="post-arrow">
-								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-								</svg>
-							</div>
+			{sortedPosts.map((post: CollectionEntry<'posts'>) => (
+				<article class="post-item">
+					<div class="post-header">
+						<div class="post-title-wrapper">
+							<span class="title-bar"></span>
+							<h2><a href={`/posts/${post.slug}`}>{post.data.title}</a></h2>
 						</div>
-						<div class="post-meta">
-							<span class="meta-item">
-								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<path d="M8 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-									<path d="M16 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-									<path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-									<path d="M21 8V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H19C19.5304 6 20.0391 6.21071 20.4142 6.58579C20.7893 6.96086 21 7.46957 21 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-								</svg>
-								<time>{new Date(post.frontmatter.date).toLocaleDateString('zh-TW')}</time>
-							</span>
+						<div class="post-arrow">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
 						</div>
-						<p class="post-description">{post.frontmatter.description}</p>
-					</article>
-				);
-			})}
+					</div>
+					<div class="post-meta">
+						<span class="meta-item">
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M8 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								<path d="M16 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								<path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								<path d="M21 8V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H19C19.5304 6 20.0391 6.21071 20.4142 6.58579C20.7893 6.96086 21 7.46957 21 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+							<time>{new Date(post.data.date).toLocaleDateString('zh-TW')}</time>
+						</span>
+					</div>
+					{post.data.description && (
+						<p class="post-description">{post.data.description}</p>
+					)}
+				</article>
+			))}
 		</div>
 	</div>
 </Layout>

@@ -1,49 +1,40 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Navigation from '../../components/Navigation.astro';
-
-interface Post {
-  frontmatter: {
-    title: string;
-    date: string;
-    description?: string;
-    category?: string;
-    tags?: string[];
-  };
-  default: any;
-}
+import { getCollection, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
-  const posts: Record<string, Post> = import.meta.glob('../../posts/*.md', { eager: true });
-  return Object.entries(posts).map(([path, post]) => {
-    const slug = path.split('/').pop()?.replace('.md', '');
-    return {
-      params: { slug },
-      props: { post },
-    };
-  });
+  const posts = await getCollection('posts');
+  return posts.map((post: CollectionEntry<'posts'>) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
 }
 
-let { post }: { post: Post } = Astro.props;
-const Content = post.default;
+type Props = {
+  post: CollectionEntry<'posts'>;
+};
+
+const { post } = Astro.props as Props;
+const { Content } = await post.render();
 ---
 
-<Layout title={`${post.frontmatter.title} - Trans Parents`}>
+<Layout title={`${post.data.title} - Trans Parents`}>
   <Navigation />
 
   <article class="post-content">
     <header class="post-header">
-      <h1>{post.frontmatter.title}</h1>
+      <h1>{post.data.title}</h1>
       <div class="post-meta">
-        <time>{new Date(post.frontmatter.date).toLocaleDateString('zh-TW')}</time>
-        {post.frontmatter.category && <span class="category">{post.frontmatter.category}</span>}
-        {post.frontmatter.tags && (
+        <time>{new Date(post.data.date).toLocaleDateString('zh-TW')}</time>
+        {post.data.category && <span class="category">{post.data.category}</span>}
+        {post.data.tags && (
           <div class="tags">
-            {post.frontmatter.tags.map((tag: string) => <span class="tag">{tag}</span>)}
+            {post.data.tags.map((tag: string) => <span class="tag">{tag}</span>)}
           </div>
         )}
       </div>
-      {post.frontmatter.description && <p class="description">{post.frontmatter.description}</p>}
+      {post.data.description && <p class="description">{post.data.description}</p>}
     </header>
 
     <div class="post-body" id="post-content">
