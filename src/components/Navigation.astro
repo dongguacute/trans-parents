@@ -2,32 +2,44 @@
 // Navigation component
 ---
 
-<div id="navigation" class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-5 pointer-events-none">
-  <!-- Left side: Smiling face circle button -->
-  <button id="nav-toggle" class="pointer-events-auto bg-white/10 border border-white/20 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer transition-colors hover:bg-white/20 text-white">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
-      <circle cx="9" cy="9" r="1" fill="currentColor"/>
-      <circle cx="15" cy="9" r="1" fill="currentColor"/>
-      <path d="M8 14 Q12 18 16 14" stroke="currentColor" stroke-width="2" fill="none"/>
-    </svg>
-  </button>
+<div id="navigation" class="fixed top-0 left-0 right-0 z-50 flex items-center p-5 pointer-events-none">
+   <!-- Left side: Smiling face circle button -->
+   <button id="nav-toggle" class="pointer-events-auto bg-white/10 border border-white/20 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer transition-colors hover:bg-white/20 text-black backdrop-blur-md" style="z-index: 60;">
+     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+       <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+       <circle cx="9" cy="9" r="1" fill="currentColor"/>
+       <circle cx="15" cy="9" r="1" fill="currentColor"/>
+       <path d="M8 14 Q12 18 16 14" stroke="currentColor" stroke-width="2" fill="none"/>
+     </svg>
+   </button>
 
-  <!-- Full screen navigation overlay -->
+   <!-- Center: Search box -->
+   <div class="absolute left-1/2 transform -translate-x-1/2 pointer-events-auto">
+     <div class="search-container" id="nav-search">
+       <input type="text" id="search-input" placeholder="搜索..." class="search-input">
+       <button type="button" class="search-button">
+         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+           <path d="M21 21L16.5 16.5M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+         </svg>
+       </button>
+     </div>
+   </div>
+
+   <!-- Full screen navigation overlay -->
   <div id="nav-overlay" class="fixed inset-0 bg-white/10 backdrop-blur-md opacity-0 z-50 transition-all duration-300 ease-in-out" style="visibility: hidden; pointer-events: none;">
     <button id="nav-close" class="absolute top-5 right-5 bg-none border-none text-3xl cursor-pointer text-white z-[60] pointer-events-auto">&times;</button>
     <nav class="flex flex-col justify-center items-center h-full gap-8">
-      <a href="/" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">首頁</a>
-      <a href="/about" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">關於</a>
-      <a href="/contact" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">聯絡</a>
+      <a href="/" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">首页</a>
+      <a href="/docs" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">文档</a>
+      <a href="/contact" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">关于本站</a>
       <!-- Add more links as needed -->
     </nav>
   </div>
 
   <!-- Right side: Floating options -->
-  <div class="flex gap-2.5 pointer-events-auto">
-    <button class="bg-white/10 border border-white/20 rounded-xl py-2.5 px-3.5 text-white cursor-pointer transition-colors hover:bg-white/20 text-sm" id="disclaimer-btn">免責聲明</button>
-    <button class="bg-white/10 border border-white/20 rounded-xl py-2.5 px-3.5 text-white cursor-pointer transition-colors hover:bg-white/20 text-sm" id="about-btn">關於本站</button>
+  <div class="absolute right-0 flex gap-2.5 pointer-events-auto p-5" style="z-index: 30;">
+    <button class="bg-white/10 border border-white/20 rounded-xl py-2.5 px-3.5 text-black cursor-pointer transition-colors hover:bg-white/20 text-sm backdrop-blur-md" id="disclaimer-btn">免责声明</button>
+    <button class="bg-white/10 border border-white/20 rounded-xl py-2.5 px-3.5 text-black cursor-pointer transition-colors hover:bg-white/20 text-sm backdrop-blur-md" id="about-btn">关于本站</button>
   </div>
 </div>
 
@@ -42,78 +54,187 @@
   opacity: 1;
   transform: translateX(0);
 }
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 25px;
+  padding: 8px 16px;
+  backdrop-filter: blur(10px);
+  max-width: 400px;
+  width: 300px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s ease-in-out;
+}
+
+.search-container:hover {
+  width: 500px;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 16px;
+  outline: none;
+  padding: 8px;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.search-button {
+  border: none;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.search-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 </style>
 
 <script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
-    const navToggle = document.getElementById('nav-toggle');
-    const navOverlay = document.getElementById('nav-overlay');
-    const navClose = document.getElementById('nav-close');
+   // Function to initialize navigation functionality
+   function initNavigation() {
+     const navToggle = document.getElementById('nav-toggle');
+     const navOverlay = document.getElementById('nav-overlay');
+     const navClose = document.getElementById('nav-close');
+     const navSearch = document.getElementById('nav-search');
 
-    if (navToggle && navOverlay && navClose) {
-      console.log('Elements found:', navToggle, navOverlay, navClose);
+     // Remove existing event listeners by replacing elements to prevent duplicates
+     if (navToggle) {
+       const newNavToggle = navToggle.cloneNode(true);
+       navToggle.parentNode.replaceChild(newNavToggle, navToggle);
+     }
+     if (navClose) {
+       const newNavClose = navClose.cloneNode(true);
+       navClose.parentNode.replaceChild(newNavClose, navClose);
+     }
 
-      const openMenu = () => {
-        console.log('Opening menu');
-        navOverlay.style.visibility = 'visible';
-        navOverlay.style.pointerEvents = 'auto';
-        navOverlay.style.opacity = '1';
-        const navItems = navOverlay.querySelectorAll('.nav-item');
-        navItems.forEach((item, index) => {
-          setTimeout(() => {
-            item.classList.add('visible');
-          }, index * 100);
-        });
-      };
+     // Re-get references to the new elements
+     const updatedNavToggle = document.getElementById('nav-toggle');
+     const updatedNavClose = document.getElementById('nav-close');
 
-      const closeMenu = () => {
-        console.log('Closing menu');
-        navOverlay.style.opacity = '0';
-        const navItems = navOverlay.querySelectorAll('.nav-item');
-        navItems.forEach((item) => {
-          item.classList.remove('visible');
-        });
-        // Handle visibility and pointer-events after transition
-        navOverlay.addEventListener('transitionend', function handler() {
-          if (navOverlay.style.opacity === '0') {
-            navOverlay.style.visibility = 'hidden';
-            navOverlay.style.pointerEvents = 'none';
-          }
-          navOverlay.removeEventListener('transitionend', handler);
-        });
-      };
+     // Change nav item color on docs page
+     if (window.location.pathname === '/docs') {
+       const navItems = navOverlay.querySelectorAll('.nav-item');
+       navItems.forEach(item => {
+         item.classList.remove('text-white');
+         item.classList.add('text-black');
+       });
+       // Hide search box on docs page
+       if (navSearch) {
+         navSearch.style.display = 'none';
+       }
+       // Change overlay background for better visibility
+       navOverlay.style.background = 'rgba(0, 0, 0, 0.5)';
+     } else {
+       // Ensure white text on non-docs pages
+       const navItems = navOverlay.querySelectorAll('.nav-item');
+       navItems.forEach(item => {
+         item.classList.remove('text-black');
+         item.classList.add('text-white');
+       });
+       // Show search box on non-docs pages
+       if (navSearch) {
+         navSearch.style.display = 'block';
+       }
+       // Reset overlay background
+       navOverlay.style.background = 'rgba(255, 255, 255, 0.1)';
+     }
 
-      navToggle.addEventListener('click', () => {
-        console.log('Toggle clicked');
-        openMenu();
-      });
+     if (updatedNavToggle && navOverlay) {
+       console.log('Elements found:', updatedNavToggle, navOverlay);
 
-      navClose.addEventListener('click', (e) => {
-        console.log('Close button click event fired!'); // Added log
-        e.preventDefault(); // Prevent default button action
-        e.stopPropagation(); // Stop event from bubbling up to overlay
-        closeMenu();
-      });
+       const openMenu = () => {
+         console.log('Opening menu');
+         navOverlay.style.visibility = 'visible';
+         navOverlay.style.pointerEvents = 'auto';
+         navOverlay.style.opacity = '1';
+         const navItems = navOverlay.querySelectorAll('.nav-item');
+         navItems.forEach((item, index) => {
+           setTimeout(() => {
+             item.classList.add('visible');
+           }, index * 100);
+         });
+       };
 
-      navOverlay.addEventListener('click', (e) => {
-        if (e.target === navOverlay) {
-          console.log('Overlay clicked');
-          closeMenu();
-        }
-      });
+       const closeMenu = () => {
+         console.log('Closing menu');
+         navOverlay.style.opacity = '0';
+         const navItems = navOverlay.querySelectorAll('.nav-item');
+         navItems.forEach((item) => {
+           item.classList.remove('visible');
+         });
+         // Handle visibility and pointer-events after transition
+         setTimeout(() => {
+           navOverlay.style.visibility = 'hidden';
+           navOverlay.style.pointerEvents = 'none';
+         }, 300);
+       };
 
-      // Ensure nav items are clickable when overlay is active
-      navOverlay.addEventListener('click', (e) => {
-        if (e.target) {
-          const targetElement = e.target.closest ? e.target : null;
-          if (targetElement && targetElement.closest('.nav-item')) {
-            closeMenu(); // Close menu when a nav item is clicked
-          }
-        }
-      });
+       updatedNavToggle.addEventListener('click', () => {
+         console.log('Toggle clicked');
+         openMenu();
+       });
 
-    } else {
-      console.log('Elements not found:', navToggle, navOverlay, navClose);
-    }
-  });
+       if (updatedNavClose) {
+         updatedNavClose.addEventListener('click', (e) => {
+           console.log('Close button click event fired!'); // Added log
+           e.preventDefault(); // Prevent default button action
+           e.stopPropagation(); // Stop event from bubbling up to overlay
+           closeMenu();
+         });
+       }
+
+       // Handle clicks on overlay to close menu (only when clicking directly on overlay)
+       navOverlay.removeEventListener('click', handleOverlayClick); // Remove any existing listener
+       navOverlay.addEventListener('click', handleOverlayClick);
+
+       // Handle clicks on navigation links
+       const navLinks = navOverlay.querySelectorAll('.nav-item');
+       navLinks.forEach(link => {
+         link.removeEventListener('click', handleNavLinkClick); // Remove any existing listener
+         link.addEventListener('click', handleNavLinkClick);
+       });
+
+       // Function to handle overlay clicks
+       function handleOverlayClick(e) {
+         if (e.target === navOverlay) {
+           console.log('Overlay clicked');
+           closeMenu();
+         }
+       }
+
+       // Function to handle nav link clicks
+       function handleNavLinkClick(e) {
+         closeMenu();
+       }
+     } else {
+       console.log('Elements not found:', updatedNavToggle, navOverlay, updatedNavClose);
+     }
+   }
+
+   // Initialize on DOM load
+   document.addEventListener('DOMContentLoaded', initNavigation);
+   
+   // Reinitialize after Astro navigation (SPA transitions)
+   document.addEventListener('astro:after-swap', initNavigation);
+   
+   // Also initialize immediately in case DOM is already loaded
+   if (document.readyState === 'loading') {
+     // Still loading, DOMContentLoaded will fire later
+   } else {
+     // Already loaded, initialize now
+     initNavigation();
+   }
 </script>
