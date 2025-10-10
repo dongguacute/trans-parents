@@ -19,27 +19,9 @@ import { ClientRouter } from "astro:transitions";
 	</head>
 	<body>
 	<slot />
-		<ClientRouter />
+		
 		<Footer />
-		<style>
-			/* 高級 ViewTransitions 優化 */
-			::view-transition-old(root),
-			::view-transition-new(root) {
-				animation-duration: 0s;
-				animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
-			}
-
-			/* 減少不必要的過渡 */
-			::view-transition-image-pair(img) {
-				isolation: auto;
-			}
-
-			/* 優化文字渲染 */
-			::view-transition-old(root),
-			::view-transition-new(root) {
-				text-rendering: optimizeSpeed;
-			}
-		</style>
+		<ClientRouter />
 		<script>
 			// 初始化主題，確保 CSS 變量正確應用
 			(function() {
@@ -56,23 +38,6 @@ import { ClientRouter } from "astro:transitions";
 			})();
 
 			// 性能監控和優化
-			let transitionStart = 0;
-
-			// 監控 ViewTransitions 性能
-			document.addEventListener('astro:before-swap', () => {
-				transitionStart = performance.now();
-			});
-
-			document.addEventListener('astro:after-swap', () => {
-				const transitionTime = performance.now() - transitionStart;
-				console.log(`ViewTransition 完成時間: ${transitionTime.toFixed(2)}ms`);
-
-				// 如果過渡太慢，記錄下來
-				if (transitionTime > 100) {
-					console.warn('ViewTransition 較慢，可能需要優化');
-				}
-			});
-
 			// 監控長任務
 			const observer = new PerformanceObserver((list) => {
 				for (const entry of list.getEntries()) {
