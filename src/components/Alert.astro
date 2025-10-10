@@ -26,27 +26,27 @@ const { type, title } = Astro.props;
   }
 
   .alert-info {
-    background: rgba(59, 130, 246, 0.1);
-    border-left-color: #3b82f6;
-    color: #1e40af;
+    background: var(--color-info-bg, #e3f2fd);
+    border-left-color: var(--color-info-border, #2196f3);
+    color: var(--color-info-text, #0d47a1);
   }
 
   .alert-warning {
-    background: rgba(245, 158, 11, 0.1);
-    border-left-color: #f59e0b;
-    color: #92400e;
+    background: var(--color-warning-bg, #fff3e0);
+    border-left-color: var(--color-warning-border, #ff9800);
+    color: var(--color-warning-text, #e65100);
   }
 
   .alert-error {
-    background: rgba(239, 68, 68, 0.1);
-    border-left-color: #ef4444;
-    color: #991b1b;
+    background: var(--color-error-bg, #ffebee);
+    border-left-color: var(--color-error-border, #f44336);
+    color: var(--color-error-text, #b71c1c);
   }
 
   .alert-success {
-    background: rgba(34, 197, 94, 0.1);
-    border-left-color: #22c55e;
-    color: #166534;
+    background: var(--color-success-bg, #e8f5e8);
+    border-left-color: var(--color-success-border, #4caf50);
+    color: var(--color-success-text, #1b5e20);
   }
 
   .alert-title {

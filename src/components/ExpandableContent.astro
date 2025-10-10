@@ -27,29 +27,10 @@ const contentId = `expandable-${Math.random().toString(36).substr(2, 9)}`;
   </div>
 </div>
 
-<script>
-  function toggleExpandable(contentId: string) {
-    const button = document.querySelector(`[aria-controls="${contentId}"]`) as HTMLButtonElement;
-    const content = document.getElementById(contentId);
-    if (!button || !content) return;
-
-    const isExpanded = button.getAttribute('aria-expanded') === 'true';
-    button.setAttribute('aria-expanded', (!isExpanded).toString());
-    content.style.display = isExpanded ? 'none' : 'block';
-
-    const icon = button.querySelector('.toggle-icon');
-    if (icon) {
-      icon.textContent = isExpanded ? '▶' : '▼';
-    }
-  }
-
-  // Make function globally available
-  (window as any).toggleExpandable = toggleExpandable;
-</script>
 
 <style>
   .expandable-content {
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--color-border, #dee2e6);
     border-radius: 8px;
     margin: 1rem 0;
     overflow: hidden;
@@ -57,7 +38,7 @@ const contentId = `expandable-${Math.random().toString(36).substr(2, 9)}`;
 
   .expandable-toggle {
     width: 100%;
-    background: var(--color-card);
+    background: var(--color-card, #ffffff);
     border: none;
     padding: 1rem;
     text-align: left;
@@ -69,24 +50,24 @@ const contentId = `expandable-${Math.random().toString(36).substr(2, 9)}`;
   }
 
   .expandable-toggle:hover {
-    background: var(--color-border);
+    background: var(--color-hover, #f8f9fa);
   }
 
   .toggle-icon {
     font-size: 0.8rem;
-    color: var(--color-accent-secondary);
+    color: var(--color-accent-secondary, #E91E63);
     transition: transform 0.2s ease;
   }
 
   .toggle-title {
     font-weight: 500;
-    color: var(--color-text);
-  }
+    color: var(--color-text, #000000);
+ }
 
   .expandable-body {
     padding: 1rem;
-    background: var(--color-background);
-    border-top: 1px solid var(--color-border);
+    background: var(--color-bg, #ffffff);
+    border-top: 1px solid var(--color-border, #dee2e6);
     line-height: 1.6;
   }
 
@@ -101,14 +82,14 @@ const contentId = `expandable-${Math.random().toString(36).substr(2, 9)}`;
   .expandable-body :global(ul), .expandable-body :global(ol) {
     margin: 1rem 0;
     padding-left: 1.5rem;
-  }
+ }
 
   .expandable-body :global(li) {
     margin-bottom: 0.5rem;
   }
 
   .expandable-body :global(code) {
-    background: var(--color-card);
+    background: var(--color-code-inline-bg, #f1f3f4);
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
     font-family: 'Monaco', 'Menlo', monospace;
@@ -116,12 +97,12 @@ const contentId = `expandable-${Math.random().toString(36).substr(2, 9)}`;
   }
 
   .expandable-body :global(pre) {
-    background: var(--color-card);
+    background: var(--color-card, #ffffff);
     padding: 1rem;
     border-radius: 8px;
     overflow-x: auto;
     margin: 1rem 0;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--color-border, #dee2e6);
   }
 
   .expandable-body :global(pre code) {
@@ -130,10 +111,10 @@ const contentId = `expandable-${Math.random().toString(36).substr(2, 9)}`;
   }
 
   .expandable-body :global(blockquote) {
-    border-left: 4px solid var(--color-accent-secondary);
+    border-left: 4px solid var(--color-accent-secondary, #E91E63);
     padding-left: 1rem;
     margin: 1rem 0;
-    color: var(--color-text-secondary);
+    color: var(--color-text-secondary, #6c757d);
     font-style: italic;
   }
 </style>

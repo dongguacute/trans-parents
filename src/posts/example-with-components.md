@@ -14,9 +14,9 @@ tags: ["組件", "Markdown", "示例"]
 
 ### 信息提示
 
-<Alert type="info" title="提示">
+<alert type="info" title="提示">
 這是一個信息提示，用於提供有用的信息給用戶。
-</Alert>
+</alert>
 
 ### 警告提示
 

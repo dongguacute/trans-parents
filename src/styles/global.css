@@ -42,6 +42,40 @@ body {
 /* Apply theme colors */
 :root {
   color-scheme: light dark;
+  /* Default light theme variables */
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f8f9fa;
+  --color-text: #000000;
+  --color-text-secondary: #6c757d;
+  --color-accent: #000000;
+  --color-accent-secondary: #E91E63;
+  --color-border: #dee2e6;
+  --color-hover: #f8f9fa;
+  --color-card: #ffffff;
+  --color-shadow: rgba(0, 0, 0, 0.05);
+  --color-background-light: #f8f9fa;
+  --color-background-hover: #e9ecef;
+  --color-category-bg: #e3f2fd;
+  --color-category-text: #0d47a1;
+  --color-tag-bg: #f3e5f5;
+  --color-tag-text: #4a148c;
+  --color-code-bg: #f8f9fa;
+  --color-code-text: #d73a49;
+  --color-code-inline-bg: #f1f3f4;
+  --color-code-inline-text: #d73a49;
+  --color-table-header-bg: #f8f9fa;
+  --color-info-bg: #e3f2fd;
+  --color-info-border: #2196f3;
+  --color-info-text: #0d47a1;
+  --color-warning-bg: #fff3e0;
+  --color-warning-border: #ff9800;
+  --color-warning-text: #e65100;
+  --color-error-bg: #ffebee;
+  --color-error-border: #f44336;
+  --color-error-text: #b71c1c;
+  --color-success-bg: #e8f5e8;
+  --color-success-border: #4caf50;
+  --color-success-text: #1b5e20;
 }
 
 body {
