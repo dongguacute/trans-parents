@@ -10,6 +10,11 @@ import { ViewTransitions } from 'astro:transitions';
 		<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/png" href="/favicon-32.png" />
+
+		<!-- 預載入關鍵資源 -->
+		<link rel="preload" href="/fonts/Roboto-Black.woff2" as="font" type="font/woff2" crossorigin>
+		<link rel="dns-prefetch" href="//fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 		<meta name="generator" content={Astro.generator} />
 		<title>{Astro.props.title || 'Trans Parents'}</title>
 	</head>
@@ -18,11 +23,22 @@ import { ViewTransitions } from 'astro:transitions';
 		<Footer />
 		<ViewTransitions />
 		<style>
-			/* 優化 ViewTransitions 性能 */
+			/* 高級 ViewTransitions 優化 */
 			::view-transition-old(root),
 			::view-transition-new(root) {
-				animation-duration: 0.2s;
-				animation-timing-function: ease-in-out;
+				animation-duration: 0.15s;
+				animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+			}
+
+			/* 減少不必要的過渡 */
+			::view-transition-image-pair(img) {
+				isolation: auto;
+			}
+
+			/* 優化文字渲染 */
+			::view-transition-old(root),
+			::view-transition-new(root) {
+				text-rendering: optimizeSpeed;
 			}
 		</style>
 		<script>
@@ -39,6 +55,39 @@ import { ViewTransitions } from 'astro:transitions';
 				// 確保 body 也有相應類別
 				document.body.classList.add(theme);
 			})();
+
+			// 性能監控和優化
+			let transitionStart = 0;
+
+			// 監控 ViewTransitions 性能
+			document.addEventListener('astro:before-swap', () => {
+				transitionStart = performance.now();
+			});
+
+			document.addEventListener('astro:after-swap', () => {
+				const transitionTime = performance.now() - transitionStart;
+				console.log(`ViewTransition 完成時間: ${transitionTime.toFixed(2)}ms`);
+
+				// 如果過渡太慢，記錄下來
+				if (transitionTime > 100) {
+					console.warn('ViewTransition 較慢，可能需要優化');
+				}
+			});
+
+			// 監控長任務
+			const observer = new PerformanceObserver((list) => {
+				for (const entry of list.getEntries()) {
+					if (entry.duration > 50) {
+						console.warn(`長任務檢測: ${entry.duration.toFixed(2)}ms`, entry);
+					}
+				}
+			});
+
+			try {
+				observer.observe({ entryTypes: ['longtask'] });
+			} catch (e) {
+				// 瀏覽器不支持，靜默失敗
+			}
 		</script>
 	</body>
 </html>
