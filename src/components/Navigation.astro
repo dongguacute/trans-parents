@@ -565,77 +565,15 @@
      initThemeSelector();
    });
 
-   // Next.js 風格的預載入功能
+   // Next.js 風格的預載入功能 - 已禁用以改善效能
    function initPrefetching() {
-     // 檢查用戶是否啟用了減少動畫
-     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-     const reducedMotion = localStorage.getItem('reduced-motion') === 'true' || prefersReducedMotion;
-
-     // 預載入鏈接
-     const links = document.querySelectorAll('a[href^="/"]');
-     links.forEach(link => {
-       // 在 hover 時預載入
-       link.addEventListener('mouseenter', () => {
-         const href = link.getAttribute('href');
-         if (href && !href.includes('#') && !link.hasAttribute('data-prefetched')) {
-           // 如果用戶要求減少動畫，使用更保守的預載入策略
-           const delay = reducedMotion ? 300 : 100;
-
-           // 使用 requestIdleCallback 確保不會阻塞主線程
-           if ('requestIdleCallback' in window) {
-             requestIdleCallback(() => prefetchPage(href), { timeout: 2000 });
-           } else {
-             setTimeout(() => prefetchPage(href), delay);
-           }
-           link.setAttribute('data-prefetched', 'true');
-         }
-       });
-
-       // 對於減少動畫的用戶，移除 hover 效果
-       if (reducedMotion) {
-         link.style.transition = 'none';
-       }
-     });
+     // 預載入功能已禁用，以避免不必要的資源載入和效能問題
+     return;
    }
 
    function prefetchPage(href) {
-     // 檢查是否已經預載入過
-     if (document.querySelector(`link[href="${href}"][rel="prefetch"]`)) {
-       return;
-     }
-
-     // 根據連接速度調整策略
-     const connection = navigator.connection;
-     const isSlowConnection = connection &&
-       (connection.effectiveType === 'slow-2g' ||
-        connection.effectiveType === '2g' ||
-        connection.saveData === true);
-
-     // 在慢連接下跳過預載入
-     if (isSlowConnection) {
-       return;
-     }
-
-     // 預載入頁面資源
-     const link = document.createElement('link');
-     link.rel = 'prefetch';
-     link.href = href;
-     link.as = 'document';
-
-     // 對於快速連接，使用更高優先級
-     if (connection && connection.effectiveType === '4g') {
-       link.setAttribute('fetchpriority', 'high');
-     }
-
-     document.head.appendChild(link);
-
-     // 動態調整同時預載入限制
-     const maxPrefetches = isSlowConnection ? 1 : 3;
-     const existingPrefetches = document.querySelectorAll('link[rel="prefetch"]');
-     if (existingPrefetches.length > maxPrefetches) {
-       // 移除最舊的預載入
-       existingPrefetches[0].remove();
-     }
+     // 預載入功能已禁用
+     return;
    }
 
    // Reinitialize after Astro navigation (SPA transitions)
