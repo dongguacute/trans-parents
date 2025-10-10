@@ -86,10 +86,10 @@ const postsWithWordCount = await Promise.all(posts.map(async (post) => {
   }
 
   .post-item {
-    background: #fff; /* 白色背景 */
+    background: var(--color-card); /* 适配主题的卡片背景 */
     border-radius: 12px; /* 更大的圓角 */
     padding: 1.8rem; /* 稍微減少內邊距 */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* 柔和的陰影 */
+    box-shadow: 0 4px 20px var(--color-shadow); /* 适配主题的阴影 */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: column;
@@ -98,7 +98,7 @@ const postsWithWordCount = await Promise.all(posts.map(async (post) => {
 
   .post-item:hover {
     transform: translateY(-5px); /* 更明顯的懸停效果 */
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px var(--color-shadow);
   }
 
   .post-header {
@@ -116,14 +116,14 @@ const postsWithWordCount = await Promise.all(posts.map(async (post) => {
   .title-bar {
     width: 6px;
     height: 1.8em; /* 與標題高度匹配 */
-    background-color: #E91E63; /* 粉色條 */
+    background-color: var(--color-accent-secondary); /* 适配主题的强调色 */
     border-radius: 3px;
   }
 
   .post-item h2 {
     margin: 0;
     font-size: 1.8rem; /* 增大標題字體 */
-    color: #333; /* 深色字體 */
+    color: var(--color-text); /* 适配主题的文字颜色 */
     line-height: 1.2;
   }
 
@@ -133,7 +133,7 @@ const postsWithWordCount = await Promise.all(posts.map(async (post) => {
   }
 
   .post-arrow {
-    color: #E91E63; /* 粉色箭頭 */
+    color: var(--color-accent-secondary); /* 适配主题的强调色 */
   }
 
   .post-meta {
@@ -142,7 +142,7 @@ const postsWithWordCount = await Promise.all(posts.map(async (post) => {
     gap: 1rem;
     align-items: center;
     font-size: 0.9rem;
-    color: #666; /* 較淺的元數據字體顏色 */
+    color: var(--color-text-secondary); /* 适配主题的次要文字颜色 */
   }
 
   .meta-item {
@@ -152,7 +152,7 @@ const postsWithWordCount = await Promise.all(posts.map(async (post) => {
   }
 
   .meta-item svg {
-    color: #E91E63; /* 粉色圖標 */
+    color: var(--color-accent-secondary); /* 适配主题的强调色 */
   }
 
 </style>
