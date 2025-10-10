@@ -163,13 +163,13 @@ table tr:nth-child(even) {
 
 /* 列表樣式 */
 ul, ol {
-  margin: 1rem 0;
+ margin: 1rem 0;
   padding-left: 1.5rem;
 }
 
 ul li, ol li {
   margin: 0.5rem 0;
-  line-height: 1.6;
+ line-height: 1.6;
 }
 
 ul {
@@ -183,4 +183,10 @@ ol {
 li > ul,
 li > ol {
   margin: 0.5rem 0;
+}
+
+/* 刪除線樣式 */
+del, s, strike {
+  text-decoration: line-through;
+  color: var(--color-text-secondary);
 }
