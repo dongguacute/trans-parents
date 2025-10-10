@@ -226,6 +226,13 @@
 </style>
 
 <script defer>
+  // 優化載入體驗
+  document.addEventListener('DOMContentLoaded', function() {
+    // 確保頁面在載入時不會閃爍
+    document.body.style.opacity = '1';
+  });
+</script>
+<script defer>
    // Function to initialize navigation functionality
    function initNavigation() {
      const navToggle = document.getElementById('nav-toggle');
