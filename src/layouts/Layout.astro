@@ -28,13 +28,22 @@ import { ClientRouter } from "astro:transitions";
 		<PerformanceMonitor />
 		<ClientRouter />
 		<script is:inline>
-			// 優化的主題初始化 - 更快速
+			// 優化的主題和字體大小初始化 - 更快速
 			(function() {
+				// 初始化主题
 				const savedTheme = localStorage.getItem('theme');
 				if (savedTheme) {
 					document.documentElement.className = savedTheme;
 				} else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
 					document.documentElement.className = 'dark';
+				}
+				
+				// 初始化字体大小
+				const savedFontSize = localStorage.getItem('fontSize');
+				if (savedFontSize) {
+					document.documentElement.classList.add('font-' + savedFontSize);
+				} else {
+					document.documentElement.classList.add('font-normal');
 				}
 			})();
 		</script>

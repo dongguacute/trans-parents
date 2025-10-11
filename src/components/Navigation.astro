@@ -100,17 +100,46 @@ const searchData = articlesData.articles
   <!-- Right side: Floating options -->
   <div class="absolute right-0 flex gap-2.5 pointer-events-auto p-5" style="z-index: 30;">
     <!-- Mobile search button -->
-    <button id="mobile-search-btn" class="mobile-search-btn nav-button rounded-xl cursor-pointer text-sm backdrop-blur-md hidden flex items-center justify-center w-12 h-12">
+    <button id="mobile-search-btn" class="mobile-search-btn nav-button rounded-xl cursor-pointer text-sm backdrop-blur-md hidden items-center justify-center w-12 h-12">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
         <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
-    <a href="/posts/disclaimer" class="nav-button rounded-xl py-2.5 px-3.5 cursor-pointer text-sm backdrop-blur-md no-underline">免责声明</a>
-    <a href="/posts/about" class="nav-button rounded-xl py-2.5 px-3.5 cursor-pointer text-sm backdrop-blur-md no-underline">关于本站</a>
+    
+    <!-- Font size toggle button -->
+    <div class="relative" id="font-size-selector">
+      <button id="font-size-toggle" class="nav-button group relative rounded-xl cursor-pointer backdrop-blur-md flex items-center justify-center w-12 h-12">
+        <span id="font-size-icon" class="text-lg font-bold transition-transform duration-300 group-hover:scale-110" style="color: var(--color-text);">字</span>
+      </button>
+
+      <!-- Font size dropdown menu -->
+      <div id="font-size-dropdown" class="absolute right-0 mt-3 w-56 backdrop-blur-xl rounded-2xl shadow-2xl py-3 hidden" style="background-color: var(--color-card); border: 1px solid var(--color-border); z-index: 9999; max-width: 14rem; left: auto; right: 0.5rem; transform: translateX(0); overflow: visible;">
+        <div class="px-2 py-2 text-xs font-semibold uppercase tracking-wide" style="color: var(--color-text-secondary);">字体大小</div>
+        <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
+        <button class="flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text);" data-font-size="normal" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+          <svg class="w-4 h-4 mr-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <text x="4" y="18" font-size="14" fill="currentColor">A</text>
+          </svg>
+          正常
+        </button>
+        <button class="flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text);" data-font-size="large" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+          <svg class="w-4 h-4 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <text x="2" y="18" font-size="16" fill="currentColor">A</text>
+          </svg>
+          大字体
+        </button>
+        <button class="flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text);" data-font-size="xlarge" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+          <svg class="w-4 h-4 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <text x="1" y="19" font-size="18" fill="currentColor">A</text>
+          </svg>
+          超大字体 (长辈模式)
+        </button>
+      </div>
+    </div>
     
     <!-- Theme toggle button -->
     <div class="relative" id="theme-selector">
-      <button id="theme-toggle" class="nav-button group relative rounded-xl p-3 cursor-pointer backdrop-blur-md">
+      <button id="theme-toggle" class="nav-button group relative rounded-xl cursor-pointer backdrop-blur-md flex items-center justify-center w-12 h-12">
         <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="transition-transform duration-300 group-hover:rotate-12">
           <!-- Sun icon -->
           <circle cx="12" cy="12" r="5" fill="currentColor" class="sun-circle"/>
@@ -1014,6 +1043,7 @@ const searchData = articlesData.articles
      initNavigation();
      initSearch();
      initThemeSelector();
+     initFontSizeSelector();
      
      // 初始化主题
      const savedTheme = localStorage.getItem('theme');
@@ -1021,6 +1051,14 @@ const searchData = articlesData.articles
        setTheme(savedTheme);
      } else {
        setTheme('system');
+     }
+     
+     // 初始化字体大小
+     const savedFontSize = localStorage.getItem('fontSize');
+     if (savedFontSize) {
+       setFontSize(savedFontSize);
+     } else {
+       setFontSize('normal');
      }
    }
 
@@ -1060,9 +1098,69 @@ const searchData = articlesData.articles
      } else {
        setTheme('system');
      }
-     // Re-initialize theme functionality
+     // Re-apply font size after page transition
+     const savedFontSize = localStorage.getItem('fontSize');
+     if (savedFontSize) {
+       setFontSize(savedFontSize);
+     } else {
+       setFontSize('normal');
+     }
+     // Re-initialize theme and font size functionality
      initThemeSelector();
+     initFontSizeSelector();
    });
+
+   // Initialize font size selector (extracted for reuse)
+   function initFontSizeSelector() {
+     const fontSizeToggle = document.getElementById('font-size-toggle');
+     const fontSizeDropdown = document.getElementById('font-size-dropdown');
+
+     if (fontSizeToggle && fontSizeDropdown) {
+       // Remove existing event listeners by cloning
+       const newFontSizeToggle = fontSizeToggle.cloneNode(true);
+       fontSizeToggle.parentNode.replaceChild(newFontSizeToggle, fontSizeToggle);
+
+       const newFontSizeDropdown = fontSizeDropdown.cloneNode(true);
+       fontSizeDropdown.parentNode.replaceChild(newFontSizeDropdown, fontSizeDropdown);
+       // Ensure z-index is set after cloning
+       newFontSizeDropdown.style.zIndex = '9999';
+
+       // Re-get references
+       const updatedFontSizeToggle = document.getElementById('font-size-toggle');
+       const updatedFontSizeDropdown = document.getElementById('font-size-dropdown');
+
+       // Re-add event listeners
+       updatedFontSizeToggle.addEventListener('click', function(e) {
+         e.stopPropagation();
+         updatedFontSizeDropdown.classList.toggle('hidden');
+       });
+
+       // Close dropdown when clicking elsewhere
+       document.addEventListener('click', function(e) {
+         if (!updatedFontSizeToggle.contains(e.target) && !updatedFontSizeDropdown.contains(e.target)) {
+           updatedFontSizeDropdown.classList.add('hidden');
+         }
+       });
+
+       // Font size selection
+       const fontSizeButtons = document.querySelectorAll('[data-font-size]');
+       fontSizeButtons.forEach(button => {
+         // Remove existing listeners by cloning
+         const newButton = button.cloneNode(true);
+         button.parentNode.replaceChild(newButton, button);
+       });
+
+       // Re-add listeners to new buttons
+       const newFontSizeButtons = document.querySelectorAll('[data-font-size]');
+       newFontSizeButtons.forEach(button => {
+         button.addEventListener('click', function() {
+           const fontSize = this.getAttribute('data-font-size');
+           setFontSize(fontSize);
+           updatedFontSizeDropdown.classList.add('hidden');
+         });
+       });
+     }
+   }
 
    // Initialize theme selector (extracted for reuse)
    function initThemeSelector() {
@@ -1179,6 +1277,32 @@ const searchData = articlesData.articles
            moonPath.classList.add('hidden');
          }, 150);
        }
+     }
+   }
+
+   // Global font size functions
+   function setFontSize(size) {
+     // Remove existing font size classes
+     document.documentElement.classList.remove('font-normal', 'font-large', 'font-xlarge');
+     
+     // Add new font size class
+     switch(size) {
+       case 'normal':
+         document.documentElement.classList.add('font-normal');
+         localStorage.setItem('fontSize', 'normal');
+         break;
+       case 'large':
+         document.documentElement.classList.add('font-large');
+         localStorage.setItem('fontSize', 'large');
+         break;
+       case 'xlarge':
+         document.documentElement.classList.add('font-xlarge');
+         localStorage.setItem('fontSize', 'xlarge');
+         break;
+       default:
+         document.documentElement.classList.add('font-normal');
+         localStorage.setItem('fontSize', 'normal');
+         break;
      }
    }
 

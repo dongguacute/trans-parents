@@ -76,12 +76,74 @@ body {
   --color-success-bg: #e8f5e8;
   --color-success-border: #4caf50;
   --color-success-text: #1b5e20;
+  
+  /* Font size variables - default (normal) */
+  --font-size-base: 16px;
+  --font-size-scale: 1;
+}
+
+/* Font size classes */
+html.font-normal {
+  --font-size-base: 16px;
+  --font-size-scale: 1;
+}
+
+html.font-large {
+  --font-size-base: 18px;
+  --font-size-scale: 1.125;
+}
+
+html.font-xlarge {
+  --font-size-base: 20px;
+  --font-size-scale: 1.25;
 }
 
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
+  font-size: var(--font-size-base);
   /* 移除过渡以提升性能 */
+}
+
+/* Apply font size scaling to all text elements */
+html.font-large body,
+html.font-xlarge body {
+  font-size: var(--font-size-base);
+}
+
+html.font-large h1,
+html.font-xlarge h1 {
+  font-size: calc(2em * var(--font-size-scale));
+}
+
+html.font-large h2,
+html.font-xlarge h2 {
+  font-size: calc(1.5em * var(--font-size-scale));
+}
+
+html.font-large h3,
+html.font-xlarge h3 {
+  font-size: calc(1.25em * var(--font-size-scale));
+}
+
+html.font-large h4,
+html.font-xlarge h4 {
+  font-size: calc(1.1em * var(--font-size-scale));
+}
+
+html.font-large p,
+html.font-large li,
+html.font-large span,
+html.font-large div,
+html.font-large td,
+html.font-large th,
+html.font-xlarge p,
+html.font-xlarge li,
+html.font-xlarge span,
+html.font-xlarge div,
+html.font-xlarge td,
+html.font-xlarge th {
+  font-size: calc(1em * var(--font-size-scale));
 }
 
 /* Additional theme variables for components */
