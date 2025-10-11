@@ -4,6 +4,33 @@ export function rehypeComponents() {
   return (tree) => {
     visit(tree, 'element', (node) => {
       
+      // 处理图片元素 - 添加点击放大功能
+      if (node.tagName === 'img') {
+        node.properties = node.properties || {};
+        
+        // 添加类名
+        const existingClass = node.properties.className || node.properties.class || '';
+        node.properties.className = existingClass ? `${existingClass} markdown-image` : 'markdown-image';
+        delete node.properties.class;
+        
+        // 添加 data 属性
+        node.properties['data-lightbox'] = 'true';
+        
+        // 保存原始 src 用于放大显示
+        if (node.properties.src) {
+          node.properties['data-src'] = node.properties.src;
+        }
+        
+        // 添加 loading="lazy" 优化性能
+        if (!node.properties.loading) {
+          node.properties.loading = 'lazy';
+        }
+        
+        // 添加可点击的样式提示
+        const existingStyle = node.properties.style || '';
+        node.properties.style = existingStyle ? `${existingStyle}; cursor: pointer;` : 'cursor: pointer;';
+      }
+      
       // 处理 Alert 组件 - 将组件标签转换为带 class 的 div 标签
       if (node.tagName === 'alert') {
         node.tagName = 'div';

@@ -2,52 +2,126 @@
 import Navigation from '../components/Navigation.astro';
 import Layout from '../layouts/Layout.astro';
 import { getSortedPosts } from '../utils/posts';
+import articlesData from '../data/articles.json';
 
-// 使用優化的文章獲取函數（帶緩存）
-const sortedPosts = await getSortedPosts();
+// 獲取所有文章
+const allPosts = await getSortedPosts();
+
+// 根據 JSON 配置排序文章，並從 frontmatter 獲取所有信息
+const orderedArticles = articlesData.articles
+  .sort((a, b) => a.order - b.order)
+  .map(article => {
+    const post = allPosts.find(p => p.slug === article.slug);
+    if (!post) return null;
+    
+    return {
+      id: article.id,
+      slug: article.slug,
+      order: article.order,
+      group: article.group,
+      // 從 frontmatter 獲取信息
+      title: post.data.title,
+      description: post.data.description,
+      date: post.data.date,
+      category: post.data.category,
+      tags: post.data.tags,
+      post: post
+    };
+  })
+  .filter(item => item !== null);
+
+// 按分組整理文章
+const groupedArticles = Object.entries(articlesData.groups)
+  .sort(([, a], [, b]) => a.order - b.order)
+  .map(([groupKey, groupInfo]) => ({
+    key: groupKey,
+    ...groupInfo,
+    articles: orderedArticles.filter(a => a.group === groupKey)
+  }));
 ---
 
 <Layout title="文档 - Trans Parents">
 	<Navigation />
 
-	<div class="docs-content">
-		<div class="posts-list">
-			{sortedPosts.map((post) => (
-				<article class="post-item">
-					<div class="post-header">
-						<div class="post-title-wrapper">
-							<span class="title-bar"></span>
-							<h2><a href={`/posts/${post.slug}`}>{post.data.title}</a></h2>
-						</div>
-						<div class="post-arrow">
-							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-							</svg>
-						</div>
-					</div>
-					<div class="post-meta">
-						<span class="meta-item">
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M8 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-								<path d="M16 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-								<path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-								<path d="M21 8V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H19C19.5304 6 20.0391 6.21071 20.4142 6.58579C20.7893 6.96086 21 7.46957 21 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-							</svg>
-							<time>{new Date(post.data.date).toLocaleDateString('zh-TW')}</time>
+	<div class="docs-container">
+		<div class="docs-header">
+			<h1>📚 文档目录</h1>
+			<p>按照顺序了解跨性别相关知识</p>
+		</div>
+
+		<div class="timeline-container">
+			{groupedArticles.map((group, groupIndex) => (
+				<div class="group-section">
+					<div class="group-header">
+						<span class="group-badge" style={`background: ${group.color}20; color: ${group.color};`}>
+							{group.name}
 						</span>
 					</div>
-					{post.data.description && (
-						<p class="post-description">{post.data.description}</p>
-					)}
-				</article>
+
+					<div class="timeline">
+						{group.articles.map((article, index) => (
+							<div class="timeline-item">
+								<div class="timeline-marker">
+									<div class="marker-circle" style={`border-color: ${group.color};`}>
+										<span class="article-number" style={`color: ${group.color};`}>{article.id}</span>
+									</div>
+									{index < group.articles.length - 1 && (
+										<div class="timeline-line" style={`background: ${group.color};`}></div>
+									)}
+								</div>
+
+								<div class="timeline-content">
+									<a href={`/posts/${article.slug}`} class="article-card">
+										<div class="card-header">
+											<h3>{article.title}</h3>
+											<svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+												<path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+											</svg>
+										</div>
+										
+										{article.description && (
+											<p class="card-description">{article.description}</p>
+										)}
+										
+										<div class="card-meta">
+											{article.category && (
+												<span class="meta-category" style={`background: ${group.color}15; color: ${group.color};`}>
+													{article.category}
+												</span>
+											)}
+											<span class="meta-date">
+												<svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<path d="M8 2V5M16 2V5M3 10H21M21 8V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H19C19.5304 6 20.0391 6.21071 20.4142 6.58579C20.7893 6.96086 21 7.46957 21 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+												</svg>
+												{new Date(article.date).toLocaleDateString('zh-CN')}
+											</span>
+										</div>
+
+										{article.tags && article.tags.length > 0 && (
+											<div class="card-tags">
+												{article.tags.map(tag => (
+													<span class="tag">{tag}</span>
+												))}
+											</div>
+										)}
+									</a>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
 			))}
+		</div>
+
+		<div class="docs-footer">
+			<p>💡 建议按照顺序阅读文章，以获得更完整的理解</p>
 		</div>
 	</div>
 </Layout>
 
-<!-- 預取更多文章頁面以提升導航速度 -->
-{sortedPosts.slice(0, 10).map((post) => (
-	 <link rel="prefetch" href={`/posts/${post.slug}`} />
+<!-- 預取文章頁面 -->
+{orderedArticles.slice(0, 10).map((article) => (
+	<link rel="prefetch" href={`/posts/${article.slug}`} />
 ))}
 
 <style>
@@ -59,115 +133,318 @@ const sortedPosts = await getSortedPosts();
     background-position: 0 0, 0 0;
   }
 
-  .docs-content {
-    padding: 1rem;
-    padding-top: 5rem;
-    width: 100%;
-    color: var(--color-text);
+  .docs-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    padding-top: 6rem;
+    padding-bottom: 4rem;
+    animation: fadeInUp 0.6s ease-out;
   }
 
-
-  .docs-content h1 {
-    color: var(--color-text);
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
-  .docs-content p {
+  .docs-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .docs-header h1 {
+    font-size: 2.5rem;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+  }
+
+  .docs-header p {
+    font-size: 1.1rem;
     color: var(--color-text-secondary);
   }
 
-  .posts-list {
-    display: grid;
-    gap: 2rem;
-    margin-top: 5rem;
-    margin-bottom: 5rem;
+  .timeline-container {
+    position: relative;
   }
 
-  .post-item {
-    background: var(--color-card); /* 适配主题的卡片背景 */
-    border-radius: 12px; /* 更大的圓角 */
-    padding: 1.8rem; /* 稍微減少內邊距 */
-    box-shadow: 0 4px 20px var(--color-shadow); /* 适配主题的阴影 */
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  .group-section {
+    margin-bottom: 3rem;
+  }
+
+  .group-header {
+    margin-bottom: 2rem;
+    padding-left: 4rem;
+  }
+
+  .group-badge {
+    display: inline-block;
+    padding: 0.5rem 1.2rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .timeline {
+    position: relative;
+  }
+
+  .timeline-item {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 0;
+  }
+
+  .timeline-marker {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-  }
-
-  .post-item:hover {
-    transform: translateY(-5px); /* 更明顯的懸停效果 */
-    box-shadow: 0 8px 25px var(--color-shadow);
-  }
-
-  .post-header {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
+    padding-top: 0.5rem;
   }
 
-  .post-title-wrapper {
+  .marker-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid;
+    background: var(--color-card);
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    justify-content: center;
+    z-index: 2;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex-shrink: 0;
   }
 
-  .title-bar {
-    width: 6px;
-    height: 1.8em; /* 與標題高度匹配 */
-    background-color: var(--color-accent-secondary); /* 适配主题的强调色 */
-    border-radius: 3px;
+  .timeline-item:hover .marker-circle {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
-  .post-item h2 {
-    margin: 0;
-    font-size: 1.8rem; /* 增大標題字體 */
-    color: var(--color-text); /* 适配主题的文字颜色 */
-    line-height: 1.2;
+  .article-number {
+    font-size: 1.3rem;
+    font-weight: 700;
   }
 
-  .post-item h2 a {
+  .timeline-line {
+    width: 4px;
+    flex-grow: 1;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    min-height: 60px;
+    opacity: 0.8;
+  }
+
+  .timeline-content {
+    flex: 1;
+    padding-bottom: 2rem;
+  }
+
+  .article-card {
+    display: block;
+    background: var(--color-card);
+    border-radius: 16px;
+    padding: 1.8rem;
+    box-shadow: 0 2px 12px var(--color-shadow);
+    transition: all 0.3s ease;
     text-decoration: none;
     color: inherit;
+    border: 2px solid transparent;
   }
 
-  .post-arrow {
-    color: var(--color-accent-secondary); /* 适配主题的强调色 */
+  .article-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px var(--color-shadow);
+    border-color: var(--color-accent-secondary);
   }
 
-  .post-meta {
+  .card-header {
     display: flex;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
     gap: 1rem;
-    align-items: center;
-    font-size: 0.9rem;
-    color: var(--color-text-secondary); /* 适配主题的次要文字颜色 */
+    margin-bottom: 1rem;
   }
 
-  .meta-item {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
+  .card-header h3 {
+    font-size: 1.4rem;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.4;
+    flex: 1;
   }
 
-  .meta-item svg {
-    color: var(--color-accent-secondary); /* 适配主题的强调色 */
+  .arrow-icon {
+    color: var(--color-accent-secondary);
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
   }
 
-  .post-description {
+  .article-card:hover .arrow-icon {
+    transform: translateX(4px);
+  }
+
+  .card-description {
     color: var(--color-text-secondary);
     line-height: 1.6;
-    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .meta-category {
+    padding: 0.35rem 0.9rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .meta-date {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .meta-date svg {
+    color: var(--color-accent-secondary);
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    padding: 0.3rem 0.8rem;
+    background: var(--color-accent-secondary);
+    color: white;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    opacity: 0.8;
+  }
+
+  .docs-footer {
+    text-align: center;
+    margin-top: 4rem;
+    padding: 2rem;
+    background: var(--color-card);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px var(--color-shadow);
+  }
+
+  .docs-footer p {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .docs-container {
+      padding: 1rem 0.5rem;
+      padding-top: 5rem;
+    }
+
+    .docs-header h1 {
+      font-size: 2rem;
+    }
+
+    .docs-header p {
+      font-size: 1rem;
+    }
+
+    .group-header {
+      padding-left: 0;
+      text-align: center;
+    }
+
+    .timeline-item {
+      gap: 1rem;
+    }
+
+    .marker-circle {
+      width: 40px;
+      height: 40px;
+    }
+
+    .article-number {
+      font-size: 1.1rem;
+    }
+
+    .article-card {
+      padding: 1.3rem;
+    }
+
+    .card-header h3 {
+      font-size: 1.2rem;
+    }
+
+    .card-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
   }
 </style>
 
+<script is:inline define:vars={{ orderedArticles, groupsData: articlesData.groups }}>
+  // 将文章数据存储到全局对象，供导航栏搜索使用
+  window.docsData = {
+    articles: orderedArticles.map(article => ({
+      id: article.id,
+      slug: article.slug,
+      title: article.title,
+      description: article.description || '',
+      group: article.group,
+      groupName: groupsData[article.group]?.name || '',
+      groupColor: groupsData[article.group]?.color || '',
+      category: article.category || '',
+      tags: article.tags || [],
+      link: `/posts/${article.slug}`
+    })),
+    groups: Object.entries(groupsData).map(([key, group]) => ({
+      key: key,
+      name: group.name,
+      color: group.color,
+      order: group.order
+    }))
+  };
+</script>
+
 <script>
-  // 優化：使用 Intersection Observer 實現懶載入動畫
+  // 优化：使用 Intersection Observer 实现懒载入动画
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && entry.target instanceof HTMLElement) {
             entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
+            entry.target.style.transform = 'translateX(0)';
             observer.unobserve(entry.target);
           }
         });
@@ -175,19 +452,13 @@ const sortedPosts = await getSortedPosts();
       { threshold: 0.1, rootMargin: '50px' }
     );
 
-    document.querySelectorAll('.post-item').forEach((item) => {
+    document.querySelectorAll('.timeline-item').forEach((item, index) => {
       if (item instanceof HTMLElement) {
         item.style.opacity = '0';
-        item.style.transform = 'translateY(20px)';
-        item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        item.style.transform = 'translateX(-20px)';
+        item.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
         observer.observe(item);
       }
     });
   }
-
-  // 優化：預連接到字體資源
-  const preconnect = document.createElement('link');
-  preconnect.rel = 'preconnect';
-  preconnect.href = '/fonts';
-  document.head.appendChild(preconnect);
 </script>

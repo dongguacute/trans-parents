@@ -1,0 +1,63 @@
+{
+  "articles": [
+    {
+      "id": 1,
+      "slug": "whatstrans",
+      "order": 1,
+      "group": "basics"
+    },
+    {
+      "id": 2,
+      "slug": "gd",
+      "order": 2,
+      "group": "basics"
+    },
+    {
+      "id": 3,
+      "slug": "whatsspb",
+      "order": 3,
+      "group": "medication"
+    },
+    {
+      "id": 4,
+      "slug": "whatshrt",
+      "order": 4,
+      "group": "medication"
+    },
+    {
+      "id": 5,
+      "slug": "disclaimer",
+      "order": 5,
+      "group": "note"
+    },
+    {
+      "id": 6,
+      "slug": "about",
+      "order": 6,
+      "group": "note"
+    },
+    {
+      "id": 7,
+      "slug": "acknowledgments",
+      "order": 7,
+      "group": "note"
+    }
+  ],
+  "groups": {
+    "basics": {
+      "name": "基础知识",
+      "order": 1,
+      "color": "#55CDFC"
+    },
+    "medication": {
+      "name": "药物知识",
+      "order": 2,
+      "color": "#F7A8B8"
+    },
+    "note": {
+      "name": "须知",
+      "order": 3,
+      "color": "#A66CFF"
+    }
+  }
+}

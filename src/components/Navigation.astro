@@ -1,25 +1,83 @@
 ---
 // Navigation component
+import { getSortedPosts } from '../utils/posts';
+import articlesData from '../data/articles.json';
+
+// 在导航组件中加载所有文章数据，使搜索在所有页面都可用
+const allPosts = await getSortedPosts();
+
+// 构建搜索数据
+const searchData = articlesData.articles
+  .map(article => {
+    const post = allPosts.find(p => p.slug === article.slug);
+    if (!post) return null;
+    
+    return {
+      id: article.id,
+      slug: article.slug,
+      title: post.data.title,
+      description: post.data.description || '',
+      group: article.group,
+      groupName: (articlesData.groups as any)[article.group]?.name || '',
+      groupColor: (articlesData.groups as any)[article.group]?.color || '',
+      category: post.data.category || '',
+      tags: post.data.tags || [],
+      link: `/posts/${article.slug}`
+    };
+  })
+  .filter(item => item !== null);
 ---
 
 <div id="navigation" class="fixed top-0 left-0 right-0 z-50 flex items-center p-5 pointer-events-none">
-   <!-- Left side: Smiling face circle button -->
-   <button id="nav-toggle" class="pointer-events-auto rounded-full w-12 h-12 flex items-center justify-center cursor-pointer backdrop-blur-md" style="z-index: 60; background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">
-     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-       <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
-       <circle cx="9" cy="9" r="1" fill="currentColor"/>
-       <circle cx="15" cy="9" r="1" fill="currentColor"/>
-       <path d="M8 14 Q12 18 16 14" stroke="currentColor" stroke-width="2" fill="none"/>
-     </svg>
-   </button>
+   <!-- Left side: Smiling face circle button with dropdown -->
+   <div class="relative pointer-events-auto" id="nav-menu-container">
+     <button id="nav-toggle" class="nav-button rounded-full w-12 h-12 flex items-center justify-center cursor-pointer backdrop-blur-md" style="z-index: 60;">
+       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+         <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+         <circle cx="9" cy="9" r="1" fill="currentColor"/>
+         <circle cx="15" cy="9" r="1" fill="currentColor"/>
+         <path d="M8 14 Q12 18 16 14" stroke="currentColor" stroke-width="2" fill="none"/>
+       </svg>
+     </button>
+     
+     <!-- Navigation dropdown menu (desktop only) -->
+     <div id="nav-dropdown" class="nav-dropdown absolute left-0 mt-3 w-56 backdrop-blur-xl rounded-2xl shadow-2xl py-3 hidden" style="background-color: var(--color-card); border: 1px solid var(--color-border); z-index: 9999; top: 100%;">
+       <div class="px-2 py-2 text-xs font-semibold uppercase tracking-wide" style="color: var(--color-text-secondary);">快速导航</div>
+       <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
+       <a href="/" class="nav-dropdown-item flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text); text-decoration: none;" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+         <svg class="w-4 h-4 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+         </svg>
+         首页
+       </a>
+       <a href="/docs" class="nav-dropdown-item flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text); text-decoration: none;" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+         <svg class="w-4 h-4 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+         </svg>
+         文档
+       </a>
+       <a href="/posts/about" class="nav-dropdown-item flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text); text-decoration: none;" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+         <svg class="w-4 h-4 mr-3 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+         </svg>
+         关于本站
+       </a>
+     </div>
+   </div>
 
    <!-- Center: Search box -->
    <div class="flex-1 flex justify-center pointer-events-auto" style="z-index: 30;">
      <div class="relative desktop-search">
-       <input type="text" id="search-input" placeholder="搜索..." class="search-input pl-10 pr-4 py-2 rounded-full backdrop-blur-md border transition-all duration-300" style="background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); color: var(--color-text); width: 250px; outline: none;" onfocus="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'; this.style.borderColor='rgba(255, 255, 255, 0.4)'" onblur="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.2)'">
+       <input type="text" id="search-input" placeholder="搜索..." class="search-input pl-10 pr-4 py-2 rounded-full backdrop-blur-md border transition-all duration-300" style="width: 250px; outline: none;">
        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 search-icon" style="color: var(--color-text);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
        </svg>
+       <!-- Desktop search dropdown results -->
+       <div id="desktop-search-results" class="desktop-search-dropdown hidden">
+         <div class="search-results-content">
+           <!-- Results will be inserted here -->
+         </div>
+       </div>
      </div>
    </div>
 
@@ -68,17 +126,46 @@
   <!-- Right side: Floating options -->
   <div class="absolute right-0 flex gap-2.5 pointer-events-auto p-5" style="z-index: 30;">
     <!-- Mobile search button -->
-    <button id="mobile-search-btn" class="mobile-search-btn rounded-xl cursor-pointer text-sm backdrop-blur-md hidden flex items-center justify-center w-12 h-12" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">
+    <button id="mobile-search-btn" class="mobile-search-btn nav-button rounded-xl cursor-pointer text-sm backdrop-blur-md hidden items-center justify-center w-12 h-12">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
         <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
-    <a href="/posts/disclaimer" class="rounded-xl py-2.5 px-3.5 cursor-pointer text-sm backdrop-blur-md no-underline" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">免责声明</a>
-    <a href="/posts/about" class="rounded-xl py-2.5 px-3.5 cursor-pointer text-sm backdrop-blur-md no-underline" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">关于本站</a>
+    
+    <!-- Font size toggle button -->
+    <div class="relative" id="font-size-selector">
+      <button id="font-size-toggle" class="nav-button group relative rounded-xl cursor-pointer backdrop-blur-md flex items-center justify-center w-12 h-12">
+        <span id="font-size-icon" class="text-lg font-bold transition-transform duration-300 group-hover:scale-110" style="color: var(--color-text);">字</span>
+      </button>
+
+      <!-- Font size dropdown menu -->
+      <div id="font-size-dropdown" class="absolute right-0 mt-3 w-56 backdrop-blur-xl rounded-2xl shadow-2xl py-3 hidden" style="background-color: var(--color-card); border: 1px solid var(--color-border); z-index: 9999; max-width: 14rem; left: auto; right: 0.5rem; transform: translateX(0); overflow: visible;">
+        <div class="px-2 py-2 text-xs font-semibold uppercase tracking-wide" style="color: var(--color-text-secondary);">字体大小</div>
+        <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
+        <button class="flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text);" data-font-size="normal" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+          <svg class="w-4 h-4 mr-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <text x="4" y="18" font-size="14" fill="currentColor">A</text>
+          </svg>
+          正常
+        </button>
+        <button class="flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text);" data-font-size="large" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+          <svg class="w-4 h-4 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <text x="2" y="18" font-size="16" fill="currentColor">A</text>
+          </svg>
+          大字体
+        </button>
+        <button class="flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text);" data-font-size="xlarge" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+          <svg class="w-4 h-4 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <text x="1" y="19" font-size="18" fill="currentColor">A</text>
+          </svg>
+          超大字体 (长辈模式)
+        </button>
+      </div>
+    </div>
     
     <!-- Theme toggle button -->
     <div class="relative" id="theme-selector">
-      <button id="theme-toggle" class="group relative rounded-xl p-3 cursor-pointer backdrop-blur-md" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">
+      <button id="theme-toggle" class="nav-button group relative rounded-xl cursor-pointer backdrop-blur-md flex items-center justify-center w-12 h-12">
         <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="transition-transform duration-300 group-hover:rotate-12">
           <!-- Sun icon -->
           <circle cx="12" cy="12" r="5" fill="currentColor" class="sun-circle"/>
@@ -124,7 +211,91 @@
   </div>
 </div>
 
+<!-- 引入 pinyin-pro CDN -->
+<script is:inline src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.27.0/dist/index.min.js"></script>
+
+<script is:inline define:vars={{ searchData }}>
+  // 将搜索数据存储到全局对象，使搜索在所有页面都可用
+  if (!window.docsData) {
+    window.docsData = {
+      articles: searchData,
+      groups: []
+    };
+  }
+  
+  // 生成拼音搜索字符串（使用 pinyin-pro 库）
+  window.generatePinyinString = function(text) {
+    if (!text) return { fullPinyin: '', initials: '' };
+    
+    try {
+      // 如果 pinyin-pro 库已加载
+      if (window.pinyinPro && window.pinyinPro.pinyin) {
+        // 获取全拼（不带音调，转小写）
+        const fullPinyin = window.pinyinPro.pinyin(text, {
+          toneType: 'none'
+        }).replace(/\s+/g, '').toLowerCase();
+        
+        // 获取首字母（不带音调，转小写）
+        const initials = window.pinyinPro.pinyin(text, {
+          pattern: 'first',
+          toneType: 'none'
+        }).replace(/\s+/g, '').toLowerCase();
+        
+        return { fullPinyin, initials };
+      }
+    } catch (e) {
+      console.warn('Pinyin conversion failed:', e);
+    }
+    
+    // 如果库未加载或出错，返回原文本
+    return { fullPinyin: text.toLowerCase(), initials: text.toLowerCase() };
+  };
+</script>
+
 <style>
+  /* Navigation buttons base style */
+  .nav-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-text);
+  }
+
+  /* Dark mode styles for navigation buttons - using :global() for proper scoping */
+  :global(html.dark) .nav-button {
+    background-color: var(--color-card) !important;
+    border: 1px solid var(--color-border) !important;
+    color: var(--color-text) !important;
+  }
+
+  /* Search input base style */
+  .search-input {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: var(--color-text) !important;
+  }
+
+  .search-input:focus {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+  }
+
+  /* Dark mode styles for search input */
+  :global(html.dark) .search-input {
+    background-color: var(--color-card) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text) !important;
+  }
+
+  :global(html.dark) .search-input:focus {
+    background-color: var(--color-hover) !important;
+    border-color: var(--color-accent-secondary) !important;
+  }
+
+  /* Search icon color */
+  .search-icon {
+    color: var(--color-text);
+  }
+
 .nav-item {
   opacity: 0;
   transform: translateX(-100px);
@@ -136,16 +307,16 @@
   transform: translateX(0);
 }
   /* Theme icon states */
-  .dark .sun-rays {
+  :global(html.dark) .sun-rays {
     opacity: 0;
     transform: rotate(180deg);
   }
 
-  .dark .moon-path {
+  :global(html.dark) .moon-path {
     opacity: 1;
   }
 
-  .dark .sun-circle {
+  :global(html.dark) .sun-circle {
     opacity: 0;
   }
 
@@ -158,6 +329,20 @@
   }
 
   /* Theme option hover effects are now handled by inline styles */
+  
+  /* Navigation dropdown styling */
+  .nav-dropdown {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  /* Hide navigation dropdown on mobile */
+  @media screen and (max-width: 768px) {
+    .nav-dropdown {
+      display: none !important;
+    }
+  }
 
   /* Search box responsive styles */
   @media screen and (max-width: 768px) {
@@ -197,32 +382,150 @@
   }
 
   .search-result-item {
-    padding: 12px 16px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    border: 1px solid transparent;
-  }
+     padding: 12px 16px;
+     border-radius: 8px;
+     margin-bottom: 8px;
+     cursor: pointer;
+     transition: background-color 0.2s;
+     border: 1px solid transparent;
+   }
 
-  .search-result-item:hover {
-    background-color: var(--color-hover);
-    border-color: var(--color-border);
-  }
+   .search-result-item:hover {
+     background-color: var(--color-hover);
+     border-color: var(--color-border);
+   }
 
-  .search-result-title {
-    font-weight: 500;
-    margin-bottom: 4px;
-  }
+   .search-result-title {
+     font-weight: 500;
+     margin-bottom: 4px;
+   }
 
-  .search-result-desc {
-    font-size: 14px;
-    color: var(--color-text-secondary);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+   .search-result-desc {
+     font-size: 14px;
+     color: var(--color-text-secondary);
+     display: -webkit-box;
+     -webkit-line-clamp: 2;
+     -webkit-box-orient: vertical;
+     overflow: hidden;
+   }
+
+   /* Desktop search dropdown */
+   .desktop-search-dropdown {
+     position: absolute;
+     top: calc(100% + 12px);
+     left: 50%;
+     transform: translateX(-50%);
+     width: 500px;
+     max-width: 90vw;
+     max-height: 450px;
+     background: var(--color-card);
+     border: 1px solid var(--color-border);
+     border-radius: 16px;
+     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+     backdrop-filter: blur(24px);
+     -webkit-backdrop-filter: blur(24px);
+     overflow: hidden;
+     z-index: 9999;
+     animation: slideDown 0.2s ease-out;
+   }
+
+   @keyframes slideDown {
+     from {
+       opacity: 0;
+       transform: translateX(-50%) translateY(-10px);
+     }
+     to {
+       opacity: 1;
+       transform: translateX(-50%) translateY(0);
+     }
+   }
+
+   @keyframes fadeIn {
+     from {
+       opacity: 0;
+       transform: translateY(-5px);
+     }
+     to {
+       opacity: 1;
+       transform: translateY(0);
+     }
+   }
+
+   .desktop-search-dropdown.hidden {
+     display: none;
+   }
+
+   .search-results-content {
+     max-height: 450px;
+     overflow-y: auto;
+     padding: 12px;
+   }
+
+   .search-results-content::-webkit-scrollbar {
+     width: 8px;
+   }
+
+   .search-results-content::-webkit-scrollbar-track {
+     background: transparent;
+     margin: 8px 0;
+   }
+
+   .search-results-content::-webkit-scrollbar-thumb {
+     background: var(--color-border);
+     border-radius: 10px;
+     border: 2px solid var(--color-card);
+   }
+
+   .search-results-content::-webkit-scrollbar-thumb:hover {
+     background: var(--color-text-secondary);
+   }
+
+   /* 美化搜索结果项 */
+   .desktop-search-dropdown .search-result-item {
+     padding: 16px 18px;
+     border-radius: 12px;
+     margin-bottom: 14px;
+     cursor: pointer;
+     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+     border: 1px solid transparent;
+     background: transparent;
+   }
+
+   .desktop-search-dropdown .search-result-item:hover {
+     background: rgba(128, 128, 128, 0.25) !important;
+     border-color: rgba(128, 128, 128, 0.4) !important;
+     transform: scale(1.05) !important;
+     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
+   }
+
+   .desktop-search-dropdown .search-result-item:last-child {
+     margin-bottom: 0;
+   }
+
+   .desktop-search-dropdown .search-result-title {
+     font-weight: 600;
+     margin-bottom: 6px;
+     font-size: 15px;
+     line-height: 1.4;
+   }
+
+   .desktop-search-dropdown .search-result-desc {
+     font-size: 13px;
+     line-height: 1.5;
+     margin-top: 4px;
+   }
+
+   @media screen and (max-width: 640px) {
+     .desktop-search-dropdown {
+       display: none !important;
+     }
+   }
+
+   @media screen and (max-width: 768px) {
+     .desktop-search-dropdown {
+       width: 400px;
+     }
+   }
 </style>
 
 <script is:inline>
@@ -307,6 +610,7 @@
          }, 300);
        };
 
+       // 点击功能（适用于所有设备）
        updatedNavToggle.addEventListener('click', () => {
          console.log('Toggle clicked');
          openMenu();
@@ -348,6 +652,47 @@
        console.log('Elements not found:', updatedNavToggle, navOverlay, updatedNavClose);
      }
    }
+   
+   // Initialize navigation dropdown (desktop hover menu)
+   function initNavDropdown() {
+     const navToggle = document.getElementById('nav-toggle');
+     const navDropdown = document.getElementById('nav-dropdown');
+     const navMenuContainer = document.getElementById('nav-menu-container');
+     
+     if (!navToggle || !navDropdown || !navMenuContainer) return;
+     
+     // Check if desktop
+     const isDesktop = () => window.innerWidth > 768;
+     
+     if (!isDesktop()) return; // Only enable on desktop
+     
+     let hideTimeout;
+     
+     // Show dropdown on hover (desktop only)
+     navMenuContainer.addEventListener('mouseenter', () => {
+       if (isDesktop()) {
+         clearTimeout(hideTimeout);
+         navDropdown.classList.remove('hidden');
+       }
+     });
+     
+     // Hide dropdown when mouse leaves (with delay)
+     navMenuContainer.addEventListener('mouseleave', () => {
+       if (isDesktop()) {
+         hideTimeout = setTimeout(() => {
+           navDropdown.classList.add('hidden');
+         }, 200);
+       }
+     });
+     
+     // Close dropdown when clicking a link
+     const dropdownLinks = navDropdown.querySelectorAll('a');
+     dropdownLinks.forEach(link => {
+       link.addEventListener('click', () => {
+         navDropdown.classList.add('hidden');
+       });
+     });
+   }
 
    // Initialize search functionality
    function initSearch() {
@@ -358,48 +703,113 @@
      const mobileSearchClose = document.getElementById('mobile-search-close');
      const mobileSearchResults = document.getElementById('mobile-search-results');
 
-     // Store posts data for mobile search
+     // Store posts data for search
      let postsData = [];
 
      // Function to collect posts data
      function collectPostsData() {
        postsData = [];
-       if (window.location.pathname === '/docs' || window.location.pathname.includes('/docs')) {
-         const posts = document.querySelectorAll('.post-item');
-         if (posts.length === 0) {
-           // If no .post-item elements found, try alternative selectors
-           const articles = document.querySelectorAll('article, .content-item, .doc-item');
-           articles.forEach(post => {
-             const titleEl = post.querySelector('h1, h2, h3') || post.querySelector('[class*="title"]');
-             const descEl = post.querySelector('p, .description, .excerpt');
-             const linkEl = post.querySelector('a');
-             const link = linkEl?.href || window.location.href;
-             const title = titleEl?.textContent?.trim() || '無標題';
-             const desc = descEl?.textContent?.trim() || '無描述';
-             if (title && title !== '無標題') {
-               postsData.push({ title, desc, link });
-             }
-           });
-         } else {
-           posts.forEach(post => {
-             const titleEl = post.querySelector('h2 a');
-             const descEl = post.querySelector('.post-description');
-             const link = titleEl?.href || '';
-             const title = titleEl?.textContent?.trim() || '';
-             const desc = descEl?.textContent?.trim() || '';
-             if (title) {
-               postsData.push({ title, desc, link });
-             }
-           });
-         }
-       } else {
-         // If not on docs page, no search data available
-         postsData = [];
+       // Try to get data from window.docsData (set by docs.astro)
+       if (window.docsData && window.docsData.articles) {
+         postsData = window.docsData.articles;
+       } else if (window.location.pathname === '/docs' || window.location.pathname.includes('/docs')) {
+         // Fallback: collect from DOM
+         const articles = document.querySelectorAll('.article-card');
+         articles.forEach(article => {
+           const titleEl = article.querySelector('h3');
+           const descEl = article.querySelector('.card-description');
+           const categoryEl = article.querySelector('.meta-category');
+           const tagsEls = article.querySelectorAll('.tag');
+           const link = article.getAttribute('href') || '';
+           const title = titleEl?.textContent?.trim() || '';
+           const description = descEl?.textContent?.trim() || '';
+           const category = categoryEl?.textContent?.trim() || '';
+           const tags = Array.from(tagsEls).map(tag => tag.textContent?.trim() || '');
+           
+           if (title) {
+             postsData.push({
+               title,
+               description,
+               category,
+               tags,
+               link,
+               groupName: category // 使用 category 作为 groupName 的备选
+             });
+           }
+         });
        }
      }
 
-     // Collect posts data on docs page
+     // Collect posts data
      collectPostsData();
+
+     // Enhanced search function with pinyin matching and case-insensitive English matching
+     function searchArticles(query) {
+       if (!query || !postsData || postsData.length === 0) {
+         return [];
+       }
+
+       const searchQuery = query.trim();
+       const searchQueryLower = searchQuery.toLowerCase();
+       
+       return postsData.filter(article => {
+         // 标准匹配（大小写不敏感）
+         const titleMatchStandard = article.title?.toLowerCase().includes(searchQueryLower);
+         const descMatchStandard = article.description?.toLowerCase().includes(searchQueryLower);
+         const categoryMatchStandard = article.category?.toLowerCase().includes(searchQueryLower);
+         const groupMatchStandard = article.groupName?.toLowerCase().includes(searchQueryLower);
+         const tagsMatchStandard = article.tags?.some(tag => tag.toLowerCase().includes(searchQueryLower));
+         
+         // 拼音匹配（使用 pinyin-pro 动态生成）
+         let titleMatchPinyin = false;
+         let descMatchPinyin = false;
+         let categoryMatchPinyin = false;
+         let groupMatchPinyin = false;
+         let tagsMatchPinyin = false;
+         
+         if (window.generatePinyinString) {
+           // 标题拼音匹配
+           if (article.title) {
+             const titlePinyin = window.generatePinyinString(article.title);
+             titleMatchPinyin = titlePinyin.fullPinyin.includes(searchQueryLower) ||
+                               titlePinyin.initials.includes(searchQueryLower);
+           }
+           
+           // 描述拼音匹配
+           if (article.description) {
+             const descPinyin = window.generatePinyinString(article.description);
+             descMatchPinyin = descPinyin.fullPinyin.includes(searchQueryLower) ||
+                              descPinyin.initials.includes(searchQueryLower);
+           }
+           
+           // 分类拼音匹配
+           if (article.category) {
+             const categoryPinyin = window.generatePinyinString(article.category);
+             categoryMatchPinyin = categoryPinyin.fullPinyin.includes(searchQueryLower) ||
+                                  categoryPinyin.initials.includes(searchQueryLower);
+           }
+           
+           // 分组名称拼音匹配
+           if (article.groupName) {
+             const groupPinyin = window.generatePinyinString(article.groupName);
+             groupMatchPinyin = groupPinyin.fullPinyin.includes(searchQueryLower) ||
+                               groupPinyin.initials.includes(searchQueryLower);
+           }
+           
+           // 标签拼音匹配
+           if (article.tags && article.tags.length > 0) {
+             tagsMatchPinyin = article.tags.some(tag => {
+               const tagPinyin = window.generatePinyinString(tag);
+               return tagPinyin.fullPinyin.includes(searchQueryLower) ||
+                      tagPinyin.initials.includes(searchQueryLower);
+             });
+           }
+         }
+
+         return titleMatchStandard || descMatchStandard || categoryMatchStandard || groupMatchStandard || tagsMatchStandard ||
+                titleMatchPinyin || descMatchPinyin || categoryMatchPinyin || groupMatchPinyin || tagsMatchPinyin;
+       });
+     }
 
      // Mobile search modal functionality
      if (mobileSearchBtn && mobileSearchModal && mobileSearchClose && mobileSearchInput && mobileSearchResults) {
@@ -461,24 +871,78 @@
 
        // Mobile search input functionality
        mobileSearchInput.addEventListener('input', (e) => {
-         const query = e.target.value.toLowerCase().trim();
+         const query = e.target.value.trim();
          mobileSearchResults.innerHTML = '';
 
          if (query && postsData.length > 0) {
-           const filteredPosts = postsData.filter(post =>
-             post.title.toLowerCase().includes(query) ||
-             post.desc.toLowerCase().includes(query)
-           );
+           const filteredPosts = searchArticles(query);
 
            if (filteredPosts.length > 0) {
-             filteredPosts.forEach(post => {
+             filteredPosts.forEach((post, index) => {
                const resultItem = document.createElement('div');
                resultItem.className = 'search-result-item';
+               resultItem.style.animation = `fadeIn 0.2s ease-out ${index * 0.05}s both`;
+               resultItem.style.padding = '16px';
+               resultItem.style.marginBottom = '12px';
+               resultItem.style.borderRadius = '12px';
+               
+               // 获取分组颜色
+               const groupColor = post.groupColor || '#999';
+               
+               // 显示标签（如果有）
+               const tagsHtml = post.tags && post.tags.length > 0
+                 ? `<div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;">
+                      ${post.tags.map(tag => `<span style="font-size: 11px; padding: 3px 8px; background: ${groupColor}25; color: ${groupColor}; border-radius: 6px; font-weight: 500;">${tag}</span>`).join('')}
+                    </div>`
+                 : '';
+               
+               // 显示分组徽章
+               const groupBadge = post.groupName
+                 ? `<span style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 3px 10px; background: ${groupColor}20; color: ${groupColor}; border-radius: 6px; font-weight: 600; border: 1px solid ${groupColor}30; margin-bottom: 10px;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                      </svg>
+                      ${post.groupName}
+                    </span>`
+                 : '';
+
                resultItem.innerHTML = `
-                 <div class="search-result-title" style="color: var(--color-text);">${post.title}</div>
-                 <div class="search-result-desc">${post.desc}</div>
+                 <div style="display: flex; align-items: flex-start; gap: 14px;">
+                   <div style="flex-shrink: 0; width: 40px; height: 40px; background: ${groupColor}15; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-top: 4px;">
+                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="${groupColor}" stroke-width="2">
+                       <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                       <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                     </svg>
+                   </div>
+                   <div style="flex: 1; min-width: 0;">
+                     ${groupBadge}
+                     <div class="search-result-title" style="color: var(--color-text); margin-bottom: 8px; font-weight: 600; font-size: 15px;">${post.title}</div>
+                     ${post.description ? `<div class="search-result-desc" style="margin-bottom: 10px;">${post.description}</div>` : ''}
+                     ${tagsHtml}
+                   </div>
+                 </div>
                `;
+               
+               // Hover效果
+               resultItem.addEventListener('mouseenter', function() {
+                 this.style.background = `${groupColor}30`;
+                 this.style.borderColor = `${groupColor}60`;
+                 this.style.transform = 'scale(1.02)';
+                 this.style.boxShadow = `0 6px 16px ${groupColor}40`;
+               });
+               
+               resultItem.addEventListener('mouseleave', function() {
+                 this.style.background = 'transparent';
+                 this.style.borderColor = 'transparent';
+                 this.style.transform = 'scale(1)';
+                 this.style.boxShadow = 'none';
+               });
+               
                resultItem.addEventListener('click', () => {
+                 // 关闭搜索模态框
+                 mobileSearchModal.classList.remove('show');
+                 mobileSearchInput.value = '';
+                 // ClientRouter会自动处理SPA导航
                  window.location.href = post.link;
                });
                mobileSearchResults.appendChild(resultItem);
@@ -494,52 +958,159 @@
        });
      }
 
+     // Desktop search dropdown functionality
+     const desktopSearchResults = document.getElementById('desktop-search-results');
+     
      if (searchInput) {
-       if (window.location.pathname === '/') {
-         // On home page, redirect to docs with search query on Enter or blur
-         searchInput.addEventListener('keydown', (e) => {
-           if (e.key === 'Enter') {
-             const query = e.target.value.trim();
-             if (query) {
-               window.location.href = `/docs?q=${encodeURIComponent(query)}`;
-             }
-           }
-         });
-         searchInput.addEventListener('blur', (e) => {
-           const query = e.target.value.trim();
-           if (query) {
-             window.location.href = `/docs?q=${encodeURIComponent(query)}`;
-           }
-         });
-       } else if (window.location.pathname === '/docs') {
-         // On docs page, perform local search
-         searchInput.addEventListener('input', (e) => {
-           const target = e.target;
-           const query = target.value.toLowerCase();
-           const posts = document.querySelectorAll('.post-item');
-           posts.forEach(post => {
-             const titleEl = post.querySelector('h2');
-             const descEl = post.querySelector('.post-description');
-             const title = titleEl?.textContent?.toLowerCase() || '';
-             const desc = descEl?.textContent?.toLowerCase() || '';
-             if (title.includes(query) || desc.includes(query)) {
-               post.style.display = '';
-             } else {
-               post.style.display = 'none';
-             }
-           });
-         });
+       // 桌面端搜索下拉预览功能（适用于所有页面，不修改页面内容）
+       searchInput.addEventListener('input', (e) => {
+         const query = e.target.value.trim();
+         
+         if (!desktopSearchResults) return;
 
-         // Check for search query in URL and apply it
-         const urlParams = new URLSearchParams(window.location.search);
-         const searchQuery = urlParams.get('q');
-         if (searchQuery) {
-           searchInput.value = searchQuery;
-           // Trigger the search
-           const event = new Event('input', { bubbles: true });
-           searchInput.dispatchEvent(event);
+         if (!query || !postsData || postsData.length === 0) {
+           desktopSearchResults.classList.add('hidden');
+           return;
          }
-       }
+
+         // 使用增强的搜索函数
+         const matchedArticles = searchArticles(query);
+
+         if (matchedArticles.length > 0) {
+           const resultsHTML = matchedArticles.slice(0, 5).map((article, index) => {
+             // 从 window.docsData 中获取分组颜色
+             const groupColor = article.groupColor || '#999';
+             
+             const tagsHtml = article.tags && article.tags.length > 0
+               ? `<div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
+                    ${article.tags.map(tag => `<span style="font-size: 11px; padding: 3px 8px; background: ${groupColor}25; color: ${groupColor}; border-radius: 6px; font-weight: 500;">${tag}</span>`).join('')}
+                  </div>`
+               : '';
+             
+             const groupBadge = article.groupName
+               ? `<span style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 3px 10px; background: ${groupColor}20; color: ${groupColor}; border-radius: 6px; font-weight: 600; border: 1px solid ${groupColor}30;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                    </svg>
+                    ${article.groupName}
+                  </span>`
+               : '';
+
+             return `
+               <div class="search-result-item" data-link="${article.link}" data-color="${groupColor}" style="animation: fadeIn 0.2s ease-out ${index * 0.05}s both;">
+                 <div style="display: flex; align-items: flex-start; gap: 16px; padding: 4px;">
+                   <div style="flex-shrink: 0; width: 40px; height: 40px; background: ${groupColor}15; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-top: 4px;">
+                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="${groupColor}" stroke-width="2">
+                       <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                       <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                     </svg>
+                   </div>
+                   <div style="flex: 1; min-width: 0;">
+                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                       ${groupBadge}
+                     </div>
+                     <div class="search-result-title" style="color: var(--color-text); margin-bottom: 8px;">${article.title}</div>
+                     ${article.description ? `<div class="search-result-desc" style="margin-bottom: 10px;">${article.description}</div>` : ''}
+                     ${tagsHtml}
+                   </div>
+                 </div>
+               </div>
+             `;
+           }).join('');
+
+           desktopSearchResults.querySelector('.search-results-content').innerHTML = resultsHTML;
+           desktopSearchResults.classList.remove('hidden');
+
+           // 为每个搜索结果添加点击和hover事件
+           desktopSearchResults.querySelectorAll('.search-result-item').forEach(item => {
+             // 点击事件 - ClientRouter会自动处理SPA导航
+             item.addEventListener('click', (e) => {
+               e.preventDefault();
+               const link = item.getAttribute('data-link');
+               if (link) {
+                 // 关闭下拉框
+                 desktopSearchResults.classList.add('hidden');
+                 // 清空搜索框
+                 searchInput.value = '';
+                 // ClientRouter会自动拦截并转换为SPA导航
+                 window.location.href = link;
+               }
+             });
+             
+             // Hover效果（使用分组颜色，更明显）
+             const groupColor = item.getAttribute('data-color') || '#999';
+             item.addEventListener('mouseenter', function() {
+               this.style.background = `${groupColor}30`;
+               this.style.borderColor = `${groupColor}60`;
+               this.style.transform = 'scale(1.05)';
+               this.style.boxShadow = `0 8px 20px ${groupColor}40`;
+               this.style.borderRadius = '10px';
+             });
+             
+             item.addEventListener('mouseleave', function() {
+               this.style.background = 'transparent';
+               this.style.borderColor = 'transparent';
+               this.style.transform = 'scale(1)';
+               this.style.boxShadow = 'none';
+               this.style.borderRadius = '10px';
+             });
+           });
+         } else {
+           desktopSearchResults.querySelector('.search-results-content').innerHTML =
+             '<div style="text-align: center; padding: 20px; color: var(--color-text-secondary);">未找到匹配的文章</div>';
+           desktopSearchResults.classList.remove('hidden');
+         }
+       });
+
+       // 按 Enter 键跳转到第一个结果或文档页面（使用SPA）
+       searchInput.addEventListener('keydown', (e) => {
+         if (e.key === 'Enter') {
+           e.preventDefault();
+           const query = e.target.value.trim();
+           
+           if (desktopSearchResults) {
+             desktopSearchResults.classList.add('hidden');
+           }
+           
+           if (query && postsData && postsData.length > 0) {
+             const matchedArticles = searchArticles(query);
+             if (matchedArticles.length > 0) {
+               // 清空搜索框
+               searchInput.value = '';
+               // ClientRouter会自动处理SPA导航
+               window.location.href = matchedArticles[0].link;
+             } else {
+               // 没有匹配结果，跳转到文档页面
+               searchInput.value = '';
+               window.location.href = '/docs';
+             }
+           } else if (query) {
+             // 有查询但没有数据，跳转到文档页面
+             searchInput.value = '';
+             window.location.href = '/docs';
+           } else {
+             // 没有查询，跳转到文档页面
+             window.location.href = '/docs';
+           }
+         } else if (e.key === 'Escape') {
+           // 按 ESC 关闭下拉框
+           if (desktopSearchResults) {
+             desktopSearchResults.classList.add('hidden');
+           }
+           searchInput.blur();
+         }
+       });
+
+       // 点击外部关闭下拉框
+       document.addEventListener('click', (e) => {
+         if (desktopSearchResults &&
+             !searchInput.contains(e.target) &&
+             !desktopSearchResults.contains(e.target)) {
+           desktopSearchResults.classList.add('hidden');
+         }
+       });
+
+       // 移除URL参数处理，不再自动触发搜索
      }
    }
 
@@ -552,8 +1123,10 @@
    
    function initAll() {
      initNavigation();
+     initNavDropdown();
      initSearch();
      initThemeSelector();
+     initFontSizeSelector();
      
      // 初始化主题
      const savedTheme = localStorage.getItem('theme');
@@ -561,6 +1134,14 @@
        setTheme(savedTheme);
      } else {
        setTheme('system');
+     }
+     
+     // 初始化字体大小
+     const savedFontSize = localStorage.getItem('fontSize');
+     if (savedFontSize) {
+       setFontSize(savedFontSize);
+     } else {
+       setFontSize('normal');
      }
    }
 
@@ -591,6 +1172,7 @@
    // Reinitialize after Astro navigation (SPA transitions)
    document.addEventListener('astro:after-swap', () => {
      initNavigation();
+     initNavDropdown();
      initSearch();
      setTimeout(initPrefetching, 300); // 延遲初始化預載入，確保DOM完全加載
      // Re-apply theme after page transition
@@ -600,9 +1182,69 @@
      } else {
        setTheme('system');
      }
-     // Re-initialize theme functionality
+     // Re-apply font size after page transition
+     const savedFontSize = localStorage.getItem('fontSize');
+     if (savedFontSize) {
+       setFontSize(savedFontSize);
+     } else {
+       setFontSize('normal');
+     }
+     // Re-initialize theme and font size functionality
      initThemeSelector();
+     initFontSizeSelector();
    });
+
+   // Initialize font size selector (extracted for reuse)
+   function initFontSizeSelector() {
+     const fontSizeToggle = document.getElementById('font-size-toggle');
+     const fontSizeDropdown = document.getElementById('font-size-dropdown');
+
+     if (fontSizeToggle && fontSizeDropdown) {
+       // Remove existing event listeners by cloning
+       const newFontSizeToggle = fontSizeToggle.cloneNode(true);
+       fontSizeToggle.parentNode.replaceChild(newFontSizeToggle, fontSizeToggle);
+
+       const newFontSizeDropdown = fontSizeDropdown.cloneNode(true);
+       fontSizeDropdown.parentNode.replaceChild(newFontSizeDropdown, fontSizeDropdown);
+       // Ensure z-index is set after cloning
+       newFontSizeDropdown.style.zIndex = '9999';
+
+       // Re-get references
+       const updatedFontSizeToggle = document.getElementById('font-size-toggle');
+       const updatedFontSizeDropdown = document.getElementById('font-size-dropdown');
+
+       // Re-add event listeners
+       updatedFontSizeToggle.addEventListener('click', function(e) {
+         e.stopPropagation();
+         updatedFontSizeDropdown.classList.toggle('hidden');
+       });
+
+       // Close dropdown when clicking elsewhere
+       document.addEventListener('click', function(e) {
+         if (!updatedFontSizeToggle.contains(e.target) && !updatedFontSizeDropdown.contains(e.target)) {
+           updatedFontSizeDropdown.classList.add('hidden');
+         }
+       });
+
+       // Font size selection
+       const fontSizeButtons = document.querySelectorAll('[data-font-size]');
+       fontSizeButtons.forEach(button => {
+         // Remove existing listeners by cloning
+         const newButton = button.cloneNode(true);
+         button.parentNode.replaceChild(newButton, button);
+       });
+
+       // Re-add listeners to new buttons
+       const newFontSizeButtons = document.querySelectorAll('[data-font-size]');
+       newFontSizeButtons.forEach(button => {
+         button.addEventListener('click', function() {
+           const fontSize = this.getAttribute('data-font-size');
+           setFontSize(fontSize);
+           updatedFontSizeDropdown.classList.add('hidden');
+         });
+       });
+     }
+   }
 
    // Initialize theme selector (extracted for reuse)
    function initThemeSelector() {
@@ -719,6 +1361,32 @@
            moonPath.classList.add('hidden');
          }, 150);
        }
+     }
+   }
+
+   // Global font size functions
+   function setFontSize(size) {
+     // Remove existing font size classes
+     document.documentElement.classList.remove('font-normal', 'font-large', 'font-xlarge');
+     
+     // Add new font size class
+     switch(size) {
+       case 'normal':
+         document.documentElement.classList.add('font-normal');
+         localStorage.setItem('fontSize', 'normal');
+         break;
+       case 'large':
+         document.documentElement.classList.add('font-large');
+         localStorage.setItem('fontSize', 'large');
+         break;
+       case 'xlarge':
+         document.documentElement.classList.add('font-xlarge');
+         localStorage.setItem('fontSize', 'xlarge');
+         break;
+       default:
+         document.documentElement.classList.add('font-normal');
+         localStorage.setItem('fontSize', 'normal');
+         break;
      }
    }
 
