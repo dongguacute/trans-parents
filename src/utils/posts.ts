@@ -1,7 +1,21 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { pinyin } from 'pinyin-pro';
+import articlesData from '../data/articles.json';
 
 export type Post = CollectionEntry<'posts'>;
+
+export interface ArticleInfo {
+  id: number;
+  slug: string;
+  order: number;
+  group: string;
+}
+
+export interface GroupInfo {
+  name: string;
+  order: number;
+  color: string;
+}
 
 // 緩存文章列表
 let cachedPosts: Post[] | null = null;
@@ -206,6 +220,129 @@ export async function searchPosts(options: SearchOptions): Promise<Post[]> {
   });
 }
 
+
+/**
+ * 获取文章的group信息
+ */
+export function getArticleInfo(slug: string): ArticleInfo | undefined {
+  return articlesData.articles.find(article => article.slug === slug);
+}
+
+/**
+ * 获取group信息
+ */
+export function getGroupInfo(groupSlug: string): GroupInfo | undefined {
+  return articlesData.groups[groupSlug as keyof typeof articlesData.groups];
+}
+
+/**
+ * 获取同一group的所有文章（按order排序）
+ */
+export async function getGroupPosts(groupSlug: string): Promise<Array<Post & { articleInfo: ArticleInfo }>> {
+  const allPosts = await getAllPosts();
+  const groupArticles = articlesData.articles
+    .filter(article => article.group === groupSlug)
+    .sort((a, b) => a.order - b.order);
+  
+  const groupPosts = groupArticles
+    .map(article => {
+      const post = allPosts.find(p => p.slug === article.slug);
+      if (post) {
+        return { ...post, articleInfo: article };
+      }
+      return null;
+    })
+    .filter((post): post is Post & { articleInfo: ArticleInfo } => post !== null);
+  
+  return groupPosts;
+}
+
+/**
+ * 获取下一个group的第一篇文章
+ */
+export async function getNextGroupFirstArticle(currentGroupSlug: string): Promise<(Post & { articleInfo: ArticleInfo; groupInfo: GroupInfo }) | null> {
+  const allPosts = await getAllPosts();
+  const currentGroupInfo = getGroupInfo(currentGroupSlug);
+  
+  if (!currentGroupInfo) {
+    return null;
+  }
+  
+  // 获取所有group并按order排序
+  const sortedGroups = Object.entries(articlesData.groups)
+    .map(([slug, info]) => ({ slug, ...info }))
+    .sort((a, b) => a.order - b.order);
+  
+  // 找到当前group的索引
+  const currentGroupIndex = sortedGroups.findIndex(g => g.slug === currentGroupSlug);
+  
+  if (currentGroupIndex === -1 || currentGroupIndex >= sortedGroups.length - 1) {
+    return null; // 已经是最后一个group
+  }
+  
+  // 获取下一个group
+  const nextGroup = sortedGroups[currentGroupIndex + 1];
+  
+  // 获取下一个group的第一篇文章
+  const nextGroupArticles = articlesData.articles
+    .filter(article => article.group === nextGroup.slug)
+    .sort((a, b) => a.order - b.order);
+  
+  if (nextGroupArticles.length === 0) {
+    return null;
+  }
+  
+  const firstArticle = nextGroupArticles[0];
+  const post = allPosts.find(p => p.slug === firstArticle.slug);
+  
+  if (!post) {
+    return null;
+  }
+  
+  return {
+    ...post,
+    articleInfo: firstArticle,
+    groupInfo: nextGroup as GroupInfo
+  };
+}
+
+/**
+ * 获取文章在其group中的位置信息
+ */
+export async function getArticlePosition(slug: string): Promise<{
+  currentIndex: number;
+  total: number;
+  prevArticle?: Post & { articleInfo: ArticleInfo };
+  nextArticle?: Post & { articleInfo: ArticleInfo };
+  groupPosts: Array<Post & { articleInfo: ArticleInfo }>;
+  groupInfo?: GroupInfo;
+  nextGroupFirstArticle?: Post & { articleInfo: ArticleInfo; groupInfo: GroupInfo };
+} | null> {
+  const articleInfo = getArticleInfo(slug);
+  if (!articleInfo) {
+    return null;
+  }
+  
+  const groupPosts = await getGroupPosts(articleInfo.group);
+  const currentIndex = groupPosts.findIndex(post => post.slug === slug);
+  
+  if (currentIndex === -1) {
+    return null;
+  }
+  
+  const isLastInGroup = currentIndex === groupPosts.length - 1;
+  const nextGroupFirst = isLastInGroup ? await getNextGroupFirstArticle(articleInfo.group) : undefined;
+  
+  return {
+    currentIndex,
+    total: groupPosts.length,
+    prevArticle: currentIndex > 0 ? groupPosts[currentIndex - 1] : undefined,
+    nextArticle: currentIndex < groupPosts.length - 1 ? groupPosts[currentIndex + 1] : undefined,
+    groupPosts,
+    groupInfo: getGroupInfo(articleInfo.group),
+    nextGroupFirstArticle: nextGroupFirst || undefined,
+  };
+}
 /**
  * 获取所有唯一的标签
  */
