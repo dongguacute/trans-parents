@@ -2,6 +2,8 @@
 title: "什么是HRT？"
 date: "2025-10-10"
 description: "什么是荷尔蒙代替治疗（HRT）"
+category: "药物知识"
+tags: ["药物知识"]
 ---
 
 ## 概述

@@ -139,11 +139,33 @@ const groupedArticles = Object.entries(articlesData.groups)
     padding: 2rem 1rem;
     padding-top: 6rem;
     padding-bottom: 4rem;
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .docs-header {
     text-align: center;
     margin-bottom: 4rem;
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .docs-header h1 {
@@ -389,6 +411,30 @@ const groupedArticles = Object.entries(articlesData.groups)
     }
   }
 </style>
+
+<script is:inline define:vars={{ orderedArticles, groupsData: articlesData.groups }}>
+  // 将文章数据存储到全局对象，供导航栏搜索使用
+  window.docsData = {
+    articles: orderedArticles.map(article => ({
+      id: article.id,
+      slug: article.slug,
+      title: article.title,
+      description: article.description || '',
+      group: article.group,
+      groupName: groupsData[article.group]?.name || '',
+      groupColor: groupsData[article.group]?.color || '',
+      category: article.category || '',
+      tags: article.tags || [],
+      link: `/posts/${article.slug}`
+    })),
+    groups: Object.entries(groupsData).map(([key, group]) => ({
+      key: key,
+      name: group.name,
+      color: group.color,
+      order: group.order
+    }))
+  };
+</script>
 
 <script>
   // 优化：使用 Intersection Observer 实现懒载入动画

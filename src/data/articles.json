@@ -2,56 +2,62 @@
   "articles": [
     {
       "id": 1,
-      "slug": "about",
+      "slug": "whatstrans",
       "order": 1,
-      "group": "introduction"
+      "group": "basics"
     },
     {
       "id": 2,
-      "slug": "disclaimer",
+      "slug": "gd",
       "order": 2,
-      "group": "introduction"
+      "group": "basics"
     },
     {
       "id": 3,
-      "slug": "whatstrans",
+      "slug": "whatsspb",
       "order": 3,
-      "group": "knowledge"
+      "group": "medication"
     },
     {
       "id": 4,
-      "slug": "gd",
+      "slug": "whatshrt",
       "order": 4,
-      "group": "knowledge"
+      "group": "medication"
     },
     {
       "id": 5,
-      "slug": "whatsspb",
+      "slug": "disclaimer",
       "order": 5,
-      "group": "medical"
+      "group": "note"
     },
     {
       "id": 6,
-      "slug": "whatshrt",
+      "slug": "about",
       "order": 6,
-      "group": "medical"
+      "group": "note"
+    },
+    {
+      "id": 7,
+      "slug": "acknowledgments",
+      "order": 7,
+      "group": "note"
     }
   ],
   "groups": {
-    "introduction": {
-      "name": "网站介绍",
-      "order": 1,
-      "color": "#3b82f6"
-    },
-    "knowledge": {
+    "basics": {
       "name": "基础知识",
-      "order": 2,
-      "color": "#8b5cf6"
+      "order": 1,
+      "color": "#55CDFC"
     },
-    "medical": {
-      "name": "医疗信息",
+    "medication": {
+      "name": "药物知识",
+      "order": 2,
+      "color": "#F7A8B8"
+    },
+    "note": {
+      "name": "须知",
       "order": 3,
-      "color": "#ec4899"
+      "color": "#A66CFF"
     }
   }
 }

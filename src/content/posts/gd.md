@@ -2,6 +2,8 @@
 title: "性别焦虑"
 date: "2025-10-10"
 description: "什么是性别焦虑"
+category: "基础知识"
+tags: ["基础知识"]
 ---
 
 ## 什么是性别焦虑？

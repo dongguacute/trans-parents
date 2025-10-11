@@ -82,12 +82,34 @@ const relatedPosts = await getRelatedPosts(post, 3);
     margin: 0 auto;
     color: var(--color-text);
     width: 90%;
+    animation: fadeInContent 0.6s ease-out;
+  }
+
+  @keyframes fadeInContent {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .post-header {
     margin-bottom: 3rem;
     padding-bottom: 2rem;
     border-bottom: 1px solid var(--color-border);
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .post-header h1 {
@@ -96,6 +118,18 @@ const relatedPosts = await getRelatedPosts(post, 3);
     color: var(--color-text);
     margin-bottom: 1rem;
     line-height: 1.2;
+    animation: fadeInUp 0.6s ease-out 0.1s both;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .post-meta {
@@ -139,6 +173,18 @@ const relatedPosts = await getRelatedPosts(post, 3);
 
   .post-body {
     line-height: 1.7;
+    animation: fadeInBody 0.7s ease-out 0.2s both;
+  }
+
+  @keyframes fadeInBody {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .post-body :global(h2) {
@@ -351,6 +397,7 @@ const relatedPosts = await getRelatedPosts(post, 3);
     background: var(--color-card);
     border-radius: 12px;
     box-shadow: 0 2px 8px var(--color-shadow);
+    animation: fadeInUp 0.6s ease-out 0.3s both;
   }
 
   .related-posts h3 {

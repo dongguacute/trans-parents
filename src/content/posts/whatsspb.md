@@ -2,6 +2,8 @@
 title: "什么是青春阻断？"
 date: "2025-10-10"
 description: "什么是青春期阻断剂"
+category: "药物知识"
+tags: ["药物知识"]
 ---
 
 ## 概述

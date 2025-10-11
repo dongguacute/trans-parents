@@ -89,3 +89,63 @@ export async function getRelatedPosts(currentPost: Post, limit: number = 3): Pro
     .slice(0, limit)
     .map(item => item.post);
 }
+
+/**
+ * 搜索文章（支持标题、描述、标签搜索）
+ */
+export interface SearchOptions {
+  query?: string;
+  tags?: string[];
+  group?: string;
+}
+
+export async function searchPosts(options: SearchOptions): Promise<Post[]> {
+  const allPosts = await getAllPosts();
+  const { query, tags, group } = options;
+
+  return allPosts.filter(post => {
+    // 如果没有任何搜索条件，返回所有文章
+    if (!query && (!tags || tags.length === 0) && !group) {
+      return true;
+    }
+
+    let matches = true;
+
+    // 搜索查询（标题和描述）
+    if (query) {
+      const searchQuery = query.toLowerCase();
+      const titleMatch = post.data.title.toLowerCase().includes(searchQuery);
+      const descriptionMatch = post.data.description?.toLowerCase().includes(searchQuery) || false;
+      matches = matches && (titleMatch || descriptionMatch);
+    }
+
+    // 标签筛选
+    if (tags && tags.length > 0 && post.data.tags) {
+      const hasMatchingTag = tags.some(tag =>
+        post.data.tags?.includes(tag)
+      );
+      matches = matches && hasMatchingTag;
+    }
+
+    // Group 筛选（需要从 articles.json 获取）
+    // 这个将在组件中处理
+
+    return matches;
+  });
+}
+
+/**
+ * 获取所有唯一的标签
+ */
+export async function getAllTags(): Promise<string[]> {
+  const posts = await getAllPosts();
+  const tagsSet = new Set<string>();
+  
+  posts.forEach(post => {
+    if (post.data.tags) {
+      post.data.tags.forEach(tag => tagsSet.add(tag));
+    }
+  });
+  
+  return Array.from(tagsSet).sort();
+}
