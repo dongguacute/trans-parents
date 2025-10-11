@@ -447,7 +447,142 @@ const relatedPosts = await getRelatedPosts(post, 3);
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  /* 图片样式 - 应用到所有 post-body 中的图片 */
+  .post-body :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 1.5rem auto;
+    display: block;
+    box-shadow: 0 2px 8px var(--color-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+  }
+
+  .post-body :global(img:hover) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--color-shadow);
+  }
+
+  /* 灯箱弹窗样式 */
+  :global(.lightbox-overlay) {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+  }
+
+  :global(.lightbox-overlay.active) {
+    display: flex;
+  }
+
+  :global(.lightbox-content) {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    animation: zoomIn 0.3s ease;
+  }
+
+  :global(.lightbox-image) {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+
+  :global(.lightbox-close) {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    line-height: 1;
+    transition: transform 0.2s ease;
+  }
+
+  :global(.lightbox-close:hover) {
+    transform: scale(1.1);
+  }
+
+  :global(.lightbox-caption) {
+    position: absolute;
+    bottom: -40px;
+    left: 0;
+    right: 0;
+    color: white;
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes zoomIn {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* 移动端优化 */
+  @media (max-width: 768px) {
+    :global(.lightbox-content) {
+      max-width: 95%;
+      max-height: 95%;
+    }
+
+    :global(.lightbox-close) {
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    :global(.lightbox-caption) {
+      bottom: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 4px;
+    }
+  }
 </style>
+
+<!-- 灯箱弹窗 HTML -->
+<div class="lightbox-overlay" id="lightbox">
+  <div class="lightbox-content">
+    <button class="lightbox-close" id="lightbox-close">&times;</button>
+    <img class="lightbox-image" id="lightbox-image" src="" alt="" />
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+</div>
 
 <script is:inline>
  // 優化：使用更高效的事件委託和條件檢查
@@ -476,4 +611,99 @@ const relatedPosts = await getRelatedPosts(post, 3);
      }
    });
  }
+
+ // 图片灯箱功能
+ (function() {
+   const lightbox = document.getElementById('lightbox');
+   const lightboxImage = document.getElementById('lightbox-image');
+   const lightboxCaption = document.getElementById('lightbox-caption');
+   const lightboxClose = document.getElementById('lightbox-close');
+
+   if (!lightbox || !lightboxImage || !lightboxCaption || !lightboxClose) {
+     console.error('灯箱元素未找到');
+     return;
+   }
+
+   // 使用事件委托为文章内容中的所有图片添加点击事件
+   function initLightbox() {
+     const postContent = document.querySelector('.post-body');
+     if (!postContent) {
+       console.error('文章内容容器未找到');
+       return;
+     }
+
+     // 移除之前的事件监听器（如果有）
+     const oldHandler = postContent._lightboxHandler;
+     if (oldHandler) {
+       postContent.removeEventListener('click', oldHandler);
+     }
+
+     // 创建新的事件处理器
+     const handler = function(e) {
+       const target = e.target;
+       // 检查点击的是否是图片
+       if (target.tagName === 'IMG') {
+         e.preventDefault();
+         const src = target.getAttribute('data-src') || target.src;
+         const alt = target.alt || '';
+         
+         if (lightboxImage && lightboxCaption && lightbox) {
+           lightboxImage.src = src;
+           lightboxImage.alt = alt;
+           lightboxCaption.textContent = alt;
+           lightbox.classList.add('active');
+           document.body.style.overflow = 'hidden';
+         }
+       }
+     };
+
+     // 保存处理器引用以便后续移除
+     postContent._lightboxHandler = handler;
+     
+     // 添加事件监听器
+     postContent.addEventListener('click', handler);
+     
+     console.log('图片灯箱已初始化');
+   }
+
+   // 关闭灯箱
+   function closeLightbox() {
+     if (lightbox) {
+       lightbox.classList.remove('active');
+       document.body.style.overflow = '';
+     }
+   }
+
+   // 点击关闭按钮
+   lightboxClose.addEventListener('click', function(e) {
+     e.stopPropagation();
+     closeLightbox();
+   });
+
+   // 点击背景关闭
+   lightbox.addEventListener('click', function(e) {
+     if (e.target === lightbox) {
+       closeLightbox();
+     }
+   });
+
+   // ESC 键关闭
+   document.addEventListener('keydown', function(e) {
+     if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+       closeLightbox();
+     }
+   });
+
+   // 页面加载完成后初始化
+   if (document.readyState === 'loading') {
+     document.addEventListener('DOMContentLoaded', initLightbox);
+   } else {
+     initLightbox();
+   }
+
+   // 支持 Astro 页面切换后重新初始化
+   document.addEventListener('astro:after-swap', function() {
+     initLightbox();
+   });
+ })();
 </script>
