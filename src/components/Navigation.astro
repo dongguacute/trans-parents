@@ -30,7 +30,7 @@ const searchData = articlesData.articles
 
 <div id="navigation" class="fixed top-0 left-0 right-0 z-50 flex items-center p-5 pointer-events-none">
    <!-- Left side: Smiling face circle button -->
-   <button id="nav-toggle" class="pointer-events-auto rounded-full w-12 h-12 flex items-center justify-center cursor-pointer backdrop-blur-md" style="z-index: 60; background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">
+   <button id="nav-toggle" class="nav-button pointer-events-auto rounded-full w-12 h-12 flex items-center justify-center cursor-pointer backdrop-blur-md" style="z-index: 60;">
      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
        <circle cx="9" cy="9" r="1" fill="currentColor"/>
@@ -42,7 +42,7 @@ const searchData = articlesData.articles
    <!-- Center: Search box -->
    <div class="flex-1 flex justify-center pointer-events-auto" style="z-index: 30;">
      <div class="relative desktop-search">
-       <input type="text" id="search-input" placeholder="搜索..." class="search-input pl-10 pr-4 py-2 rounded-full backdrop-blur-md border transition-all duration-300" style="background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); color: var(--color-text); width: 250px; outline: none;" onfocus="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'; this.style.borderColor='rgba(255, 255, 255, 0.4)'" onblur="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.2)'">
+       <input type="text" id="search-input" placeholder="搜索..." class="search-input pl-10 pr-4 py-2 rounded-full backdrop-blur-md border transition-all duration-300" style="width: 250px; outline: none;">
        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 search-icon" style="color: var(--color-text);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
        </svg>
@@ -100,17 +100,17 @@ const searchData = articlesData.articles
   <!-- Right side: Floating options -->
   <div class="absolute right-0 flex gap-2.5 pointer-events-auto p-5" style="z-index: 30;">
     <!-- Mobile search button -->
-    <button id="mobile-search-btn" class="mobile-search-btn rounded-xl cursor-pointer text-sm backdrop-blur-md hidden flex items-center justify-center w-12 h-12" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">
+    <button id="mobile-search-btn" class="mobile-search-btn nav-button rounded-xl cursor-pointer text-sm backdrop-blur-md hidden flex items-center justify-center w-12 h-12">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
         <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
-    <a href="/posts/disclaimer" class="rounded-xl py-2.5 px-3.5 cursor-pointer text-sm backdrop-blur-md no-underline" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">免责声明</a>
-    <a href="/posts/about" class="rounded-xl py-2.5 px-3.5 cursor-pointer text-sm backdrop-blur-md no-underline" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">关于本站</a>
+    <a href="/posts/disclaimer" class="nav-button rounded-xl py-2.5 px-3.5 cursor-pointer text-sm backdrop-blur-md no-underline">免责声明</a>
+    <a href="/posts/about" class="nav-button rounded-xl py-2.5 px-3.5 cursor-pointer text-sm backdrop-blur-md no-underline">关于本站</a>
     
     <!-- Theme toggle button -->
     <div class="relative" id="theme-selector">
-      <button id="theme-toggle" class="group relative rounded-xl p-3 cursor-pointer backdrop-blur-md" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--color-text);">
+      <button id="theme-toggle" class="nav-button group relative rounded-xl p-3 cursor-pointer backdrop-blur-md">
         <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="transition-transform duration-300 group-hover:rotate-12">
           <!-- Sun icon -->
           <circle cx="12" cy="12" r="5" fill="currentColor" class="sun-circle"/>
@@ -156,6 +156,9 @@ const searchData = articlesData.articles
   </div>
 </div>
 
+<!-- 引入 pinyin-pro CDN -->
+<script is:inline src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.27.0/dist/index.min.js"></script>
+
 <script is:inline define:vars={{ searchData }}>
   // 将搜索数据存储到全局对象，使搜索在所有页面都可用
   if (!window.docsData) {
@@ -164,9 +167,80 @@ const searchData = articlesData.articles
       groups: []
     };
   }
+  
+  // 生成拼音搜索字符串（使用 pinyin-pro 库）
+  window.generatePinyinString = function(text) {
+    if (!text) return { fullPinyin: '', initials: '' };
+    
+    try {
+      // 如果 pinyin-pro 库已加载
+      if (window.pinyinPro && window.pinyinPro.pinyin) {
+        // 获取全拼（不带音调，转小写）
+        const fullPinyin = window.pinyinPro.pinyin(text, {
+          toneType: 'none'
+        }).replace(/\s+/g, '').toLowerCase();
+        
+        // 获取首字母（不带音调，转小写）
+        const initials = window.pinyinPro.pinyin(text, {
+          pattern: 'first',
+          toneType: 'none'
+        }).replace(/\s+/g, '').toLowerCase();
+        
+        return { fullPinyin, initials };
+      }
+    } catch (e) {
+      console.warn('Pinyin conversion failed:', e);
+    }
+    
+    // 如果库未加载或出错，返回原文本
+    return { fullPinyin: text.toLowerCase(), initials: text.toLowerCase() };
+  };
 </script>
 
 <style>
+  /* Navigation buttons base style */
+  .nav-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-text);
+  }
+
+  /* Dark mode styles for navigation buttons - using :global() for proper scoping */
+  :global(html.dark) .nav-button {
+    background-color: var(--color-card) !important;
+    border: 1px solid var(--color-border) !important;
+    color: var(--color-text) !important;
+  }
+
+  /* Search input base style */
+  .search-input {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: var(--color-text) !important;
+  }
+
+  .search-input:focus {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+  }
+
+  /* Dark mode styles for search input */
+  :global(html.dark) .search-input {
+    background-color: var(--color-card) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text) !important;
+  }
+
+  :global(html.dark) .search-input:focus {
+    background-color: var(--color-hover) !important;
+    border-color: var(--color-accent-secondary) !important;
+  }
+
+  /* Search icon color */
+  .search-icon {
+    color: var(--color-text);
+  }
+
 .nav-item {
   opacity: 0;
   transform: translateX(-100px);
@@ -178,16 +252,16 @@ const searchData = articlesData.articles
   transform: translateX(0);
 }
   /* Theme icon states */
-  .dark .sun-rays {
+  :global(html.dark) .sun-rays {
     opacity: 0;
     transform: rotate(180deg);
   }
 
-  .dark .moon-path {
+  :global(html.dark) .moon-path {
     opacity: 1;
   }
 
-  .dark .sun-circle {
+  :global(html.dark) .sun-circle {
     opacity: 0;
   }
 
@@ -558,31 +632,71 @@ const searchData = articlesData.articles
      // Collect posts data
      collectPostsData();
 
-     // Enhanced search function
+     // Enhanced search function with pinyin matching and case-insensitive English matching
      function searchArticles(query) {
        if (!query || !postsData || postsData.length === 0) {
          return [];
        }
 
-       const searchQuery = query.toLowerCase().trim();
+       const searchQuery = query.trim();
+       const searchQueryLower = searchQuery.toLowerCase();
        
        return postsData.filter(article => {
-         // 搜索标题
-         const titleMatch = article.title?.toLowerCase().includes(searchQuery);
+         // 标准匹配（大小写不敏感）
+         const titleMatchStandard = article.title?.toLowerCase().includes(searchQueryLower);
+         const descMatchStandard = article.description?.toLowerCase().includes(searchQueryLower);
+         const categoryMatchStandard = article.category?.toLowerCase().includes(searchQueryLower);
+         const groupMatchStandard = article.groupName?.toLowerCase().includes(searchQueryLower);
+         const tagsMatchStandard = article.tags?.some(tag => tag.toLowerCase().includes(searchQueryLower));
          
-         // 搜索描述
-         const descMatch = article.description?.toLowerCase().includes(searchQuery);
+         // 拼音匹配（使用 pinyin-pro 动态生成）
+         let titleMatchPinyin = false;
+         let descMatchPinyin = false;
+         let categoryMatchPinyin = false;
+         let groupMatchPinyin = false;
+         let tagsMatchPinyin = false;
          
-         // 搜索分类/group
-         const categoryMatch = article.category?.toLowerCase().includes(searchQuery);
-         const groupMatch = article.groupName?.toLowerCase().includes(searchQuery);
-         
-         // 搜索标签
-         const tagsMatch = article.tags?.some(tag =>
-           tag.toLowerCase().includes(searchQuery)
-         );
+         if (window.generatePinyinString) {
+           // 标题拼音匹配
+           if (article.title) {
+             const titlePinyin = window.generatePinyinString(article.title);
+             titleMatchPinyin = titlePinyin.fullPinyin.includes(searchQueryLower) ||
+                               titlePinyin.initials.includes(searchQueryLower);
+           }
+           
+           // 描述拼音匹配
+           if (article.description) {
+             const descPinyin = window.generatePinyinString(article.description);
+             descMatchPinyin = descPinyin.fullPinyin.includes(searchQueryLower) ||
+                              descPinyin.initials.includes(searchQueryLower);
+           }
+           
+           // 分类拼音匹配
+           if (article.category) {
+             const categoryPinyin = window.generatePinyinString(article.category);
+             categoryMatchPinyin = categoryPinyin.fullPinyin.includes(searchQueryLower) ||
+                                  categoryPinyin.initials.includes(searchQueryLower);
+           }
+           
+           // 分组名称拼音匹配
+           if (article.groupName) {
+             const groupPinyin = window.generatePinyinString(article.groupName);
+             groupMatchPinyin = groupPinyin.fullPinyin.includes(searchQueryLower) ||
+                               groupPinyin.initials.includes(searchQueryLower);
+           }
+           
+           // 标签拼音匹配
+           if (article.tags && article.tags.length > 0) {
+             tagsMatchPinyin = article.tags.some(tag => {
+               const tagPinyin = window.generatePinyinString(tag);
+               return tagPinyin.fullPinyin.includes(searchQueryLower) ||
+                      tagPinyin.initials.includes(searchQueryLower);
+             });
+           }
+         }
 
-         return titleMatch || descMatch || categoryMatch || groupMatch || tagsMatch;
+         return titleMatchStandard || descMatchStandard || categoryMatchStandard || groupMatchStandard || tagsMatchStandard ||
+                titleMatchPinyin || descMatchPinyin || categoryMatchPinyin || groupMatchPinyin || tagsMatchPinyin;
        });
      }
 
