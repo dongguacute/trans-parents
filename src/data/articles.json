@@ -1,0 +1,57 @@
+{
+  "articles": [
+    {
+      "id": 1,
+      "slug": "about",
+      "order": 1,
+      "group": "introduction"
+    },
+    {
+      "id": 2,
+      "slug": "disclaimer",
+      "order": 2,
+      "group": "introduction"
+    },
+    {
+      "id": 3,
+      "slug": "whatstrans",
+      "order": 3,
+      "group": "knowledge"
+    },
+    {
+      "id": 4,
+      "slug": "gd",
+      "order": 4,
+      "group": "knowledge"
+    },
+    {
+      "id": 5,
+      "slug": "whatsspb",
+      "order": 5,
+      "group": "medical"
+    },
+    {
+      "id": 6,
+      "slug": "whatshrt",
+      "order": 6,
+      "group": "medical"
+    }
+  ],
+  "groups": {
+    "introduction": {
+      "name": "网站介绍",
+      "order": 1,
+      "color": "#3b82f6"
+    },
+    "knowledge": {
+      "name": "基础知识",
+      "order": 2,
+      "color": "#8b5cf6"
+    },
+    "medical": {
+      "name": "医疗信息",
+      "order": 3,
+      "color": "#ec4899"
+    }
+  }
+}
