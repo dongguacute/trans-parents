@@ -1,0 +1,31 @@
+{
+  "name": "Trans Parents",
+  "short_name": "TransParents",
+  "description": "一个给家长们提供跨性别方面相关知识的网站",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["education", "lifestyle", "social"],
+  "lang": "zh-CN",
+  "dir": "ltr"
+}

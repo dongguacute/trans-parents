@@ -6,9 +6,83 @@ import remarkDirective from 'remark-directive';
 import remarkGfm from 'remark-gfm';
 
 import tailwindcss from '@tailwindcss/vite';
+import AstroPWA from '@vite-pwa/astro';
 
 // https://astro.build/config
 export default defineConfig({
+  integrations: [
+    AstroPWA({
+      mode: 'production',
+      base: '/',
+      scope: '/',
+      includeAssets: ['favicon.svg', 'favicon-32.png', 'fonts/**/*'],
+      registerType: 'autoUpdate',
+      manifest: {
+        name: 'Trans Parents',
+        short_name: 'TransParents',
+        description: '一个给家长们提供跨性别方面相关知识的网站',
+        theme_color: '#3b82f6',
+        background_color: '#ffffff',
+        display: 'standalone',
+        icons: [
+          {
+            src: '/favicon-32.png',
+            sizes: '32x32',
+            type: 'image/png'
+          },
+          {
+            src: '/favicon-32.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: '/favicon-32.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any'
+          }
+        ]
+      },
+      workbox: {
+        navigateFallback: '/',
+        globPatterns: ['**/*.{css,js,html,svg,png,ico,txt,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images-cache',
+              expiration: {
+                maxEntries: 60,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+              }
+            }
+          }
+        ]
+      },
+      devOptions: {
+        enabled: true,
+        navigateFallbackAllowlist: [/^\//]
+      },
+      experimental: {
+        directoryAndTrailingSlashHandler: true
+      }
+    })
+  ],
   markdown: {
     remarkPlugins: [
       remarkGfm // 支持 GitHub Flavored Markdown (表格, 等等)
@@ -31,10 +105,6 @@ export default defineConfig({
           }
         }
       }
-    },
-    // 優化依賴預構建
-    optimizeDeps: {
-      include: ['astro:content']
     }
   },
   // 啟用智能預載入以提升導航速度
