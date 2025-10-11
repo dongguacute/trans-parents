@@ -29,15 +29,41 @@ const searchData = articlesData.articles
 ---
 
 <div id="navigation" class="fixed top-0 left-0 right-0 z-50 flex items-center p-5 pointer-events-none">
-   <!-- Left side: Smiling face circle button -->
-   <button id="nav-toggle" class="nav-button pointer-events-auto rounded-full w-12 h-12 flex items-center justify-center cursor-pointer backdrop-blur-md" style="z-index: 60;">
-     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-       <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
-       <circle cx="9" cy="9" r="1" fill="currentColor"/>
-       <circle cx="15" cy="9" r="1" fill="currentColor"/>
-       <path d="M8 14 Q12 18 16 14" stroke="currentColor" stroke-width="2" fill="none"/>
-     </svg>
-   </button>
+   <!-- Left side: Smiling face circle button with dropdown -->
+   <div class="relative pointer-events-auto" id="nav-menu-container">
+     <button id="nav-toggle" class="nav-button rounded-full w-12 h-12 flex items-center justify-center cursor-pointer backdrop-blur-md" style="z-index: 60;">
+       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+         <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+         <circle cx="9" cy="9" r="1" fill="currentColor"/>
+         <circle cx="15" cy="9" r="1" fill="currentColor"/>
+         <path d="M8 14 Q12 18 16 14" stroke="currentColor" stroke-width="2" fill="none"/>
+       </svg>
+     </button>
+     
+     <!-- Navigation dropdown menu (desktop only) -->
+     <div id="nav-dropdown" class="nav-dropdown absolute left-0 mt-3 w-56 backdrop-blur-xl rounded-2xl shadow-2xl py-3 hidden" style="background-color: var(--color-card); border: 1px solid var(--color-border); z-index: 9999; top: 100%;">
+       <div class="px-2 py-2 text-xs font-semibold uppercase tracking-wide" style="color: var(--color-text-secondary);">快速导航</div>
+       <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
+       <a href="/" class="nav-dropdown-item flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text); text-decoration: none;" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+         <svg class="w-4 h-4 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+         </svg>
+         首页
+       </a>
+       <a href="/docs" class="nav-dropdown-item flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text); text-decoration: none;" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+         <svg class="w-4 h-4 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+         </svg>
+         文档
+       </a>
+       <a href="/posts/about" class="nav-dropdown-item flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text); text-decoration: none;" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+         <svg class="w-4 h-4 mr-3 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+         </svg>
+         关于本站
+       </a>
+     </div>
+   </div>
 
    <!-- Center: Search box -->
    <div class="flex-1 flex justify-center pointer-events-auto" style="z-index: 30;">
@@ -303,6 +329,20 @@ const searchData = articlesData.articles
   }
 
   /* Theme option hover effects are now handled by inline styles */
+  
+  /* Navigation dropdown styling */
+  .nav-dropdown {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  /* Hide navigation dropdown on mobile */
+  @media screen and (max-width: 768px) {
+    .nav-dropdown {
+      display: none !important;
+    }
+  }
 
   /* Search box responsive styles */
   @media screen and (max-width: 768px) {
@@ -570,6 +610,7 @@ const searchData = articlesData.articles
          }, 300);
        };
 
+       // 点击功能（适用于所有设备）
        updatedNavToggle.addEventListener('click', () => {
          console.log('Toggle clicked');
          openMenu();
@@ -610,6 +651,47 @@ const searchData = articlesData.articles
      } else {
        console.log('Elements not found:', updatedNavToggle, navOverlay, updatedNavClose);
      }
+   }
+   
+   // Initialize navigation dropdown (desktop hover menu)
+   function initNavDropdown() {
+     const navToggle = document.getElementById('nav-toggle');
+     const navDropdown = document.getElementById('nav-dropdown');
+     const navMenuContainer = document.getElementById('nav-menu-container');
+     
+     if (!navToggle || !navDropdown || !navMenuContainer) return;
+     
+     // Check if desktop
+     const isDesktop = () => window.innerWidth > 768;
+     
+     if (!isDesktop()) return; // Only enable on desktop
+     
+     let hideTimeout;
+     
+     // Show dropdown on hover (desktop only)
+     navMenuContainer.addEventListener('mouseenter', () => {
+       if (isDesktop()) {
+         clearTimeout(hideTimeout);
+         navDropdown.classList.remove('hidden');
+       }
+     });
+     
+     // Hide dropdown when mouse leaves (with delay)
+     navMenuContainer.addEventListener('mouseleave', () => {
+       if (isDesktop()) {
+         hideTimeout = setTimeout(() => {
+           navDropdown.classList.add('hidden');
+         }, 200);
+       }
+     });
+     
+     // Close dropdown when clicking a link
+     const dropdownLinks = navDropdown.querySelectorAll('a');
+     dropdownLinks.forEach(link => {
+       link.addEventListener('click', () => {
+         navDropdown.classList.add('hidden');
+       });
+     });
    }
 
    // Initialize search functionality
@@ -1041,6 +1123,7 @@ const searchData = articlesData.articles
    
    function initAll() {
      initNavigation();
+     initNavDropdown();
      initSearch();
      initThemeSelector();
      initFontSizeSelector();
@@ -1089,6 +1172,7 @@ const searchData = articlesData.articles
    // Reinitialize after Astro navigation (SPA transitions)
    document.addEventListener('astro:after-swap', () => {
      initNavigation();
+     initNavDropdown();
      initSearch();
      setTimeout(initPrefetching, 300); // 延遲初始化預載入，確保DOM完全加載
      // Re-apply theme after page transition
