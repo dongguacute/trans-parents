@@ -131,12 +131,17 @@ tags: ["致谢", "贡献者"]
     overflow: hidden;
     margin-bottom: 1rem;
     border: 3px solid var(--color-accent);
+    background: var(--color-accent);
+    font-size: 0;
+    line-height: 0;
   }
 
   .contributor-avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
+    display: block;
   }
 
   .contributor-info h3 {
