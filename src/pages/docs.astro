@@ -119,10 +119,23 @@ const groupedArticles = Object.entries(articlesData.groups)
 	</div>
 </Layout>
 
-<!-- 預取文章頁面 -->
+<!-- 預取和預緩存文章頁面 -->
 {orderedArticles.slice(0, 10).map((article) => (
 	<link rel="prefetch" href={`/posts/${article.slug}`} />
 ))}
+
+<script is:inline define:vars={{ orderedArticles }}>
+	// 預緩存前10篇文章到 Service Worker
+	if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+		setTimeout(() => {
+			const articlesToCache = orderedArticles.slice(0, 10);
+			navigator.serviceWorker.controller.postMessage({
+				type: 'PRE_CACHE_ARTICLES',
+				articles: articlesToCache.map(article => `/posts/${article.slug}`)
+			});
+		}, 3000);
+	}
+</script>
 
 <style>
   :global(body) {
