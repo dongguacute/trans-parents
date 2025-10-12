@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Navigation from '../../components/Navigation.astro';
-import { getAllPosts, getRelatedPosts, getArticlePosition, type Post } from '../../utils/posts';
+import { getAllPosts, getRelatedPosts, getArticlePosition, getPostRender, type Post } from '../../utils/posts';
 
 export async function getStaticPaths() {
   const posts = await getAllPosts();
@@ -16,7 +16,7 @@ type Props = {
 };
 
 const { post } = Astro.props as Props;
-const { Content } = await post.render();
+const { Content } = await getPostRender(post.slug);
 
 // 獲取相關文章用於預取
 const relatedPosts = await getRelatedPosts(post, 3);

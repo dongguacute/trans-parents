@@ -20,6 +20,9 @@ export interface GroupInfo {
 // 緩存文章列表
 let cachedPosts: Post[] | null = null;
 
+// 緩存單篇文章渲染內容
+const cachedPostRenders = new Map<string, any>();
+
 /**
  * 高性能獲取所有文章（帶緩存）
  */
@@ -43,11 +46,27 @@ export async function getSortedPosts(): Promise<Post[]> {
 }
 
 /**
- * 根據 slug 獲取單篇文章
+ * 根據 slug 獲取單篇文章（帶緩存）
  */
 export async function getPostBySlug(slug: string): Promise<Post | undefined> {
   const posts = await getAllPosts();
   return posts.find(post => post.slug === slug);
+}
+
+/**
+ * 獲取文章渲染內容（帶緩存）
+ */
+export async function getPostRender(slug: string): Promise<any | undefined> {
+  if (cachedPostRenders.has(slug)) {
+    return cachedPostRenders.get(slug);
+  }
+
+  const post = await getPostBySlug(slug);
+  if (!post) return undefined;
+
+  const render = await post.render();
+  cachedPostRenders.set(slug, render);
+  return render;
 }
 
 /**
