@@ -8,38 +8,44 @@
     },
     {
       "id": 2,
-      "slug": "gd",
+      "slug": "whatsgi",
       "order": 2,
       "group": "basics"
     },
     {
       "id": 3,
-      "slug": "whatsspb",
+      "slug": "gd",
       "order": 3,
-      "group": "medication"
+      "group": "basics"
     },
     {
       "id": 4,
-      "slug": "whatshrt",
+      "slug": "whatsspb",
       "order": 4,
       "group": "medication"
     },
     {
       "id": 5,
-      "slug": "disclaimer",
+      "slug": "whatshrt",
       "order": 5,
-      "group": "note"
+      "group": "medication"
     },
     {
       "id": 6,
-      "slug": "about",
+      "slug": "disclaimer",
       "order": 6,
       "group": "note"
     },
     {
       "id": 7,
-      "slug": "acknowledgments",
+      "slug": "about",
       "order": 7,
+      "group": "note"
+    },
+    {
+      "id": 8,
+      "slug": "acknowledgments",
+      "order": 8,
       "group": "note"
     }
   ],
