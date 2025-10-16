@@ -897,6 +897,62 @@ const positionInfo = await getArticlePosition(post.slug);
       border-radius: 4px;
     }
   }
+
+  /* 阅读模式样式 */
+  :global(.reading-wide) .post-content {
+    max-width: 100%;
+    width: 90%;
+  }
+
+  :global(.reading-narrow) .post-content {
+    max-width: 800px;
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  /* 窄模式下的额外样式优化 */
+  :global(.reading-narrow) .post-body {
+    line-height: 1.8;
+    font-size: 1.05rem;
+  }
+
+  :global(.reading-narrow) .post-body :global(h2) {
+    font-size: 1.6rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  :global(.reading-narrow) .post-body :global(h3) {
+    font-size: 1.3rem;
+    margin-top: 2rem;
+    margin-bottom: 0.8rem;
+  }
+
+  :global(.reading-narrow) .post-body :global(p) {
+    margin-bottom: 1.2rem;
+  }
+
+  :global(.reading-narrow) .post-body :global(ul), :global(.reading-narrow) .post-body :global(ol) {
+    margin-bottom: 1.2rem;
+  }
+
+  :global(.reading-narrow) .post-body :global(li) {
+    margin-bottom: 0.6rem;
+  }
+
+  :global(.reading-narrow) .post-body :global(blockquote) {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    font-size: 1.1rem;
+  }
+
+  /* 移动端保持宽模式 */
+  @media (max-width: 768px) {
+    :global(.reading-narrow) .post-content {
+      max-width: 100%;
+      width: 90%;
+    }
+  }
 </style>
 
 <!-- 灯箱弹窗 HTML -->
