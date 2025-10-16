@@ -637,6 +637,7 @@ const searchData = articlesData.articles
        // 点击功能（适用于所有设备）
        updatedNavToggle.addEventListener('click', () => {
          console.log('Toggle clicked');
+         closeAllDropdowns(); // Close other menus before opening
          openMenu();
        });
 
@@ -677,29 +678,63 @@ const searchData = articlesData.articles
      }
    }
    
+   // Function to close all dropdown menus
+   function closeAllDropdowns() {
+     // Close nav dropdown
+     const navDropdown = document.getElementById('nav-dropdown');
+     if (navDropdown) {
+       navDropdown.classList.add('hidden');
+     }
+
+     // Close font size dropdown
+     const fontSizeDropdown = document.getElementById('font-size-dropdown');
+     if (fontSizeDropdown) {
+       fontSizeDropdown.classList.add('hidden');
+     }
+
+     // Close theme dropdown
+     const themeDropdown = document.getElementById('theme-dropdown');
+     if (themeDropdown) {
+       themeDropdown.classList.add('hidden');
+     }
+
+     // Close nav overlay
+     const navOverlay = document.getElementById('nav-overlay');
+     if (navOverlay) {
+       navOverlay.style.visibility = 'hidden';
+       navOverlay.style.pointerEvents = 'none';
+       navOverlay.style.opacity = '0';
+       const navItems = navOverlay.querySelectorAll('.nav-item');
+       navItems.forEach((item) => {
+         item.classList.remove('visible');
+       });
+     }
+   }
+
    // Initialize navigation dropdown (desktop hover menu)
    function initNavDropdown() {
      const navToggle = document.getElementById('nav-toggle');
      const navDropdown = document.getElementById('nav-dropdown');
      const navMenuContainer = document.getElementById('nav-menu-container');
-     
+
      if (!navToggle || !navDropdown || !navMenuContainer) return;
-     
+
      // Check if desktop
      const isDesktop = () => window.innerWidth > 768;
-     
+
      if (!isDesktop()) return; // Only enable on desktop
-     
+
      let hideTimeout;
-     
+
      // Show dropdown on hover (desktop only)
      navMenuContainer.addEventListener('mouseenter', () => {
        if (isDesktop()) {
          clearTimeout(hideTimeout);
+         closeAllDropdowns(); // Close other menus before opening
          navDropdown.classList.remove('hidden');
        }
      });
-     
+
      // Hide dropdown when mouse leaves (with delay)
      navMenuContainer.addEventListener('mouseleave', () => {
        if (isDesktop()) {
@@ -708,7 +743,7 @@ const searchData = articlesData.articles
          }, 200);
        }
      });
-     
+
      // Close dropdown when clicking a link
      const dropdownLinks = navDropdown.querySelectorAll('a');
      dropdownLinks.forEach(link => {
@@ -1257,6 +1292,7 @@ const searchData = articlesData.articles
        // Re-add event listeners
        updatedFontSizeToggle.addEventListener('click', function(e) {
          e.stopPropagation();
+         closeAllDropdowns(); // Close other menus before opening
          updatedFontSizeDropdown.classList.toggle('hidden');
        });
 
@@ -1328,6 +1364,7 @@ const searchData = articlesData.articles
        // Re-add event listeners
        updatedThemeToggle.addEventListener('click', function(e) {
          e.stopPropagation();
+         closeAllDropdowns(); // Close other menus before opening
          updatedThemeDropdown.classList.toggle('hidden');
        });
 
