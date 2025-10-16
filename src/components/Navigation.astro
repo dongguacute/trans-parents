@@ -1396,6 +1396,22 @@ const searchData = articlesData.articles
          }
          break;
      }
+
+     // Re-apply font size after theme change
+     const savedFontSize = localStorage.getItem('fontSize');
+     if (savedFontSize) {
+       setFontSize(savedFontSize);
+     } else {
+       setFontSize('normal');
+     }
+
+     // Re-apply reading mode after theme change
+     const savedReadingMode = localStorage.getItem('readingMode');
+     if (savedReadingMode) {
+       setReadingMode(savedReadingMode);
+     } else {
+       setReadingMode('wide');
+     }
    }
 
    function updateThemeIcon(theme) {
