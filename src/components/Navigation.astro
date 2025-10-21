@@ -1482,22 +1482,29 @@ const searchData = articlesData.articles
      // Remove existing font size classes
      document.documentElement.classList.remove('font-normal', 'font-large', 'font-xlarge');
 
-     // Add new font size class
+     // Reset zoom
+     document.documentElement.style.zoom = '';
+
+     // Add new font size class or apply zoom
      switch(size) {
        case 'normal':
          document.documentElement.classList.add('font-normal');
+         document.documentElement.style.zoom = '100%';
          localStorage.setItem('fontSize', 'normal');
          break;
        case 'large':
-         document.documentElement.classList.add('font-large');
+         // Apply browser-like zoom for large font mode
+         document.documentElement.style.zoom = '120%';
          localStorage.setItem('fontSize', 'large');
          break;
        case 'xlarge':
-         document.documentElement.classList.add('font-xlarge');
+         // Apply browser-like zoom for extra large font mode (senior mode)
+         document.documentElement.style.zoom = '150%';
          localStorage.setItem('fontSize', 'xlarge');
          break;
        default:
          document.documentElement.classList.add('font-normal');
+         document.documentElement.style.zoom = '100%';
          localStorage.setItem('fontSize', 'normal');
          break;
      }
