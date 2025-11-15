@@ -1,7 +1,7 @@
 ---
 import hero from '../assets/hero.jpg';
 import { getTranslator } from '@gudupao/astro-i18n';
-const lang = Astro.params.lang || 'zh-hans';
+const { lang = 'zh-hans' } = Astro.props;
 const t = getTranslator(lang);
 ---
 
@@ -10,7 +10,7 @@ const t = getTranslator(lang);
 
 	<div id="hero-title">
 		<h1>Trans Parents</h1>
-		<a href="/docs" id="start-reading-btn">{t('welcome.startReading')}</a>
+		<a href={`/${lang}/docs`} id="start-reading-btn">{t('welcome.startReading')}</a>
 	</div>
 
 </div>
