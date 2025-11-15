@@ -37,5 +37,11 @@
   },
   "welcome": {
     "startReading": "开始阅读"
+  },
+  "docs": {
+    "title": "文档",
+    "directoryTitle": "📚 文档目录",
+    "description": "按照顺序了解跨性别相关知识",
+    "readingTip": "💡 建议按照顺序阅读文章，以获得更完整的理解"
   }
 }

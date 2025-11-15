@@ -33,7 +33,7 @@ const searchData = articlesData.articles
       groupColor: (articlesData.groups as any)[article.group]?.color || '',
       category: post.data.category || '',
       tags: post.data.tags || [],
-      link: `/posts/${article.slug}`
+      link: `/${lang}/posts/${article.slug}`
     };
   })
   .filter(item => item !== null);
@@ -55,19 +55,19 @@ const searchData = articlesData.articles
      <div id="nav-dropdown" class="nav-dropdown absolute left-0 mt-3 w-56 backdrop-blur-xl rounded-2xl shadow-2xl py-3 hidden" style="background-color: var(--color-card); border: 1px solid var(--color-border); z-index: 9999; top: 100%;">
        <div class="px-2 py-2 text-xs font-semibold uppercase tracking-wide" style="color: var(--color-text-secondary);">{t('nav.quickNavigation')}</div>
        <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
-       <a href="/" class="nav-dropdown-item flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text); text-decoration: none;" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+       <a href={`/${lang}/`} class="nav-dropdown-item flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text); text-decoration: none;" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
          <svg class="w-4 h-4 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
          </svg>
          {t('nav.home')}
        </a>
-       <a href="/docs" class="nav-dropdown-item flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text); text-decoration: none;" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+       <a href={`/${lang}/docs`} class="nav-dropdown-item flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text); text-decoration: none;" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
          <svg class="w-4 h-4 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
          </svg>
          {t('nav.docs')}
        </a>
-       <a href="/posts/about" class="nav-dropdown-item flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text); text-decoration: none;" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+       <a href={`/${lang}/posts/about`} class="nav-dropdown-item flex items-center w-full text-left px-2 py-3 text-sm transition-all duration-200 rounded-lg" style="color: var(--color-text); text-decoration: none;" onmouseover="this.style.backgroundColor='var(--color-hover)'" onmouseout="this.style.backgroundColor='transparent'">
          <svg class="w-4 h-4 mr-3 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
          </svg>
@@ -127,9 +127,9 @@ const searchData = articlesData.articles
    <div id="nav-overlay" class="fixed inset-0 bg-white/10 backdrop-blur-md opacity-0 transition-all duration-300 ease-in-out" style="visibility: hidden; pointer-events: none; z-index: 50;">
      <button id="nav-close" class="absolute top-5 right-5 bg-none border-none text-3xl cursor-pointer text-white z-[60] pointer-events-auto">&times;</button>
      <nav class="flex flex-col justify-center items-center h-full gap-8">
-       <a href="/" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">{t('nav.home')}</a>
-       <a href="/docs" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">{t('nav.docs')}</a>
-       <a href="/posts/about" class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">{t('nav.aboutSite')}</a>
+       <a href={`/${lang}/`} class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">{t('nav.home')}</a>
+       <a href={`/${lang}/docs`} class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">{t('nav.docs')}</a>
+       <a href={`/${lang}/posts/about`} class="nav-item text-white no-underline text-4xl font-bold hover:text-gray-300 transition-all duration-300 transform hover:scale-110">{t('nav.aboutSite')}</a>
        <!-- Add more links as needed -->
      </nav>
    </div>
@@ -1176,17 +1176,17 @@ const searchData = articlesData.articles
                // ClientRouter会自动处理SPA导航
                window.location.href = matchedArticles[0].link;
              } else {
-               // 没有匹配结果，跳转到文档页面
-               searchInput.value = '';
-               window.location.href = '/docs';
-             }
+                 // 没有匹配结果，跳转到文档页面
+                 searchInput.value = '';
+                 window.location.href = `/${lang}/docs`;
+               }
            } else if (query) {
              // 有查询但没有数据，跳转到文档页面
              searchInput.value = '';
-             window.location.href = '/docs';
+             window.location.href = `/${lang}/docs`;
            } else {
              // 没有查询，跳转到文档页面
-             window.location.href = '/docs';
+             window.location.href = `/${lang}/docs`;
            }
          } else if (e.key === 'Escape') {
            // 按 ESC 关闭下拉框

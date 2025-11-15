@@ -34,5 +34,11 @@
   "layout": {
     "title": "Trans Parents",
     "description": "Transgender Parent Support Platform"
+  },
+  "docs": {
+    "title": "Docs",
+    "directoryTitle": "📚 Documentation",
+    "description": "Learn about transgender topics in order",
+    "readingTip": "💡 It is recommended to read the articles in order for a complete understanding"
   }
 }

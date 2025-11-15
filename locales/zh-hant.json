@@ -37,5 +37,11 @@
   },
   "welcome": {
     "startReading": "開始閱讀"
+  },
+  "docs": {
+    "title": "文檔",
+    "directoryTitle": "📚 文檔目錄",
+    "description": "按照順序了解跨性別相關知識",
+    "readingTip": "💡 建議按照順序閱讀文章，以獲得更完整的理解"
   }
 }
