@@ -1,14 +1,26 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import Navigation from '../../components/Navigation.astro';
-import { getAllPosts, getRelatedPosts, getArticlePosition, getPostRender, type Post } from '../../utils/posts';
+import Layout from '../../../layouts/Layout.astro';
+import Navigation from '../../../components/Navigation.astro';
+import { getAllPosts, getRelatedPosts, getArticlePosition, getPostRender, type Post } from '../../../utils/posts';
 
 export async function getStaticPaths() {
-  const posts = await getAllPosts();
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post },
-  }));
+  const languages = ['zh-hans', 'zh-hant'];
+  const paths = [];
+
+  for (const lang of languages) {
+    const posts = await getAllPosts(lang);
+    for (const post of posts) {
+      paths.push({
+        params: {
+          lang: lang,
+          slug: post.slug
+        },
+        props: { post },
+      });
+    }
+  }
+
+  return paths;
 }
 
 type Props = {
@@ -16,13 +28,14 @@ type Props = {
 };
 
 const { post } = Astro.props as Props;
-const { Content } = await getPostRender(post.slug);
+const lang = Astro.params.lang || 'zh-hans';
+const { Content } = await getPostRender(post.slug, lang);
 
 // 獲取相關文章用於預取
-const relatedPosts = await getRelatedPosts(post, 3);
+const relatedPosts = await getRelatedPosts(post, 3, lang);
 
 // 获取文章在group中的位置信息
-const positionInfo = await getArticlePosition(post.slug);
+const positionInfo = await getArticlePosition(post.slug, lang);
 ---
 
 <Layout title={`${post.data.title} - Trans Parents`}>

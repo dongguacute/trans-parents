@@ -2,7 +2,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import { pinyin } from 'pinyin-pro';
 import articlesData from '../data/articles.json';
 
-export type Post = CollectionEntry<'posts'>;
+export type Post = CollectionEntry<'posts'> | any;
 
 export interface ArticleInfo {
   id: number;
@@ -17,30 +17,48 @@ export interface GroupInfo {
   color: string;
 }
 
-// 緩存文章列表
-let cachedPosts: Post[] | null = null;
+// 緩存文章列表 - 按语言缓存
+const cachedPostsByLang = new Map<string, Post[]>();
 
 // 緩存單篇文章渲染內容
 const cachedPostRenders = new Map<string, any>();
 
 /**
- * 高性能獲取所有文章（帶緩存）
+ * 根据语言获取对应的集合名称
  */
-export async function getAllPosts(): Promise<Post[]> {
-  if (cachedPosts) {
-    return cachedPosts;
+function getCollectionNameByLang(lang?: string): 'posts' | 'zh-hans/posts' | 'zh-hant/posts' {
+  if (!lang || lang === 'zh-hans') {
+    return 'zh-hans/posts';
+  } else if (lang === 'zh-hant') {
+    return 'zh-hant/posts';
   }
-  
-  cachedPosts = await getCollection('posts');
-  return cachedPosts;
+  // 默认返回 zh-hans
+  return 'zh-hans/posts';
+}
+
+/**
+ * 高性能獲取所有文章（帶緩存）- 支持多语言
+ */
+export async function getAllPosts(lang?: string): Promise<Post[]> {
+  const effectiveLang = lang || 'zh-hans';
+
+  if (cachedPostsByLang.has(effectiveLang)) {
+    return cachedPostsByLang.get(effectiveLang)!;
+  }
+
+  const collectionName = getCollectionNameByLang(effectiveLang);
+  const posts = await getCollection(collectionName as any) as Post[];
+  cachedPostsByLang.set(effectiveLang, posts);
+
+  return posts;
 }
 
 /**
  * 獲取已排序的文章列表（按日期降序）
  */
-export async function getSortedPosts(): Promise<Post[]> {
-  const posts = await getAllPosts();
-  return posts.sort((a, b) => 
+export async function getSortedPosts(lang?: string): Promise<Post[]> {
+  const posts = await getAllPosts(lang);
+  return posts.sort((a, b) =>
     new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
   );
 }
@@ -48,36 +66,38 @@ export async function getSortedPosts(): Promise<Post[]> {
 /**
  * 根據 slug 獲取單篇文章（帶緩存）
  */
-export async function getPostBySlug(slug: string): Promise<Post | undefined> {
-  const posts = await getAllPosts();
+export async function getPostBySlug(slug: string, lang?: string): Promise<Post | undefined> {
+  const posts = await getAllPosts(lang);
   return posts.find(post => post.slug === slug);
 }
 
 /**
  * 獲取文章渲染內容（帶緩存）
  */
-export async function getPostRender(slug: string): Promise<any | undefined> {
-  if (cachedPostRenders.has(slug)) {
-    return cachedPostRenders.get(slug);
+export async function getPostRender(slug: string, lang?: string): Promise<any | undefined> {
+  const cacheKey = `${lang || 'zh-hans'}-${slug}`;
+
+  if (cachedPostRenders.has(cacheKey)) {
+    return cachedPostRenders.get(cacheKey);
   }
 
-  const post = await getPostBySlug(slug);
+  const post = await getPostBySlug(slug, lang);
   if (!post) return undefined;
 
   const render = await post.render();
-  cachedPostRenders.set(slug, render);
+  cachedPostRenders.set(cacheKey, render);
   return render;
 }
 
 /**
  * 獲取分頁文章
  */
-export async function getPaginatedPosts(page: number = 1, pageSize: number = 10) {
-  const posts = await getSortedPosts();
+export async function getPaginatedPosts(page: number = 1, pageSize: number = 10, lang?: string) {
+  const posts = await getSortedPosts(lang);
   const totalPages = Math.ceil(posts.length / pageSize);
   const startIndex = (page - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  
+
   return {
     posts: posts.slice(startIndex, endIndex),
     currentPage: page,
@@ -91,32 +111,32 @@ export async function getPaginatedPosts(page: number = 1, pageSize: number = 10)
 /**
  * 獲取相關文章（基於分類或標籤）
  */
-export async function getRelatedPosts(currentPost: Post, limit: number = 3): Promise<Post[]> {
-  const allPosts = await getSortedPosts();
-  
+export async function getRelatedPosts(currentPost: Post, limit: number = 3, lang?: string): Promise<Post[]> {
+  const allPosts = await getSortedPosts(lang);
+
   // 排除當前文章
   const otherPosts = allPosts.filter(post => post.slug !== currentPost.slug);
-  
+
   // 計算相關性分數
   const postsWithScore = otherPosts.map(post => {
     let score = 0;
-    
+
     // 相同分類加分
     if (currentPost.data.category && post.data.category === currentPost.data.category) {
       score += 10;
     }
-    
+
     // 共同標籤加分
     if (currentPost.data.tags && post.data.tags) {
-      const commonTags = currentPost.data.tags.filter(tag => 
+      const commonTags = currentPost.data.tags.filter((tag: string) =>
         post.data.tags?.includes(tag)
       );
       score += commonTags.length * 5;
     }
-    
+
     return { post, score };
   });
-  
+
   // 按分數排序並返回前 N 篇
   return postsWithScore
     .sort((a, b) => b.score - a.score)
@@ -203,8 +223,8 @@ export interface SearchOptions {
   group?: string;
 }
 
-export async function searchPosts(options: SearchOptions): Promise<Post[]> {
-  const allPosts = await getAllPosts();
+export async function searchPosts(options: SearchOptions, lang?: string): Promise<Post[]> {
+  const allPosts = await getAllPosts(lang);
   const { query, tags, group } = options;
 
   return allPosts.filter(post => {
@@ -257,12 +277,12 @@ export function getGroupInfo(groupSlug: string): GroupInfo | undefined {
 /**
  * 获取同一group的所有文章（按order排序）
  */
-export async function getGroupPosts(groupSlug: string): Promise<Array<Post & { articleInfo: ArticleInfo }>> {
-  const allPosts = await getAllPosts();
+export async function getGroupPosts(groupSlug: string, lang?: string): Promise<Array<Post & { articleInfo: ArticleInfo }>> {
+  const allPosts = await getAllPosts(lang);
   const groupArticles = articlesData.articles
     .filter(article => article.group === groupSlug)
     .sort((a, b) => a.order - b.order);
-  
+
   const groupPosts = groupArticles
     .map(article => {
       const post = allPosts.find(p => p.slug === article.slug);
@@ -272,52 +292,52 @@ export async function getGroupPosts(groupSlug: string): Promise<Array<Post & { a
       return null;
     })
     .filter((post): post is Post & { articleInfo: ArticleInfo } => post !== null);
-  
+
   return groupPosts;
 }
 
 /**
  * 获取下一个group的第一篇文章
  */
-export async function getNextGroupFirstArticle(currentGroupSlug: string): Promise<(Post & { articleInfo: ArticleInfo; groupInfo: GroupInfo }) | null> {
-  const allPosts = await getAllPosts();
+export async function getNextGroupFirstArticle(currentGroupSlug: string, lang?: string): Promise<(Post & { articleInfo: ArticleInfo; groupInfo: GroupInfo }) | null> {
+  const allPosts = await getAllPosts(lang);
   const currentGroupInfo = getGroupInfo(currentGroupSlug);
-  
+
   if (!currentGroupInfo) {
     return null;
   }
-  
+
   // 获取所有group并按order排序
   const sortedGroups = Object.entries(articlesData.groups)
     .map(([slug, info]) => ({ slug, ...info }))
     .sort((a, b) => a.order - b.order);
-  
+
   // 找到当前group的索引
   const currentGroupIndex = sortedGroups.findIndex(g => g.slug === currentGroupSlug);
-  
+
   if (currentGroupIndex === -1 || currentGroupIndex >= sortedGroups.length - 1) {
     return null; // 已经是最后一个group
   }
-  
+
   // 获取下一个group
   const nextGroup = sortedGroups[currentGroupIndex + 1];
-  
+
   // 获取下一个group的第一篇文章
   const nextGroupArticles = articlesData.articles
     .filter(article => article.group === nextGroup.slug)
     .sort((a, b) => a.order - b.order);
-  
+
   if (nextGroupArticles.length === 0) {
     return null;
   }
-  
+
   const firstArticle = nextGroupArticles[0];
   const post = allPosts.find(p => p.slug === firstArticle.slug);
-  
+
   if (!post) {
     return null;
   }
-  
+
   return {
     ...post,
     articleInfo: firstArticle,
@@ -328,7 +348,7 @@ export async function getNextGroupFirstArticle(currentGroupSlug: string): Promis
 /**
  * 获取文章在其group中的位置信息
  */
-export async function getArticlePosition(slug: string): Promise<{
+export async function getArticlePosition(slug: string, lang?: string): Promise<{
   currentIndex: number;
   total: number;
   prevArticle?: Post & { articleInfo: ArticleInfo };
@@ -341,17 +361,17 @@ export async function getArticlePosition(slug: string): Promise<{
   if (!articleInfo) {
     return null;
   }
-  
-  const groupPosts = await getGroupPosts(articleInfo.group);
+
+  const groupPosts = await getGroupPosts(articleInfo.group, lang);
   const currentIndex = groupPosts.findIndex(post => post.slug === slug);
-  
+
   if (currentIndex === -1) {
     return null;
   }
-  
+
   const isLastInGroup = currentIndex === groupPosts.length - 1;
-  const nextGroupFirst = isLastInGroup ? await getNextGroupFirstArticle(articleInfo.group) : undefined;
-  
+  const nextGroupFirst = isLastInGroup ? await getNextGroupFirstArticle(articleInfo.group, lang) : undefined;
+
   return {
     currentIndex,
     total: groupPosts.length,
@@ -365,15 +385,15 @@ export async function getArticlePosition(slug: string): Promise<{
 /**
  * 获取所有唯一的标签
  */
-export async function getAllTags(): Promise<string[]> {
-  const posts = await getAllPosts();
+export async function getAllTags(lang?: string): Promise<string[]> {
+  const posts = await getAllPosts(lang);
   const tagsSet = new Set<string>();
-  
+
   posts.forEach(post => {
     if (post.data.tags) {
-      post.data.tags.forEach(tag => tagsSet.add(tag));
+      post.data.tags.forEach((tag: string) => tagsSet.add(tag));
     }
   });
-  
+
   return Array.from(tagsSet).sort();
 }

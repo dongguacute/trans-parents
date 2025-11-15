@@ -11,8 +11,8 @@ const t = getTranslator(lang);
 // Set locale for date formatting
 const locale = lang === 'en' ? 'en-US' : lang === 'zh-hant' ? 'zh-TW' : 'zh-CN';
 
-// 獲取所有文章
-const allPosts = await getSortedPosts();
+// 獲取所有文章 - 使用当前语言
+const allPosts = await getSortedPosts(lang);
 
 // 根據 JSON 配置排序文章，並從 frontmatter 獲取所有信息
 const orderedArticles = articlesData.articles
@@ -20,7 +20,7 @@ const orderedArticles = articlesData.articles
   .map(article => {
     const post = allPosts.find(p => p.slug === article.slug);
     if (!post) return null;
-    
+
     return {
       id: article.id,
       slug: article.slug,

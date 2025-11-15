@@ -14,15 +14,15 @@ const translations = {
   enterKeywordsToSearch: t('nav.enterKeywordsToSearch'),
   searchOnlyOnDocs: t('nav.searchOnlyOnDocs')
 };
-// 在导航组件中加载所有文章数据，使搜索在所有页面都可用
-const allPosts = await getSortedPosts();
+// 在导航组件中加载所有文章数据，使搜索在所有页面都可用 - 使用当前语言
+const allPosts = await getSortedPosts(lang);
 
 // 构建搜索数据
 const searchData = articlesData.articles
   .map(article => {
     const post = allPosts.find(p => p.slug === article.slug);
     if (!post) return null;
-    
+
     return {
       id: article.id,
       slug: article.slug,
