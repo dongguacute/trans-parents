@@ -2,6 +2,17 @@
 import Layout from '../../../layouts/Layout.astro';
 import Navigation from '../../../components/Navigation.astro';
 import { getAllPosts, getRelatedPosts, getArticlePosition, getPostRender, getGroupName, type Post } from '../../../utils/posts';
+import { getTranslator } from '@gudupao/astro-i18n';
+
+const lang = Astro.params.lang || 'zh-hans';
+const t = getTranslator(lang);
+
+// Translation variables for JavaScript
+const postTranslations = {
+  lightboxNotFound: t('post.lightboxNotFound'),
+  postContentNotFound: t('post.postContentNotFound'),
+  lightboxInitialized: t('post.lightboxInitialized')
+};
 
 export async function getStaticPaths() {
   const languages = ['zh-hans', 'zh-hant'];
@@ -28,7 +39,6 @@ type Props = {
 };
 
 const { post } = Astro.props as Props;
-const lang = Astro.params.lang || 'zh-hans';
 const { Content } = await getPostRender(post.slug, lang);
 
 // 獲取相關文章用於預取
@@ -65,7 +75,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
       <nav class="group-navigation">
         <div class="group-header" style={`border-left-color: ${positionInfo.groupInfo?.color}`}>
           <h3>
-            {getGroupName(positionInfo.groupInfo, lang) || '相关文章'}
+            {getGroupName(positionInfo.groupInfo, lang) || t('post.relatedArticles')}
             <span class="position-badge" style={`background: ${positionInfo.groupInfo?.color}`}>
               {positionInfo.currentIndex + 1} / {positionInfo.total}
             </span>
@@ -83,7 +93,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
               <span class="article-number" style={groupPost.slug === post.slug ? '' : `background: ${positionInfo.groupInfo?.color}`}>{index + 1}</span>
               <span class="article-title">{groupPost.data.title}</span>
               {groupPost.slug === post.slug && (
-                <span class="current-indicator">当前</span>
+                <span class="current-indicator">{t('post.current')}</span>
               )}
             </a>
           ))}
@@ -94,7 +104,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
             <a href={`/posts/${positionInfo.prevArticle.slug}`} class="nav-button prev">
               <span class="nav-arrow" style={`color: ${positionInfo.groupInfo?.color}`}>←</span>
               <span class="nav-text">
-                <span class="nav-label">上一篇</span>
+                <span class="nav-label">{t('post.previous')}</span>
                 <span class="nav-title">{positionInfo.prevArticle.data.title}</span>
               </span>
             </a>
@@ -105,7 +115,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
           {positionInfo.nextArticle ? (
             <a href={`/posts/${positionInfo.nextArticle.slug}`} class="nav-button next">
               <span class="nav-text">
-                <span class="nav-label">下一篇</span>
+                <span class="nav-label">{t('post.next')}</span>
                 <span class="nav-title">{positionInfo.nextArticle.data.title}</span>
               </span>
               <span class="nav-arrow" style={`color: ${positionInfo.groupInfo?.color}`}>→</span>
@@ -114,7 +124,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
             <a href={`/posts/${positionInfo.nextGroupFirstArticle.slug}`} class="nav-button next next-group" style={`border-color: ${positionInfo.nextGroupFirstArticle.groupInfo.color}`}>
               <span class="nav-text">
                 <span class="nav-label" style={`color: ${positionInfo.nextGroupFirstArticle.groupInfo.color}`}>
-                  下一章节：{getGroupName(positionInfo.nextGroupFirstArticle.groupInfo, lang)}
+                  {t('post.nextChapter')}{getGroupName(positionInfo.nextGroupFirstArticle.groupInfo, lang)}
                 </span>
                 <span class="nav-title">{positionInfo.nextGroupFirstArticle.data.title}</span>
               </span>
@@ -131,7 +141,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
   <!-- 相關文章預取和顯示 -->
   {relatedPosts.length > 0 && (
     <aside class="related-posts">
-      <h3>相关文章</h3>
+      <h3>{t('post.relatedArticles')}</h3>
       <div class="related-posts-grid">
         {relatedPosts.map((relatedPost) => (
           <a href={`/posts/${relatedPost.slug}`} class="related-post-card">
@@ -977,7 +987,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
   </div>
 </div>
 
-<script is:inline>
+<script is:inline define:vars={{ postTranslations }}>
  // 優化：使用更高效的事件委託和條件檢查
  if (typeof window.toggleExpandable === 'undefined') {
    window.toggleExpandable = function(contentId) {
@@ -1013,7 +1023,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
    const lightboxClose = document.getElementById('lightbox-close');
 
    if (!lightbox || !lightboxImage || !lightboxCaption || !lightboxClose) {
-     console.error('灯箱元素未找到');
+     console.error(postTranslations.lightboxNotFound);
      return;
    }
 
@@ -1021,7 +1031,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
    function initLightbox() {
      const postContent = document.querySelector('.post-body');
      if (!postContent) {
-       console.error('文章内容容器未找到');
+       console.error(postTranslations.postContentNotFound);
        return;
      }
 
@@ -1055,8 +1065,8 @@ const positionInfo = await getArticlePosition(post.slug, lang);
      
      // 添加事件监听器
      postContent.addEventListener('click', handler);
-     
-     console.log('图片灯箱已初始化');
+
+     console.log(postTranslations.lightboxInitialized);
    }
 
    // 关闭灯箱
