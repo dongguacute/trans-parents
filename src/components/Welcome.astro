@@ -1,5 +1,8 @@
 ---
 import hero from '../assets/hero.jpg';
+import { getTranslator } from '@gudupao/astro-i18n';
+const lang = Astro.params.lang || 'zh-hans';
+const t = getTranslator(lang);
 ---
 
 <div id="container">
@@ -7,7 +10,7 @@ import hero from '../assets/hero.jpg';
 
 	<div id="hero-title">
 		<h1>Trans Parents</h1>
-		<a href="/docs" id="start-reading-btn">开始阅读</a>
+		<a href="/docs" id="start-reading-btn">{t('welcome.startReading')}</a>
 	</div>
 
 </div>

@@ -1,17 +1,111 @@
 ---
+import { getTranslator } from '@gudupao/astro-i18n';
+const lang = Astro.params.lang || 'zh-hans';
+const t = getTranslator(lang);
 const currentYear = new Date().getFullYear();
+
+// Translation variables for JavaScript
+const footerTranslations = {
+  simplifiedChinese: t('footer.simplifiedChinese'),
+  traditionalChinese: t('footer.traditionalChinese')
+};
 ---
 
 <footer class="py-6 mt-auto" style="background-color: var(--color-bg-secondary); color: var(--color-text-secondary);">
   <div class="container mx-auto px-4">
     <div class="flex flex-col md:flex-row justify-between items-center">
-      <p>&copy; {currentYear} <a href="https://github.com/dongguacute" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">Cherry Fu</a> & 所有协作者及贡献者</p>
+      <div class="flex items-center space-x-4">
+        <p>&copy; {currentYear} <a href="https://github.com/dongguacute" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">Cherry Fu</a> & All contributors</p>
+        <div class="relative">
+          <button id="language-toggle" class="bg-transparent border border-current rounded px-3 py-1 text-sm flex items-center space-x-1 hover:opacity-80 transition-opacity" style="color: var(--color-text-secondary);">
+            <span id="current-lang">{t('footer.simplifiedChinese')}</span>
+            <span id="toggle-icon" class="text-xs">▼</span>
+          </button>
+          <div id="language-menu" class="absolute bottom-full left-0 mb-2 bg-white border border-current rounded-md shadow-lg hidden min-w-[120px]" style="background-color: var(--color-bg-secondary); color: var(--color-text-secondary); border-color: var(--color-border);">
+            <button class="block w-full text-left px-3 py-2 hover:opacity-80 transition-opacity rounded-t-md" data-lang="zh-hans" style="color: var(--color-text-secondary);">{t('footer.simplifiedChinese')}</button>
+            <button class="block w-full text-left px-3 py-2 hover:opacity-80 transition-opacity rounded-b-md" data-lang="zh-hant" style="color: var(--color-text-secondary);">{t('footer.traditionalChinese')}</button>
+          </div>
+        </div>
+      </div>
       <div class="flex space-x-4 mt-2 md:mt-0">
-        <a href="/posts/acknowledgments" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">关于我们</a>
-        <a href="/posts/about" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">关于本站</a>
-        <a href="/posts/disclaimer" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">免责声明</a>
+        <a href="/posts/acknowledgments" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">{t('footer.aboutUs')}</a>
+        <a href="/posts/about" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">{t('footer.aboutSite')}</a>
+        <a href="/posts/disclaimer" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">{t('footer.disclaimer')}</a>
       </div>
     </div>
-    <p class="text-center mt-4 text-sm">This website's content, except for the code, is open-sourced under the <a href="https://creativecommons.org/licenses/by-sa/4.0/" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">CC BY-SA 4.0</a> license.</p>
+    <p class="text-center mt-4 text-sm">{t('footer.license')} <a href="https://creativecommons.org/licenses/by-sa/4.0/" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">CC BY-SA 4.0</a> license.</p>
   </div>
 </footer>
+
+<script is:inline define:vars={{ footerTranslations }}>
+  document.addEventListener('DOMContentLoaded', function() {
+    const languageToggle = document.getElementById('language-toggle');
+    const languageMenu = document.getElementById('language-menu');
+    const currentLangSpan = document.getElementById('current-lang');
+    const toggleIcon = document.getElementById('toggle-icon');
+
+    if (!languageToggle || !languageMenu || !currentLangSpan || !toggleIcon) return;
+
+    const currentPath = window.location.pathname;
+
+    // Determine current language
+    let currentLang = 'zh-hans'; // default
+    if (currentPath.startsWith('/zh-hant/')) {
+      currentLang = 'zh-hant';
+    } else if (currentPath.startsWith('/zh-hans/')) {
+      currentLang = 'zh-hans';
+    }
+
+    // Set current display
+    const langNames = { 'zh-hans': footerTranslations.simplifiedChinese, 'zh-hant': footerTranslations.traditionalChinese };
+    currentLangSpan.textContent = langNames[currentLang];
+
+    // Toggle menu
+    languageToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      languageMenu.classList.toggle('hidden');
+      toggleIcon.textContent = languageMenu.classList.contains('hidden') ? '▼' : '▲';
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function() {
+      languageMenu.classList.add('hidden');
+      toggleIcon.textContent = '▼';
+    });
+
+    // Handle language selection
+    languageMenu.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const target = e.target;
+      if (target.tagName === 'BUTTON') {
+        const selectedLang = target.getAttribute('data-lang');
+        if (selectedLang) {
+          let newPath = currentPath;
+
+          if (selectedLang === 'zh-hans') {
+            if (currentPath.startsWith('/zh-hant/')) {
+              newPath = currentPath.replace('/zh-hant/', '/zh-hans/');
+            } else if (!currentPath.startsWith('/zh-hans/') && currentPath !== '/') {
+              newPath = '/zh-hans' + currentPath;
+            }
+          } else if (selectedLang === 'zh-hant') {
+            if (currentPath.startsWith('/zh-hans/')) {
+              newPath = currentPath.replace('/zh-hans/', '/zh-hant/');
+            } else if (!currentPath.startsWith('/zh-hant/') && currentPath !== '/') {
+              newPath = '/zh-hant' + currentPath;
+            }
+          }
+
+          // For root path, add language prefix
+          if (currentPath === '/' && selectedLang !== 'zh-hans') {
+            newPath = '/' + selectedLang + '/';
+          } else if (currentPath === '/' && selectedLang === 'zh-hans') {
+            newPath = '/';
+          }
+
+          window.location.href = newPath;
+        }
+      }
+    });
+  });
+</script>

@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "quickNavigation": "快速導航",
+    "home": "首頁",
+    "docs": "文檔",
+    "aboutSite": "關於本站",
+    "search": "搜尋...",
+    "searchDocs": "搜尋文檔...",
+    "startSearch": "開始搜尋",
+    "enterKeywords": "輸入關鍵詞來搜尋文檔",
+    "fontSize": "字體大小",
+    "normal": "正常",
+    "large": "大字體",
+    "xlarge": "超大字體 (長輩模式)",
+    "readingMode": "閱讀模式",
+    "wide": "寬模式",
+    "narrow": "窄模式",
+    "themeSettings": "主題設定",
+    "followSystem": "跟隨系統",
+    "light": "淺色模式",
+    "dark": "深色模式",
+    "noResults": "未找到匹配的文章",
+    "enterKeywordsToSearch": "輸入關鍵詞開始搜尋",
+    "searchOnlyOnDocs": "搜尋功能僅在文檔頁面可用，請前往文檔頁面進行搜尋"
+  },
+  "footer": {
+    "simplifiedChinese": "簡體中文",
+    "traditionalChinese": "繁體中文",
+    "aboutUs": "關於我們",
+    "aboutSite": "關於本站",
+    "disclaimer": "免責聲明",
+    "license": "本網站的內容（代碼除外）採用"
+  },
+  "layout": {
+    "title": "Trans Parents",
+    "description": "跨性別家長支持平台"
+  },
+  "welcome": {
+    "startReading": "開始閱讀"
+  }
+}

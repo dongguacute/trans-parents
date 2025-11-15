@@ -1,0 +1,38 @@
+{
+  "nav": {
+    "quickNavigation": "Quick Navigation",
+    "home": "Home",
+    "docs": "Docs",
+    "aboutSite": "About",
+    "search": "Search...",
+    "searchDocs": "Search docs...",
+    "startSearch": "Start searching",
+    "enterKeywords": "Enter keywords to search docs",
+    "fontSize": "Font Size",
+    "normal": "Normal",
+    "large": "Large",
+    "xlarge": "Extra Large (Senior Mode)",
+    "readingMode": "Reading Mode",
+    "wide": "Wide",
+    "narrow": "Narrow",
+    "themeSettings": "Theme Settings",
+    "followSystem": "Follow System",
+    "light": "Light Mode",
+    "dark": "Dark Mode",
+    "noResults": "No matching articles found",
+    "enterKeywordsToSearch": "Enter keywords to start searching",
+    "searchOnlyOnDocs": "Search is only available on the docs page, please go to the docs page to search"
+  },
+  "footer": {
+    "simplifiedChinese": "Simplified Chinese",
+    "traditionalChinese": "Traditional Chinese",
+    "aboutUs": "About Us",
+    "aboutSite": "About Site",
+    "disclaimer": "Disclaimer",
+    "license": "This website's content, except for the code, is open-sourced under the"
+  },
+  "layout": {
+    "title": "Trans Parents",
+    "description": "Transgender Parent Support Platform"
+  }
+}
