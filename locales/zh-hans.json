@@ -1,0 +1,57 @@
+{
+  "nav": {
+    "quickNavigation": "快速导航",
+    "home": "首页",
+    "docs": "文档",
+    "aboutSite": "关于本站",
+    "search": "搜索...",
+    "searchDocs": "搜索文档...",
+    "startSearch": "开始搜索",
+    "enterKeywords": "输入关键词来搜索文档",
+    "fontSize": "字体大小",
+    "normal": "正常",
+    "large": "大字体",
+    "xlarge": "超大字体 (长辈模式)",
+    "readingMode": "阅读模式",
+    "wide": "宽模式",
+    "narrow": "窄模式",
+    "themeSettings": "主题设置",
+    "followSystem": "跟随系统",
+    "light": "浅色模式",
+    "dark": "深色模式",
+    "noResults": "未找到匹配的文章",
+    "enterKeywordsToSearch": "输入关键词开始搜索",
+    "searchOnlyOnDocs": "搜索功能仅在文档页面可用，请前往文档页面进行搜索"
+  },
+  "footer": {
+    "simplifiedChinese": "简体中文",
+    "traditionalChinese": "繁體中文",
+    "aboutUs": "关于我们",
+    "aboutSite": "关于本站",
+    "disclaimer": "免责声明",
+    "license": "本网站的内容（代码除外）采用"
+  },
+  "layout": {
+    "title": "Trans Parents",
+    "description": "跨性別家長支持平台"
+  },
+  "welcome": {
+    "startReading": "开始阅读"
+  },
+  "docs": {
+    "title": "文档",
+    "directoryTitle": "📚 文档目录",
+    "description": "按照顺序了解跨性别相关知识",
+    "readingTip": "💡 建议按照顺序阅读文章，以获得更完整的理解"
+  },
+  "post": {
+    "relatedArticles": "相关文章",
+    "current": "当前",
+    "previous": "上一篇",
+    "next": "下一篇",
+    "nextChapter": "下一章节：",
+    "lightboxNotFound": "灯箱元素未找到",
+    "postContentNotFound": "文章内容容器未找到",
+    "lightboxInitialized": "图片灯箱已初始化"
+  }
+}

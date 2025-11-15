@@ -4,13 +4,18 @@ import { rehypeComponents } from './src/utils/remark-components.js';
 import rehypeRaw from 'rehype-raw';
 import remarkDirective from 'remark-directive';
 import remarkGfm from 'remark-gfm';
-
+import { astroI18nPlugin } from '@gudupao/astro-i18n';
 import tailwindcss from '@tailwindcss/vite';
 import AstroPWA from '@vite-pwa/astro';
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [
+    astroI18nPlugin({
+      localesDir: './locales',
+      pathBasedRouting: true,
+      fallbackLang: 'zh-hans',
+    }),
     AstroPWA({
       mode: 'production',
       base: '/',

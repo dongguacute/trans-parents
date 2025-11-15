@@ -1,17 +1,214 @@
 ---
+import { getTranslator } from '@gudupao/astro-i18n';
+const lang = Astro.params.lang || 'zh-hans';
+const t = getTranslator(lang);
 const currentYear = new Date().getFullYear();
+
+// Translation variables for JavaScript
+const footerTranslations = {
+  simplifiedChinese: t('footer.simplifiedChinese'),
+  traditionalChinese: t('footer.traditionalChinese')
+};
 ---
 
 <footer class="py-6 mt-auto" style="background-color: var(--color-bg-secondary); color: var(--color-text-secondary);">
   <div class="container mx-auto px-4">
     <div class="flex flex-col md:flex-row justify-between items-center">
-      <p>&copy; {currentYear} <a href="https://github.com/dongguacute" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">Cherry Fu</a> & 所有协作者及贡献者</p>
+      <div class="flex items-center space-x-4">
+        <p>&copy; {currentYear} <a href="https://github.com/dongguacute" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">Cherry Fu</a> & All contributors</p>
+        <div class="relative">
+          <button id="language-toggle" class="bg-transparent border border-current rounded px-3 py-1 text-sm flex items-center space-x-1 hover:opacity-80 transition-opacity" style="color: var(--color-text-secondary);">
+            <span id="current-lang">{lang === 'zh-hant' ? t('footer.traditionalChinese') : t('footer.simplifiedChinese')}</span>
+            <span id="toggle-icon" class="text-xs">▼</span>
+          </button>
+          <div id="language-menu" class="absolute bottom-full left-0 mb-2 bg-white border border-current rounded-md shadow-lg hidden min-w-[120px]" style="background-color: var(--color-bg-secondary); color: var(--color-text-secondary); border-color: var(--color-border);">
+            <button class="block w-full text-left px-3 py-2 hover:opacity-80 transition-opacity rounded-t-md" data-lang="zh-hans" style="color: var(--color-text-secondary);">{t('footer.simplifiedChinese')}</button>
+            <button class="block w-full text-left px-3 py-2 hover:opacity-80 transition-opacity rounded-b-md" data-lang="zh-hant" style="color: var(--color-text-secondary);">{t('footer.traditionalChinese')}</button>
+          </div>
+        </div>
+      </div>
       <div class="flex space-x-4 mt-2 md:mt-0">
-        <a href="/posts/acknowledgments" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">关于我们</a>
-        <a href="/posts/about" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">关于本站</a>
-        <a href="/posts/disclaimer" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">免责声明</a>
+        <a href={`/${lang}/posts/acknowledgments`} style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">{t('footer.aboutUs')}</a>
+        <a href={`/${lang}/posts/about`} style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">{t('footer.aboutSite')}</a>
+        <a href={`/${lang}/posts/disclaimer`} style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">{t('footer.disclaimer')}</a>
       </div>
     </div>
-    <p class="text-center mt-4 text-sm">This website's content, except for the code, is open-sourced under the <a href="https://creativecommons.org/licenses/by-sa/4.0/" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">CC BY-SA 4.0</a> license.</p>
+    <p class="text-center mt-4 text-sm">{t('footer.license')} <a href="https://creativecommons.org/licenses/by-sa/4.0/" style="color: var(--color-accent);" class="hover:opacity-80 transition-opacity">CC BY-SA 4.0</a> license.</p>
   </div>
 </footer>
+
+<script is:inline define:vars={{ footerTranslations }}>
+  // Helper functions for cookies
+  function setCookie(name, value, days) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
+  }
+
+  function getCookie(name) {
+    const nameEQ = name + '=';
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  }
+
+  // Function to initialize language functionality
+  function initLanguage() {
+    const languageToggle = document.getElementById('language-toggle');
+    const languageMenu = document.getElementById('language-menu');
+    const currentLangSpan = document.getElementById('current-lang');
+    const toggleIcon = document.getElementById('toggle-icon');
+
+    if (!languageToggle || !languageMenu || !currentLangSpan || !toggleIcon) return;
+
+    const currentPath = window.location.pathname;
+
+    // Helper function to determine language from path
+    function getLangFromPath(path) {
+      const pathParts = path.split('/').filter(p => p);
+      if (pathParts[0] === 'zh-hant') {
+        return 'zh-hant';
+      } else if (pathParts[0] === 'zh-hans') {
+        return 'zh-hans';
+      }
+      return 'zh-hans'; // default
+    }
+
+    // Determine current language from URL
+    let currentLang = getLangFromPath(currentPath);
+
+    // Check for preferred language in cookie and redirect if needed
+    const preferredLang = getCookie('preferred_lang');
+    if (preferredLang && preferredLang !== currentLang) {
+      let redirectPath = currentPath;
+      const currentPathLang = getLangFromPath(currentPath);
+      if (preferredLang === 'zh-hans') {
+        if (currentPathLang === 'zh-hant') {
+          if (currentPath === '/zh-hant/') {
+            redirectPath = '/';
+          } else {
+            redirectPath = currentPath.replace('/zh-hant/', '/zh-hans/');
+          }
+        } else if (currentPathLang === 'zh-hans') {
+          // already correct
+        } else {
+          // root path
+          redirectPath = '/';
+        }
+      } else if (preferredLang === 'zh-hant') {
+        if (currentPathLang === 'zh-hans') {
+          if (currentPath === '/') {
+            redirectPath = '/zh-hant/';
+          } else {
+            redirectPath = currentPath.replace('/zh-hans/', '/zh-hant/');
+          }
+        } else if (currentPathLang === 'zh-hant') {
+          // already correct
+        } else {
+          // root path
+          redirectPath = '/zh-hant/';
+        }
+      }
+      if (redirectPath !== currentPath) {
+        window.location.href = redirectPath;
+        return; // Stop execution to allow redirect
+      }
+    }
+
+    // Set current display
+    const langNames = { 'zh-hans': footerTranslations.simplifiedChinese, 'zh-hant': footerTranslations.traditionalChinese };
+    currentLangSpan.textContent = langNames[currentLang];
+
+    // Remove existing event listeners to prevent duplicates
+    const newLanguageToggle = languageToggle.cloneNode(true);
+    languageToggle.parentNode.replaceChild(newLanguageToggle, languageToggle);
+
+    const newLanguageMenu = languageMenu.cloneNode(true);
+    languageMenu.parentNode.replaceChild(newLanguageMenu, languageMenu);
+
+    // Re-get references
+    const updatedLanguageToggle = document.getElementById('language-toggle');
+    const updatedLanguageMenu = document.getElementById('language-menu');
+
+    // Toggle menu
+    updatedLanguageToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      updatedLanguageMenu.classList.toggle('hidden');
+      const icon = document.getElementById('toggle-icon');
+      if (icon) {
+        icon.textContent = updatedLanguageMenu.classList.contains('hidden') ? '▼' : '▲';
+      }
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!updatedLanguageToggle.contains(e.target) && !updatedLanguageMenu.contains(e.target)) {
+        updatedLanguageMenu.classList.add('hidden');
+        const icon = document.getElementById('toggle-icon');
+        if (icon) {
+          icon.textContent = '▼';
+        }
+      }
+    });
+
+    // Handle language selection
+    updatedLanguageMenu.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const target = e.target;
+      if (target.tagName === 'BUTTON') {
+        const selectedLang = target.getAttribute('data-lang');
+        if (selectedLang) {
+          // Set cookie for preferred language (expires in 1 year)
+          setCookie('preferred_lang', selectedLang, 365);
+
+          let newPath = currentPath;
+          const currentPathLang = getLangFromPath(currentPath);
+
+          if (selectedLang === 'zh-hans') {
+            if (currentPathLang === 'zh-hant') {
+              if (currentPath === '/zh-hant/') {
+                newPath = '/';
+              } else {
+                newPath = currentPath.replace('/zh-hant/', '/zh-hans/');
+              }
+            } else if (currentPathLang === 'zh-hans') {
+              // already correct
+            } else {
+              // root path
+              newPath = '/';
+            }
+          } else if (selectedLang === 'zh-hant') {
+            if (currentPathLang === 'zh-hans') {
+              if (currentPath === '/') {
+                newPath = '/zh-hant/';
+              } else {
+                newPath = currentPath.replace('/zh-hans/', '/zh-hant/');
+              }
+            } else if (currentPathLang === 'zh-hant') {
+              // already correct
+            } else {
+              // root path
+              newPath = '/zh-hant/';
+            }
+          }
+
+          window.location.href = newPath;
+        }
+      }
+    });
+  }
+
+  // Initialize on DOMContentLoaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLanguage);
+  } else {
+    initLanguage();
+  }
+
+  // Re-initialize after Astro page transitions
+  document.addEventListener('astro:after-swap', initLanguage);
+</script>

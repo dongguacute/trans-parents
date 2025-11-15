@@ -1,11 +1,18 @@
 ---
 import Navigation from '../components/Navigation.astro';
 import Layout from '../layouts/Layout.astro';
-import { getSortedPosts } from '../utils/posts';
+import { getSortedPosts, getGroupName } from '../utils/posts';
 import articlesData from '../data/articles.json';
+import { getTranslator } from '@gudupao/astro-i18n';
 
-// 獲取所有文章
-const allPosts = await getSortedPosts();
+const lang = Astro.params.lang || 'zh-hans';
+const t = getTranslator(lang);
+
+// Set locale for date formatting
+const locale = lang === 'en' ? 'en-US' : lang === 'zh-hant' ? 'zh-TW' : 'zh-CN';
+
+// 獲取所有文章 - 使用当前语言
+const allPosts = await getSortedPosts(lang);
 
 // 根據 JSON 配置排序文章，並從 frontmatter 獲取所有信息
 const orderedArticles = articlesData.articles
@@ -13,7 +20,7 @@ const orderedArticles = articlesData.articles
   .map(article => {
     const post = allPosts.find(p => p.slug === article.slug);
     if (!post) return null;
-    
+
     return {
       id: article.id,
       slug: article.slug,
@@ -36,17 +43,18 @@ const groupedArticles = Object.entries(articlesData.groups)
   .map(([groupKey, groupInfo]) => ({
     key: groupKey,
     ...groupInfo,
+    displayName: getGroupName(groupInfo, lang), // 使用辅助函数获取翻译后的名称
     articles: orderedArticles.filter(a => a.group === groupKey)
   }));
 ---
 
-<Layout title="文档 - Trans Parents">
+<Layout title={`${t('docs.title')} - ${t('layout.title')}`}>
 	<Navigation />
 
 	<div class="docs-container">
 		<div class="docs-header">
-			<h1>📚 文档目录</h1>
-			<p>按照顺序了解跨性别相关知识</p>
+			<h1>{t('docs.directoryTitle')}</h1>
+			<p>{t('docs.description')}</p>
 		</div>
 
 		<div class="timeline-container">
@@ -54,7 +62,7 @@ const groupedArticles = Object.entries(articlesData.groups)
 				<div class="group-section">
 					<div class="group-header">
 						<span class="group-badge" style={`background: ${group.color}20; color: ${group.color};`}>
-							{group.name}
+							{group.displayName}
 						</span>
 					</div>
 
@@ -93,13 +101,13 @@ const groupedArticles = Object.entries(articlesData.groups)
 												<svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 													<path d="M8 2V5M16 2V5M3 10H21M21 8V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H19C19.5304 6 20.0391 6.21071 20.4142 6.58579C20.7893 6.96086 21 7.46957 21 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 												</svg>
-												{new Date(article.date).toLocaleDateString('zh-CN')}
+												{new Date(article.date).toLocaleDateString(locale)}
 											</span>
 										</div>
 
 										{article.tags && article.tags.length > 0 && (
 											<div class="card-tags">
-												{article.tags.map(tag => (
+												{article.tags.map((tag: string) => (
 													<span class="tag">{tag}</span>
 												))}
 											</div>
@@ -114,7 +122,7 @@ const groupedArticles = Object.entries(articlesData.groups)
 		</div>
 
 		<div class="docs-footer">
-			<p>💡 建议按照顺序阅读文章，以获得更完整的理解</p>
+			<p>{t('docs.readingTip')}</p>
 		</div>
 	</div>
 </Layout>
@@ -425,7 +433,7 @@ const groupedArticles = Object.entries(articlesData.groups)
   }
 </style>
 
-<script is:inline define:vars={{ orderedArticles, groupsData: articlesData.groups }}>
+<script is:inline define:vars={{ orderedArticles, groupedArticles }}>
   // 将文章数据存储到全局对象，供导航栏搜索使用
   window.docsData = {
     articles: orderedArticles.map(article => ({
@@ -434,15 +442,15 @@ const groupedArticles = Object.entries(articlesData.groups)
       title: article.title,
       description: article.description || '',
       group: article.group,
-      groupName: groupsData[article.group]?.name || '',
-      groupColor: groupsData[article.group]?.color || '',
+      groupName: groupedArticles.find(g => g.key === article.group)?.displayName || '',
+      groupColor: groupedArticles.find(g => g.key === article.group)?.color || '',
       category: article.category || '',
       tags: article.tags || [],
       link: `/posts/${article.slug}`
     })),
-    groups: Object.entries(groupsData).map(([key, group]) => ({
-      key: key,
-      name: group.name,
+    groups: groupedArticles.map(group => ({
+      key: group.key,
+      name: group.displayName,
       color: group.color,
       order: group.order
     }))

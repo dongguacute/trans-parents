@@ -1,13 +1,13 @@
 # Trans-Parents
 
-## 简介
+## Introduction
 
-Trans-Parents是一个让家长了解跨性别孩子心理的网站，希望家长在阅读后能更好的理解孩子，本站语言使用简体中文（中国）
+Trans-Parents is a website that helps parents understand the psychology of transgender children. We hope that after reading, parents will better understand their children.
 
-## 投稿
+## Submissions
 
-投稿可以创建issue（如果您不会写Markdown），如果您会写Markdown可以直接Fork本仓库，最后提交PR合并
+You can submit by creating an issue (if you don't know how to write Markdown). If you do know Markdown, you can directly fork this repository and finally submit a PR to merge it.
 
-## 版权
+## Copyright
 
-见站内标注
+See site comments
