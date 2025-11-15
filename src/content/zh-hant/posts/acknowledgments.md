@@ -1,16 +1,16 @@
 ---
-title: "特别鸣谢"
-description: "感谢所有为本站做出贡献的人"
+title: "特別鳴謝"
+description: "感謝所有為本站做出貢獻的人"
 date: "2025-10-11"
-category: "致谢"
-tags: ["致谢", "贡献者"]
+category: "致謝"
+tags: ["致謝", "貢獻者"]
 ---
 
-## 特别鸣谢
+## 特別鳴謝
 
-感谢以下所有为本站做出贡献的朋友们！
+感謝以下所有為本站做出貢獻的朋友們！
 
-### 网站管理者
+### 網站管理員
 
 <div class="contributors-grid">
   <div class="contributor-card">
@@ -19,7 +19,7 @@ tags: ["致谢", "贡献者"]
     </div>
     <div class="contributor-info">
       <h3>冬瓜Cherry</h3>
-      <p class="contributor-role">创始人 & 主要维护者</p>
+      <p class="contributor-role">創辦人 & 主要維護者</p>
       <div class="contributor-links">
         <a href="https://x.com/Dongguacute" target="_blank" rel="noopener noreferrer" title="Twitter">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -36,16 +36,16 @@ tags: ["致谢", "贡献者"]
   </div>
 </div>
 
-### 协作者
+### 協作者
 
 <div class="contributors-grid">
   <div class="contributor-card">
     <div class="contributor-avatar">
-      <img src="https://github.com/tatanakots.png" alt="协作者1" />
+      <img src="https://github.com/tatanakots.png" alt="協作者1" />
     </div>
     <div class="contributor-info">
       <h3>たたなこ</h3>
-      <p class="contributor-role">网页设计策划</p>
+      <p class="contributor-role">網頁設計策劃</p>
       <div class="contributor-links">
         <a href="https://x.com/tatanakots
 " target="_blank" rel="noopener noreferrer" title="Twitter">
@@ -64,11 +64,11 @@ tags: ["致谢", "贡献者"]
   
   <div class="contributor-card">
     <div class="contributor-avatar">
-      <img src="https://pbs.twimg.com/profile_images/1807084896474836992/7pHwpbgF_400x400.jpg" alt="协作者2" />
+      <img src="https://pbs.twimg.com/profile_images/1807084896474836992/7pHwpbgF_400x400.jpg" alt="協作者2" />
     </div>
     <div class="contributor-info">
-      <h3>沫沫酱winika</h3>
-      <p class="contributor-role">内容编辑</p>
+      <h3>沫沫醬winika</h3>
+      <p class="contributor-role">內容編輯</p>
       <div class="contributor-links">
         <a href="https://x.com/momoya051115" target="_blank" rel="noopener noreferrer" title="Twitter">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -80,14 +80,14 @@ tags: ["致谢", "贡献者"]
   </div>
 </div>
 
-### GitHub 贡献者
+### GitHub 貢獻者
 
-感谢以下所有在 GitHub 上为本项目做出贡献的开发者们：
+感謝以下所有在 GitHub 上為本項目做出貢獻的開發者們：
 
 <div id="github-contributors" class="github-contributors-grid">
   <div class="loading-spinner">
     <div class="spinner"></div>
-    <p>加载中...</p>
+    <p>載入中...</p>
   </div>
 </div>
 
@@ -297,16 +297,16 @@ tags: ["致谢", "贡献者"]
         <a href="${contributor.html_url}" target="_blank" rel="noopener noreferrer" class="github-contributor">
           <img src="${contributor.avatar_url}" alt="${contributor.login}" loading="lazy" />
           <span>${contributor.login}</span>
-          <span class="contributions">${contributor.contributions} 次贡献</span>
+          <span class="contributions">${contributor.contributions} 次貢獻</span>
         </a>
       `).join('');
     } catch (error) {
       console.error('Error loading contributors:', error);
       container.innerHTML = `
         <div style="text-align: center; color: var(--color-text-secondary); padding: 2rem;">
-          <p>加载贡献者信息失败</p>
+          <p>載入貢獻者資訊失敗</p>
           <p style="font-size: 0.875rem; margin-top: 0.5rem;">
-            请访问 <a href="https://github.com/trans-archive/trans-parents/graphs/contributors" target="_blank" rel="noopener noreferrer" style="color: var(--color-accent);">GitHub</a> 查看完整列表
+            請訪問 <a href="https://github.com/trans-archive/trans-parents/graphs/contributors" target="_blank" rel="noopener noreferrer" style="color: var(--color-accent);">GitHub</a> 查看完整列表
           </p>
         </div>
       `;
