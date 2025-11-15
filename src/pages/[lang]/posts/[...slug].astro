@@ -85,7 +85,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
         <div class="group-articles-list">
           {positionInfo.groupPosts.map((groupPost, index) => (
             <a
-              href={`/posts/${groupPost.slug}`}
+              href={`/${lang}/posts/${groupPost.slug}`}
               class={`group-article-item ${groupPost.slug === post.slug ? 'current' : ''}`}
               aria-current={groupPost.slug === post.slug ? 'page' : undefined}
               style={groupPost.slug === post.slug ? `background: linear-gradient(135deg, ${positionInfo.groupInfo?.color || '#E91E63'} 0%, ${positionInfo.groupInfo?.color || '#E91E63'}dd 100%); border-color: ${positionInfo.groupInfo?.color}` : ''}
@@ -101,7 +101,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
 
         <div class="group-navigation-buttons">
           {positionInfo.prevArticle ? (
-            <a href={`/posts/${positionInfo.prevArticle.slug}`} class="nav-button prev">
+            <a href={`/${lang}/posts/${positionInfo.prevArticle.slug}`} class="nav-button prev">
               <span class="nav-arrow" style={`color: ${positionInfo.groupInfo?.color}`}>←</span>
               <span class="nav-text">
                 <span class="nav-label">{t('post.previous')}</span>
@@ -111,9 +111,9 @@ const positionInfo = await getArticlePosition(post.slug, lang);
           ) : (
             <div class="nav-button disabled"></div>
           )}
-          
+
           {positionInfo.nextArticle ? (
-            <a href={`/posts/${positionInfo.nextArticle.slug}`} class="nav-button next">
+            <a href={`/${lang}/posts/${positionInfo.nextArticle.slug}`} class="nav-button next">
               <span class="nav-text">
                 <span class="nav-label">{t('post.next')}</span>
                 <span class="nav-title">{positionInfo.nextArticle.data.title}</span>
@@ -121,7 +121,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
               <span class="nav-arrow" style={`color: ${positionInfo.groupInfo?.color}`}>→</span>
             </a>
           ) : positionInfo.nextGroupFirstArticle ? (
-            <a href={`/posts/${positionInfo.nextGroupFirstArticle.slug}`} class="nav-button next next-group" style={`border-color: ${positionInfo.nextGroupFirstArticle.groupInfo.color}`}>
+            <a href={`/${lang}/posts/${positionInfo.nextGroupFirstArticle.slug}`} class="nav-button next next-group" style={`border-color: ${positionInfo.nextGroupFirstArticle.groupInfo.color}`}>
               <span class="nav-text">
                 <span class="nav-label" style={`color: ${positionInfo.nextGroupFirstArticle.groupInfo.color}`}>
                   {t('post.nextChapter')}{getGroupName(positionInfo.nextGroupFirstArticle.groupInfo, lang)}
@@ -144,7 +144,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
       <h3>{t('post.relatedArticles')}</h3>
       <div class="related-posts-grid">
         {relatedPosts.map((relatedPost) => (
-          <a href={`/posts/${relatedPost.slug}`} class="related-post-card">
+          <a href={`/${lang}/posts/${relatedPost.slug}`} class="related-post-card">
             <h4>{relatedPost.data.title}</h4>
             {relatedPost.data.description && (
               <p>{relatedPost.data.description}</p>
@@ -157,9 +157,9 @@ const positionInfo = await getArticlePosition(post.slug, lang);
 </Layout>
 
 <!-- 預取相關文章以提升導航速度 -->
-<link rel="prefetch" href="/docs" as="document" />
+<link rel="prefetch" href={`/${lang}/docs`} as="document" />
 {relatedPosts.map((relatedPost) => (
- <link rel="prefetch" href={`/posts/${relatedPost.slug}`} as="document" />
+  <link rel="prefetch" href={`/${lang}/posts/${relatedPost.slug}`} as="document" />
 ))}
 
 <style>
