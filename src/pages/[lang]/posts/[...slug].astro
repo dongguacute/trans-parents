@@ -1,7 +1,7 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import Navigation from '../../../components/Navigation.astro';
-import { getAllPosts, getRelatedPosts, getArticlePosition, getPostRender, type Post } from '../../../utils/posts';
+import { getAllPosts, getRelatedPosts, getArticlePosition, getPostRender, getGroupName, type Post } from '../../../utils/posts';
 
 export async function getStaticPaths() {
   const languages = ['zh-hans', 'zh-hant'];
@@ -65,7 +65,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
       <nav class="group-navigation">
         <div class="group-header" style={`border-left-color: ${positionInfo.groupInfo?.color}`}>
           <h3>
-            {positionInfo.groupInfo?.name || '相关文章'}
+            {getGroupName(positionInfo.groupInfo, lang) || '相关文章'}
             <span class="position-badge" style={`background: ${positionInfo.groupInfo?.color}`}>
               {positionInfo.currentIndex + 1} / {positionInfo.total}
             </span>
@@ -114,7 +114,7 @@ const positionInfo = await getArticlePosition(post.slug, lang);
             <a href={`/posts/${positionInfo.nextGroupFirstArticle.slug}`} class="nav-button next next-group" style={`border-color: ${positionInfo.nextGroupFirstArticle.groupInfo.color}`}>
               <span class="nav-text">
                 <span class="nav-label" style={`color: ${positionInfo.nextGroupFirstArticle.groupInfo.color}`}>
-                  下一章节：{positionInfo.nextGroupFirstArticle.groupInfo.name}
+                  下一章节：{getGroupName(positionInfo.nextGroupFirstArticle.groupInfo, lang)}
                 </span>
                 <span class="nav-title">{positionInfo.nextGroupFirstArticle.data.title}</span>
               </span>

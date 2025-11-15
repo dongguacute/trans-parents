@@ -12,9 +12,21 @@ export interface ArticleInfo {
 }
 
 export interface GroupInfo {
-  name: string;
+  name: {
+    'zh-hans': string;
+    'zh-hant': string;
+  };
   order: number;
   color: string;
+}
+
+/**
+ * 根据语言获取group的名称
+ */
+export function getGroupName(groupInfo: GroupInfo | undefined, lang?: string): string {
+  if (!groupInfo) return '';
+  const effectiveLang = (lang || 'zh-hans') as 'zh-hans' | 'zh-hant';
+  return groupInfo.name[effectiveLang] || groupInfo.name['zh-hans'];
 }
 
 // 緩存文章列表 - 按语言缓存

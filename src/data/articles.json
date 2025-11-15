@@ -51,17 +51,26 @@
   ],
   "groups": {
     "basics": {
-      "name": "基础知识",
+      "name": {
+        "zh-hans": "基础知识",
+        "zh-hant": "基礎知識"
+      },
       "order": 1,
       "color": "#55CDFC"
     },
     "medication": {
-      "name": "药物知识",
+      "name": {
+        "zh-hans": "药物知识",
+        "zh-hant": "藥物知識"
+      },
       "order": 2,
       "color": "#F7A8B8"
     },
     "note": {
-      "name": "须知",
+      "name": {
+        "zh-hans": "须知",
+        "zh-hant": "須知"
+      },
       "order": 3,
       "color": "#A66CFF"
     }

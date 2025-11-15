@@ -1,6 +1,6 @@
 ---
 // Navigation component
-import { getSortedPosts } from '../utils/posts';
+import { getSortedPosts, getGroupName } from '../utils/posts';
 import articlesData from '../data/articles.json';
 import { getTranslator } from '@gudupao/astro-i18n';
 const lang = Astro.params.lang || 'zh-hans';
@@ -23,14 +23,16 @@ const searchData = articlesData.articles
     const post = allPosts.find(p => p.slug === article.slug);
     if (!post) return null;
 
+    const groupInfo = (articlesData.groups as any)[article.group];
+
     return {
       id: article.id,
       slug: article.slug,
       title: post.data.title,
       description: post.data.description || '',
       group: article.group,
-      groupName: (articlesData.groups as any)[article.group]?.name || '',
-      groupColor: (articlesData.groups as any)[article.group]?.color || '',
+      groupName: groupInfo ? getGroupName(groupInfo, lang) : '',
+      groupColor: groupInfo?.color || '',
       category: post.data.category || '',
       tags: post.data.tags || [],
       link: `/${lang}/posts/${article.slug}`
