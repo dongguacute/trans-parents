@@ -79,7 +79,7 @@ const groupedArticles = Object.entries(articlesData.groups)
 								</div>
 
 								<div class="timeline-content">
-									<a href={`/posts/${article.slug}`} class="article-card">
+									<a href={`/${lang}/posts/${article.slug}`} class="article-card">
 										<div class="card-header">
 											<h3>{article.title}</h3>
 											<svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -129,17 +129,17 @@ const groupedArticles = Object.entries(articlesData.groups)
 
 <!-- 預取和預緩存文章頁面 -->
 {orderedArticles.slice(0, 10).map((article) => (
-	<link rel="prefetch" href={`/posts/${article.slug}`} />
+	<link rel="prefetch" href={`/${lang}/posts/${article.slug}`} />
 ))}
 
-<script is:inline define:vars={{ orderedArticles }}>
+<script is:inline define:vars={{ orderedArticles, lang }}>
 	// 預緩存前10篇文章到 Service Worker
 	if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
 		setTimeout(() => {
 			const articlesToCache = orderedArticles.slice(0, 10);
 			navigator.serviceWorker.controller.postMessage({
 				type: 'PRE_CACHE_ARTICLES',
-				articles: articlesToCache.map(article => `/posts/${article.slug}`)
+				articles: articlesToCache.map(article => `/${lang}/posts/${article.slug}`)
 			});
 		}, 3000);
 	}
@@ -433,7 +433,7 @@ const groupedArticles = Object.entries(articlesData.groups)
   }
 </style>
 
-<script is:inline define:vars={{ orderedArticles, groupedArticles }}>
+<script is:inline define:vars={{ orderedArticles, groupedArticles, lang }}>
   // 将文章数据存储到全局对象，供导航栏搜索使用
   window.docsData = {
     articles: orderedArticles.map(article => ({
@@ -446,7 +446,7 @@ const groupedArticles = Object.entries(articlesData.groups)
       groupColor: groupedArticles.find(g => g.key === article.group)?.color || '',
       category: article.category || '',
       tags: article.tags || [],
-      link: `/posts/${article.slug}`
+      link: `/${lang}/posts/${article.slug}`
     })),
     groups: groupedArticles.map(group => ({
       key: group.key,
