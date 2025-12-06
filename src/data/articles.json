@@ -20,32 +20,44 @@
     },
     {
       "id": 4,
-      "slug": "whatsspb",
+      "slug": "transitionprocess",
       "order": 4,
-      "group": "medication"
+      "group": "basics"
     },
     {
       "id": 5,
-      "slug": "whatshrt",
+      "slug": "whatssrs",
       "order": 5,
-      "group": "medication"
+      "group": "basics"
     },
     {
       "id": 6,
-      "slug": "disclaimer",
+      "slug": "whatsspb",
       "order": 6,
-      "group": "note"
+      "group": "medication"
     },
     {
       "id": 7,
-      "slug": "about",
+      "slug": "whatshrt",
       "order": 7,
-      "group": "note"
+      "group": "medication"
     },
     {
       "id": 8,
-      "slug": "acknowledgments",
+      "slug": "disclaimer",
       "order": 8,
+      "group": "note"
+    },
+    {
+      "id": 9,
+      "slug": "about",
+      "order": 9,
+      "group": "note"
+    },
+    {
+      "id": 10,
+      "slug": "acknowledgments",
+      "order": 10,
       "group": "note"
     }
   ],
